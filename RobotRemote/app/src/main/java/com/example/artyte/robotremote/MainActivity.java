@@ -11,6 +11,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -21,6 +24,7 @@ public class MainActivity extends Activity {
     private ListView btListView;
     private ArrayList<String> mDeviceList = new ArrayList<String>();
     private BluetoothAdapter mBluetoothAdapter;
+    private IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,9 +41,15 @@ public class MainActivity extends Activity {
         btListView = (ListView) findViewById(R.id.btListView);
 
         mBluetoothAdapter.startDiscovery();
-
-        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         registerReceiver(mReceiver, filter);
+
+        btListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent intent = new Intent(MainActivity.this, RemoteMain.class);
+                startActivity(intent);
+            }
+        });
 
     }
 
@@ -70,4 +80,8 @@ public class MainActivity extends Activity {
             }
         }
     };
+
+    public void refreshPage(MenuItem item) {
+        registerReceiver(mReceiver, filter);
+    }
 }
