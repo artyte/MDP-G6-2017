@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,22 +15,22 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-
 import java.util.ArrayList;
 
 public class MainActivity extends Activity {
 
     private ListView btListView;
     private ArrayList<String> mDeviceList = new ArrayList<String>();
-    private BluetoothAdapter mBluetoothAdapter;
+    private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();;
     private IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (!mBluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, 1);
@@ -39,7 +38,6 @@ public class MainActivity extends Activity {
 
         //initialise bluetooth listview so that other modules can use it
         btListView = (ListView) findViewById(R.id.btListView);
-
         mBluetoothAdapter.startDiscovery();
         registerReceiver(mReceiver, filter);
 
@@ -74,7 +72,6 @@ public class MainActivity extends Activity {
                 BluetoothDevice device = intent
                         .getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 mDeviceList.add(device.getName() + "\n" + device.getAddress());
-                Log.i("BT", device.getName() + "\n" + device.getAddress());
                 btListView.setAdapter(new ArrayAdapter<String>(context,
                         android.R.layout.simple_list_item_1, mDeviceList));
             }
@@ -82,6 +79,8 @@ public class MainActivity extends Activity {
     };
 
     public void refreshPage(MenuItem item) {
-        registerReceiver(mReceiver, filter);
+        ((ArrayAdapter)btListView.getAdapter()).clear();
+        mBluetoothAdapter.cancelDiscovery();
+        mBluetoothAdapter.startDiscovery();
     }
 }
