@@ -7,5 +7,6 @@ Instructions for adding new files:
 Status:
 - Added bluetooth discovery
 - Added ListView bluetooth view
-- Added refresh bluetooth list button (Not working properly yet)
+- Added refresh bluetooth list button
 - listview elements now clickable
+- Change to Material light theme
