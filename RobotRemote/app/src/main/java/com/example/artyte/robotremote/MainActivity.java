@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,11 +16,14 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class MainActivity extends Activity {
 
+    ConnectThread connectthread;
+    private UUID myUUID;
     private ListView btListView;
-    private ArrayList<String> mDeviceList = new ArrayList<String>();
+    private ArrayList<BluetoothDevice> mDeviceList = new ArrayList<BluetoothDevice>();
     private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();;
     private IntentFilter filter = new IntentFilter();
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -31,8 +33,8 @@ public class MainActivity extends Activity {
             if (action.equals(BluetoothDevice.ACTION_FOUND)) {
                 BluetoothDevice device = intent
                         .getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                mDeviceList.add(device.getName() + "\n" + device.getAddress());
-                btListView.setAdapter(new ArrayAdapter<String>(context,
+                mDeviceList.add(device);
+                btListView.setAdapter(new ArrayAdapter<>(context,
                         android.R.layout.simple_list_item_1, mDeviceList));
             }
             else if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
@@ -58,11 +60,16 @@ public class MainActivity extends Activity {
         filter.addAction(BluetoothDevice.ACTION_FOUND);
         registerReceiver(mReceiver, filter);
 
+        myUUID = UUID.fromString("a0f889c0-eb07-11e6-9598-0800200c9a66");
+
         btListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(MainActivity.this, RemoteMain.class);
-                startActivity(intent);
+                BluetoothDevice device = ((BluetoothDevice) adapterView.getItemAtPosition(i));
+                connectthread = new ConnectThread(device, myUUID);
+                connectthread.start();
+                //Intent intent = new Intent(MainActivity.this, RemoteMain.class);
+                //startActivity(intent);
             }
         });
     }
@@ -77,6 +84,9 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onDestroy() {
+        if(connectthread!=null){
+            connectthread.cancel();
+        }
         unregisterReceiver(mReceiver);
         super.onDestroy();
     }
