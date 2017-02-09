@@ -6,9 +6,6 @@
 MotionController* MC;
 
 void setup() {
-  //Encoder Interrupt
-  attachPCINT(digitalPinToPinChangeInterrupt(Constant::M1EC),MotionController::leftEncodeCountInc,CHANGE);
-  attachPCINT(digitalPinToPCINT(Constant::M2EC),MotionController::rightEncodeCountInc,CHANGE);
 
   //Serial comm to show encoder
   Serial.begin(115200);
