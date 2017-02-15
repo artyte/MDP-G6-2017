@@ -10,8 +10,7 @@ bool MotionController::reached = false;
 MotionController::MotionController()
 {
 	//Init Interrupt
-	attachPCINT(digitalPinToPinChangeInterrupt(Constant::M1EC), MotionController::leftEncodeCountInc, CHANGE);
-	attachPCINT(digitalPinToPCINT(Constant::M2EC), MotionController::rightEncodeCountInc, CHANGE);
+
 
 	this->motorShield.init();
 	MotionController::initPid();
@@ -52,6 +51,7 @@ void MotionController::move(bool direction)
 			motorShield.setSpeeds(speed + differenceOutput, speed - differenceOutput);
 			if (reached)
 				break;
+        printTest();
 		}
 	}
 	else
@@ -80,6 +80,7 @@ void MotionController::turn(bool direction)
 			motorShield.setSpeeds(speed + differenceOutput, -speed + differenceOutput);
 			if (reached)
 				break;
+        printTest();
 		}
 	}
 	else
@@ -89,7 +90,8 @@ void MotionController::turn(bool direction)
 			this->pid->Compute();
 			motorShield.setSpeeds(-speed - differenceOutput, +speed - differenceOutput);
 			if (reached)
-				break;3
+				break;
+        printTest();
 		}
 	}
   motorShield.setBrakes(387, 400);
