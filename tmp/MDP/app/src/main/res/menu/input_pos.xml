@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="schemas.android.com/tools"
+    tools:context="com.example.sample.YourActivity"
+    xmlns:yourapp="http://schemas.android.com/apk/res-auto" >
+
+    xmlns:tools="schemas.android.com/tools">
+
+
+    <item
+        android:id="@+id/menu_rotate"
+        yourapp:showAsAction="always"
+        android:title="Rotate" />
+
+    <item
+        android:id="@+id/menu_done"
+        yourapp:showAsAction="always"
+        android:title="Done" />
+
+</menu>

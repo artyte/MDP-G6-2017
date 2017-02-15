@@ -1,0 +1,20 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="Persistent Values"
+        android:key="persistentButtons">
+        <EditTextPreference android:title="Set Persistence F1 Value"
+            android:key="pref_f1"
+            android:summary="Please enter a value for F1"
+            android:defaultValue="W">
+        </EditTextPreference>
+        <EditTextPreference android:title="Set Persistence F2 Value"
+            android:key="pref_f2"
+            android:summary="Please enter a value for F2"
+            android:defaultValue="A">
+        </EditTextPreference>
+    </PreferenceCategory>
+
+
+
+</PreferenceScreen>
