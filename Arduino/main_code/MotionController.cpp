@@ -23,7 +23,7 @@ void MotionController::initPid()
 {
 	//This PID is to let the wheel go in the same pace (straight)
 	this->pid = new PID(&(this->MLCount), &(this->differenceOutput), &(this->MRCount),
-		Constant::Kp, Constant::Ki, Constant::Kd);
+		Constant::Kp,  Constant::Kd);
 
 	//Output lim out PID to +-50, hence max speed is 350
 	this->pid->SetOutputLimits(-50, 50);
