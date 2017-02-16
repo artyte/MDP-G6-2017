@@ -15,8 +15,8 @@ class Constant
 		//*NOTE* ONLY POSITIVE NUMERICAL ALLOW
 		//Nearly Perfect PD Controller
 		static constexpr double Kp = 10; 
-		static constexpr double Ki = 0.0;
-		static constexpr double Kd = 0.2;
+		//static constexpr double Ki = 0.0;
+		static constexpr double Kd = 0.3;
 
 		//Pins Configuration
 		//Digital Pins

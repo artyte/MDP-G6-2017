@@ -13,14 +13,14 @@ class  PID
 
 		//Constructor for PID
 		PID(long* input, long* output, long* setPoint,
-			const double Kp, const double Ki, const double Kd);
+			const double Kp, const double Kd);
 
 		//Preforms the calculation, get called in the main loop
 		bool Compute();
 
 		//More for setup
 		//Set Kp, Ki and Kd
-		void SetTuningParams(double Kp, double Ki, double Kd);
+		void SetTuningParams(double Kp,  double Kd);
 
 		//Sett the output limit of the PID
 		void SetOutputLimits(double outMin, double outMax);
@@ -57,9 +57,6 @@ class  PID
 
 		//Variable for Derivative 
 		long lastInput;
-
-		//Varibale for Integral, + previous integral term
-		long ITerm;
 
 		//Indicate is the PID started
 		bool isStarted;
