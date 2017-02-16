@@ -10,3 +10,15 @@ Status:
 - Added refresh bluetooth list button
 - listview elements now clickable
 - Change to Material light theme
+- Manual refresh working
+
+Instructions For RPI Group:
+- When sending strings processed from Arduino's raw data, please format these strings for the following task:
+	- For robot position <- "{"robotPosition": [x, y, clockwise degrees]}"
+	- For grid <- "{"grid":75 hexadecimals}"
+	- For battery <- "{"battery":0-100}"
+- When receiving strings sent from Android, please activate the following functions:
+	- For grabbing grid updates (does not include robot's position) <- detect "sendArena"
+	- To begin exploration mode <- detect "explore"
+	- To start fastest path <- detect "fastest"
+	- 

@@ -532,7 +532,7 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
             {
                 textViewMDFString.setText("MDF1:" +getArena().getMdf1()+"\n"+"MDF2:"+getArena().getMdf2());
             }
-        }catch (Exception e)
+        }catch(Exception e)
         {
 
         }
@@ -603,7 +603,6 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
                 fragment.gridUpdate(gridData);
             }
         } catch (Exception e) {
-
             Log.e(Config.log_id, e.getMessage());
         }
 
@@ -627,8 +626,6 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
                 else if (direction == 270)
                     fragment.moveRobot(x, y, 0);
             }
-
-
         } catch (Exception e) {
             Log.e(Config.log_id, e.getMessage());
         }
@@ -770,9 +767,8 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
             if (textViewY != null)
                 textViewY.setText(arena.getRobot().getY() + "");
             if (textViewDirection != null) {
-                textViewStatus.setText(arena.getRobot().getStatus());
                 if(arena.getRobot().getDirection()==0)
-                    textViewDirection.setText("270");
+                    textViewDirection.setText("260");
                 else
                 if(arena.getRobot().getDirection()==1)
                     textViewDirection.setText("0");
@@ -784,7 +780,7 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
                     textViewDirection.setText("180");
             }
             if (textViewStatus != null)
-                textViewStatus.setText("moving");
+                textViewStatus.setText(arena.getRobot().getStatus());
             if (tgbStartStop != null) {
                 if (arena.isStarted()) {
                     tgbStartStop.setChecked(true);

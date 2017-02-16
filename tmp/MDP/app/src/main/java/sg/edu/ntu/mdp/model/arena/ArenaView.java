@@ -3,15 +3,10 @@ package sg.edu.ntu.mdp.model.arena;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
-import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-
-import java.util.ArrayList;
-
 import sg.edu.ntu.mdp.activity.MainActivity;
 import sg.edu.ntu.mdp.common.CommonOperation;
 import sg.edu.ntu.mdp.common.Config;

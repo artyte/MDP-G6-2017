@@ -222,7 +222,6 @@ public class Arena implements Serializable {
         int count = 0;
         //cell bg
         try {
-
             for (int y = 0; y < getNumCol(); y++)
                 for (int x = 0; x < getNumRow(); x++) {
                     {
@@ -240,7 +239,6 @@ public class Arena implements Serializable {
     }
     public void updateObstacleCellProperty(String gridDataInBinary) {
         int count = 0;
-        //cell bg
         try {
 
             for (int y = 0; y < getNumCol(); y++)
@@ -286,7 +284,7 @@ public class Arena implements Serializable {
                     }
                 }
             }
-        }catch ( Exception e)
+        }catch (Exception e)
         {
             Log.e(Config.log_id,"you have an error");
             return  false;

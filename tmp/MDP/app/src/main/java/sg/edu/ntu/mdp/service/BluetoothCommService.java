@@ -486,8 +486,6 @@ public class BluetoothCommService extends Service {
         //reconnect here
         if(device_address!=null)
         {
-
-
             Log.d(Config.log_id,"connecting");
             BluetoothAdapter btAdapater = BluetoothAdapter.getDefaultAdapter();
             BluetoothDevice device = btAdapater.getRemoteDevice(device_address);

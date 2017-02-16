@@ -11,9 +11,7 @@ public class Config {
 	public static final int DEAFULT_GOAL_Y = 17;
 	public static final int DEAFULT_ROBOT_HEAD = 1;
 	public static String log_id = "NTU_MDP";
-
 	public static final int COLOR_CELL_UNEXPLORED= Color.WHITE;
-	//public static final int COLOR_CELL_UNEXPLORED= Color.parseColor("#A9E5FD");
 	public static final int COLOR_CELL_EXPLORED= Color.GRAY;
 	public static final int COLOR_CELL_BORDER= Color.BLACK;
 	public static final int COLOR_START = Color.RED;

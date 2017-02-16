@@ -39,7 +39,7 @@ public class CommonOperation {
     public void showToast(Context context, String text) {
         Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
     }
-    public static  String HexToBinary(String Hex) {
+    public static String HexToBinary(String Hex) {
         int i = Integer.parseInt(Hex, 16);
         String bin = Integer.toBinaryString(i);
         while(bin.length()!=4)
@@ -49,7 +49,7 @@ public class CommonOperation {
         return bin;
     }
 
-    public static  String convertGridFormat(String gridDataInBinary) {
+    public static String convertGridFormat(String gridDataInBinary) {
 
         String convertedData="";
         for (int i = 0; i < 300; i += 15) {
