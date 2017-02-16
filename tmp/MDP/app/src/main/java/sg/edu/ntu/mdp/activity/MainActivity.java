@@ -29,7 +29,6 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,11 +47,11 @@ import sg.edu.ntu.mdp.model.arena.Arena;
 import sg.edu.ntu.mdp.model.arena.Robot;
 import sg.edu.ntu.mdp.service.BluetoothCommService;
 
-
 public class MainActivity extends AppCompatActivity implements DeviceListDialogFragment.DialogListener, MazeFragment.OnFragmentInteractionListener, LogFragment.OnListFragmentInteractionListener, CompoundButton.OnCheckedChangeListener, AcclerometerSenesorProvider.SensorProvider, CustomAlertDialogFragment.AlertDialogListener, BasicDialogFragment.AlertDialogListener {
     public static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
     public static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
     public static final int REQUEST_ENABLE_BT = 24;
+
     // String buffer for outgoing messages
     private StringBuffer mOutStringBuffer;
     private BluetoothCommService bluetoothCommService = null;
@@ -88,7 +87,6 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
             menu.findItem(R.id.menu_hideOrShowLog).setTitle("Hide Log");
         } else {
             menu.findItem(R.id.menu_hideOrShowLog).setTitle("Show Log");
-
         }
 
         if (isAccelerometerEnabled) {
@@ -350,7 +348,7 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
 
             MazeFragment fragment = (MazeFragment) getSupportFragmentManager().findFragmentByTag("mazeFragment");
             if (fragment != null) {
-                //fragment.btnMove(Robot.Move.UP);
+                fragment.btnMove(Robot.Move.UP);
                 sendMessage(Protocol.MOVE_FORWARD);
             }
 
@@ -372,7 +370,7 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
 
             MazeFragment fragment = (MazeFragment) getSupportFragmentManager().findFragmentByTag("mazeFragment");
             if (fragment != null) {
-             //   fragment.btnMove(Robot.Move.LEFT);
+                fragment.btnMove(Robot.Move.LEFT);
                 sendMessage(Protocol.TURN_LEFT);
 
             }
@@ -390,7 +388,7 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
         if(arena!=null && arena.isStarted()==true) {
             MazeFragment fragment = (MazeFragment) getSupportFragmentManager().findFragmentByTag("mazeFragment");
             if (fragment != null) {
-                //fragment.btnMove(Robot.Move.UP);
+                fragment.btnMove(Robot.Move.RIGHT);
                 sendMessage(Protocol.TURN_RIGHT);
             }
         } else  if(arena!=null && arena.isStarted()==false)
@@ -485,13 +483,13 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
                 }else
                 if (readMessage.equalsIgnoreCase(Protocol.MOVE_FORWARD)) {
                     moveRobot(Robot.Move.UP);
-                   // sendMessage(Protocol.MOVE_FORWARD);
+                    //sendMessage(Protocol.MOVE_FORWARD);
                 } else if (readMessage.equalsIgnoreCase(Protocol.TURN_LEFT)) {
                     moveRobot(Robot.Move.LEFT);
-                   // sendMessage(Protocol.TURN_LEFT);
+                    //sendMessage(Protocol.TURN_LEFT);
                 }else if (readMessage.equalsIgnoreCase(Protocol.TURN_RIGHT)) {
                     moveRobot(Robot.Move.RIGHT);
-                   // sendMessage(Protocol.TURN_RIGHT);
+                    //sendMessage(Protocol.TURN_RIGHT);
                 }else if(readMessage.startsWith("grid"))
                 {
                     handleMDFString(readMessage);
@@ -532,7 +530,6 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
         try{
             if(getArena().getMdf1()!=null && getArena().getMdf2()!=null && !getArena().getMdf1().equalsIgnoreCase("") && !getArena().getMdf2().equalsIgnoreCase("") )
             {
-
                 textViewMDFString.setText("MDF1:" +getArena().getMdf1()+"\n"+"MDF2:"+getArena().getMdf2());
             }
         }catch (Exception e)
@@ -543,11 +540,10 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
 
     private void handleJson(String readMessage) {
         handleRobotPositionUpdate(readMessage);
-       handleGridUpdate(readMessage);
+        handleGridUpdate(readMessage);
         handleMdf1Update(readMessage);
         handleMdf2Update(readMessage);
-          handleStatusUpdate(readMessage);
-
+        handleStatusUpdate(readMessage);
     }
 
     private void handleMdf2Update(String readMessage) {
@@ -713,7 +709,7 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
     public void onBackPressed() {
         //super.onBackPressed();
         moveTaskToBack(true);
-        //      super.onBackPressed();
+        //super.onBackPressed();
     }
 
 
@@ -774,8 +770,9 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
             if (textViewY != null)
                 textViewY.setText(arena.getRobot().getY() + "");
             if (textViewDirection != null) {
+                textViewStatus.setText(arena.getRobot().getStatus());
                 if(arena.getRobot().getDirection()==0)
-                textViewDirection.setText("270");
+                    textViewDirection.setText("270");
                 else
                 if(arena.getRobot().getDirection()==1)
                     textViewDirection.setText("0");
@@ -787,7 +784,7 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
                     textViewDirection.setText("180");
             }
             if (textViewStatus != null)
-                textViewStatus.setText(arena.getRobot().getStatus());
+                textViewStatus.setText("moving");
             if (tgbStartStop != null) {
                 if (arena.isStarted()) {
                     tgbStartStop.setChecked(true);
@@ -908,9 +905,7 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
         }
     }
     public void btnSendGridUpdate() {
-
-
-      //  sendMessage(Protocol.SEND_ARENA);
+        sendMessage(Protocol.SEND_ARENA);
         new CommonOperation().showToast(getApplicationContext(), "Grid data requested");
     }
 
@@ -930,7 +925,6 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
             if(move.equalsIgnoreCase(Protocol.TURN_RIGHT)) {
                 robotMove=Robot.Move.RIGHT;
             }
-
             Boolean isSafe = arena.checkObstacles(robotMove);
             if(isSafe)
                 sendMessage(move);
