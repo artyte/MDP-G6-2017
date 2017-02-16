@@ -4,14 +4,6 @@ Instructions for adding new files:
 - Use folders to represent the work you're doing (e.g. in this case, android team does work on Robot Remote Folder)
 - Branching isn't really necessary if you're trying to code on separate pages
 
-Status:
-- Added bluetooth discovery
-- Added ListView bluetooth view
-- Added refresh bluetooth list button
-- listview elements now clickable
-- Change to Material light theme
-- Manual refresh working
-
 Instructions For RPI Group:
 - When sending strings processed from Arduino's raw data, please format these strings for the following task:
 	- For robot position <- "{"robotPosition": [x, y, clockwise degrees]}"
@@ -22,4 +14,4 @@ Instructions For RPI Group:
 	- For grabbing grid updates (does not include robot's position) <- detect "sendArena"
 	- To begin exploration mode <- detect "explore"
 	- To start fastest path <- detect "fastest"
-	- There are no strings to request battery, robot position, or status for now since amdTool does not support it. RPI will send information for these when they change.
+	- There are no strings to request battery, robot position, or status for now since amdTool does not support it. RPI will send information for these when their values change.
