@@ -21,3 +21,4 @@ Instructions For RPI Group:
 	- For grabbing grid updates (does not include robot's position) <- detect "sendArena"
 	- To begin exploration mode <- detect "explore"
 	- To start fastest path <- detect "fastest"
+	- There are no strings to request battery or robot position for now since amdTool does not support it. RPI will send information for these when they change.
