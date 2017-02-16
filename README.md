@@ -17,8 +17,9 @@ Instructions For RPI Group:
 	- For robot position <- "{"robotPosition": [x, y, clockwise degrees]}"
 	- For grid <- "{"grid":75 hexadecimals}"
 	- For battery <- "{"battery":0-100}"
+	- For status <- "{"status":status name}"
 - When receiving strings sent from Android, please activate the following functions:
 	- For grabbing grid updates (does not include robot's position) <- detect "sendArena"
 	- To begin exploration mode <- detect "explore"
 	- To start fastest path <- detect "fastest"
-	- There are no strings to request battery or robot position for now since amdTool does not support it. RPI will send information for these when they change.
+	- There are no strings to request battery, robot position, or status for now since amdTool does not support it. RPI will send information for these when they change.

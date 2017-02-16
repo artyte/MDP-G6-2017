@@ -539,6 +539,7 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
     }
 
     private void handleJson(String readMessage) {
+        handleRobotBatteryUpdate(readMessage);
         handleRobotPositionUpdate(readMessage);
         handleGridUpdate(readMessage);
         handleMdf1Update(readMessage);
@@ -546,12 +547,23 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
         handleStatusUpdate(readMessage);
     }
 
+    private void handleRobotBatteryUpdate(String readMessage) {
+        String battery = "";
+        try {
+            JSONObject obj = new JSONObject(readMessage);
+            battery = obj.getString("battery");
+            textViewStatus.setText(battery);
+        } catch (Exception e) {
+            Log.e(Config.log_id, e.getMessage());
+        }
+    }
+
     private void handleMdf2Update(String readMessage) {
         String gridData = "";
         try {
             JSONObject obj = new JSONObject(readMessage);
             gridData = obj.getString("mdf2");
-            getArena().setMdf2(gridData); //save it
+            getArena().setMdf2(gridData);
             MazeFragment fragment = (MazeFragment) getSupportFragmentManager().findFragmentByTag("mazeFragment");
             if (fragment != null) {
                 fragment.gridUpdateMDF1(gridData);
@@ -583,6 +595,7 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
         try {
             JSONObject obj = new JSONObject(readMessage);
             status = obj.getString("status");
+            textViewStatus.setText(status);
             MazeFragment fragment = (MazeFragment) getSupportFragmentManager().findFragmentByTag("mazeFragment");
             if (fragment != null) {
                 fragment.statusUpdate(status);
