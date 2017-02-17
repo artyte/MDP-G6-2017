@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
     TextView textViewDirection;
     TextView textViewStatus;
     TextView textViewMDFString;
+    TextView textBattery;
     MazeFragment mazeFragment = null;
     LogFragment logFragment = null;
     ToggleButton tgbStartStop, tgbAutoManual;
@@ -133,6 +134,7 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
         }
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            textBattery = (TextView) findViewById(R.id.textViewBattery);
             textViewX = (TextView) findViewById(R.id.textViewX);
             textViewY = (TextView) findViewById(R.id.textViewY);
             textViewDirection = (TextView) findViewById(R.id.textViewDirection);
@@ -325,8 +327,6 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
         sendMessage(Protocol.START_FASTEST);
     }
     public void btnF1(View a) {
-
-
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         String data = sharedPref.getString("pref_f1", Protocol.MOVE_FORWARD);
         sendMessage(data);
@@ -553,7 +553,7 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
         try {
             JSONObject obj = new JSONObject(readMessage);
             battery = obj.getString("battery");
-            textViewStatus.setText(battery);
+            textBattery.setText(battery);
         } catch (Exception e) {
             Log.e(Config.log_id, e.getMessage());
         }

@@ -138,6 +138,27 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/textView5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minEms="1"
+                        android:textStyle="bold"
+                        android:text="Battery:" />
+
+                    <TextView
+                        android:paddingLeft="5dp"
+                        android:id="@+id/textViewBattery"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="100"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:weightSum="2"
                     android:layout_height="wrap_content">
 
@@ -239,6 +260,7 @@
                         android:layout_height="wrap_content"
                         android:text="Send"/>
                 </LinearLayout>
+
             </LinearLayout>
 
             <RelativeLayout

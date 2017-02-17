@@ -46,10 +46,10 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         setContentView(R.layout.settings_activity);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         addPreferencesFromResource(R.xml.pref_general);
-      Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-       setSupportActionBar(toolbar);
-       getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-     getSupportActionBar().setDisplayShowHomeEnabled(true);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 
     /**
