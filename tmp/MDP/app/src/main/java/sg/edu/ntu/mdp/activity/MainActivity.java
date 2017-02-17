@@ -341,7 +341,7 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
 
     }
 
-    public void btnUp(View a) {
+    /* public void btnUp(View a) {
         Arena arena = getArena();
         if(arena!=null && arena.isStarted()==true) {
 
@@ -402,7 +402,7 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
             basicDialogFragment.show(getSupportFragmentManager(), "basicDialogFragment");
         }
 
-    }
+    }*/
 
     @Override
     public void onActivityResult(String a) {
