@@ -384,7 +384,8 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
             basicDialogFragment.show(getSupportFragmentManager(), "basicDialogFragment");
         }
     }
-    public void btnRight(View a) {   Arena arena = getArena();
+    public void btnRight(View a) {
+        Arena arena = getArena();
         if(arena!=null && arena.isStarted()==true) {
             MazeFragment fragment = (MazeFragment) getSupportFragmentManager().findFragmentByTag("mazeFragment");
             if (fragment != null) {
