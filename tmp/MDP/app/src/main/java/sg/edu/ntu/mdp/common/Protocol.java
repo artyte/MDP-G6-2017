@@ -41,6 +41,4 @@ public interface Protocol {
     public static final String START_FASTEST = "fastest";
     public static final String CALIBRATE = "C";
     public static final String CALIBRATE_PATTERN = ":1:[0-9]:1:[0-9]:[0-9][|]";
-
-
 }
