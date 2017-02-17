@@ -4,7 +4,7 @@ Instructions for adding new files:
 - Use folders to represent the work you're doing (e.g. in this case, android team does work on Robot Remote Folder)
 - Branching isn't really necessary if you're trying to code on separate pages
 
-Instructions For RPI Group:
+Instructions For Algo Group:
 - When sending strings processed from Arduino's raw data, please format these strings for the following task:
 	- For robot position <- "{"robotPosition": [x, y, clockwise degrees]}"
 	- For grid <- "{"grid":75 hexadecimals}"
