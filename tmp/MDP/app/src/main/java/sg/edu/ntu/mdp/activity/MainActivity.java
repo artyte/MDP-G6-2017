@@ -480,7 +480,7 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
     }
 
     private void handleJson(String readMessage) {
-        if(readMessage.substring(0,2).equals("10")) { //10 for android
+        /*if(readMessage.substring(0,2).equals("10")) { //10 for android
             readMessage = readMessage.substring(2);
             handleRobotBatteryUpdate(readMessage);
             handleRobotPositionUpdate(readMessage);
@@ -488,7 +488,13 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
             handleMdf1Update(readMessage);
             handleMdf2Update(readMessage);
             handleStatusUpdate(readMessage);
-        }
+        }*/
+        handleRobotBatteryUpdate(readMessage);
+        handleRobotPositionUpdate(readMessage);
+        handleGridUpdate(readMessage);
+        handleMdf1Update(readMessage);
+        handleMdf2Update(readMessage);
+        handleStatusUpdate(readMessage);
     }
 
     private void handleRobotBatteryUpdate(String readMessage) {
