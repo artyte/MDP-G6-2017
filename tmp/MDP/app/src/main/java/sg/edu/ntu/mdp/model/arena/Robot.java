@@ -4,20 +4,11 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.util.Log;
-
 import java.io.Serializable;
-
 import sg.edu.ntu.mdp.R;
-import sg.edu.ntu.mdp.common.CommonOperation;
-import sg.edu.ntu.mdp.common.Config;
 
-/**
- * Created by ericl on 09/09/2016.
- */
 public class Robot implements Serializable {
 
     int x;
@@ -104,16 +95,6 @@ public class Robot implements Serializable {
     }
 
     public void exploreCurrentPosition() {
-        /*
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (arena.getCellArray() != null) {
-                    arena.getCellArray()[x + j][y + i].setExplored(true);
-                }
-            }
-        }
-        */
-
     }
 
     private void moveForward() {

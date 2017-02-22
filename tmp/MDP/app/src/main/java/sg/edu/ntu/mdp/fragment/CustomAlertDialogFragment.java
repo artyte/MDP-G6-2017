@@ -7,10 +7,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 
-/**
- * Created by ericl on 25/09/2016.
- */
-
 public class CustomAlertDialogFragment extends DialogFragment {
     AlertDialogListener mListener;
     @Override

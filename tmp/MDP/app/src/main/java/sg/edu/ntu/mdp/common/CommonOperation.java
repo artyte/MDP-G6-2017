@@ -1,14 +1,7 @@
-
 package sg.edu.ntu.mdp.common;
 
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.location.LocationManager;
-import android.telephony.TelephonyManager;
 import android.widget.Toast;
-
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -57,7 +50,5 @@ public class CommonOperation {
         }
         return convertedData;
     }
-
-
 
 }

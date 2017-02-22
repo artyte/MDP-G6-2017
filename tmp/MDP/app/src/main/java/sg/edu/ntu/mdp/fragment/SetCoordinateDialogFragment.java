@@ -1,7 +1,6 @@
 package sg.edu.ntu.mdp.fragment;
 
 import android.app.Activity;
-import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -10,10 +9,7 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-
 import sg.edu.ntu.mdp.R;
-import sg.edu.ntu.mdp.common.Config;
 
 
 public class SetCoordinateDialogFragment extends DialogFragment implements View.OnClickListener{
@@ -64,8 +60,6 @@ public class SetCoordinateDialogFragment extends DialogFragment implements View.
         getDialog().setTitle("Coordinate Position");
         return mView;
     }
-
-
 
     @Override
     public void onAttach(Context context) {

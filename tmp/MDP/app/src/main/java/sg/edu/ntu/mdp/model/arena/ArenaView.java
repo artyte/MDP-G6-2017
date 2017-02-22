@@ -11,9 +11,6 @@ import sg.edu.ntu.mdp.activity.MainActivity;
 import sg.edu.ntu.mdp.common.CommonOperation;
 import sg.edu.ntu.mdp.common.Config;
 
-/**
- * Created by ericl on 08/09/2016.
- */
 public class ArenaView extends View {
     public static int MAZE_VIEW = 1;
     public static int SELECT_POS_VIEW = 2;

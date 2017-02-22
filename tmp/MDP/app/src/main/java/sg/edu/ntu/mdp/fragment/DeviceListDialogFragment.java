@@ -20,9 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import java.util.Set;
-
 import sg.edu.ntu.mdp.R;
 import sg.edu.ntu.mdp.activity.MainActivity;
 import sg.edu.ntu.mdp.common.Config;

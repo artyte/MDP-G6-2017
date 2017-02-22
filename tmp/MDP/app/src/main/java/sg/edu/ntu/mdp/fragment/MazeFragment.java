@@ -15,14 +15,6 @@ import sg.edu.ntu.mdp.model.arena.GoalProperty;
 import sg.edu.ntu.mdp.model.arena.Robot;
 import sg.edu.ntu.mdp.model.arena.StartProperty;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link MazeFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link MazeFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class MazeFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -157,18 +149,19 @@ public class MazeFragment extends Fragment {
         arenaView.invalidate();
         mListener.onUiUpdate(arena);
     }
-        //mdf1
+
     public void gridUpdateMDF1(String gridData) {
         arenaView.gridUpdateMDF1();
         arenaView.invalidate();
         mListener.onUiUpdate(arena);
     }
-    //mdf2
+
     public void gridUpdateMDF2(String gridData) {
         arenaView.gridUpdateMDF2();
         arenaView.invalidate();
         mListener.onUiUpdate(arena);
     }
+
     public void statusUpdate(String status) {
         if(arena!=null && arena.getRobot()!=null)
         {

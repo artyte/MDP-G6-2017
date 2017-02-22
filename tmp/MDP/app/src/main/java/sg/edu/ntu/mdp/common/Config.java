@@ -19,7 +19,7 @@ public class Config {
 	public static final int COLOR_OBSTACLE = Color.BLACK;
 	public static final int INPUT_POS_ACTIVITY = 1150;
 	public static final int ACCLEROMETER_UPDATE_TIME=100;
-	public static final int GRID_AUTO_UPDATE_TIME=5000;
+	public static final int GRID_AUTO_UPDATE_TIME=10000;
 
 }
 

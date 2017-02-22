@@ -2,12 +2,7 @@ package sg.edu.ntu.mdp.model.arena;
 
 import java.io.Serializable;
 
-/**
- * Created by ericl on 16/09/2016.
- */
 public class GoalProperty implements Serializable{
-
-
 
     int x,y;
 

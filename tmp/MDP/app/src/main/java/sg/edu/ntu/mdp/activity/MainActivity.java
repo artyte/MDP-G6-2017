@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
     TextView textViewDirection;
     TextView textViewStatus;
     TextView textViewMDFString;
-    TextView textBattery;
+    TextView textViewBattery;
     MazeFragment mazeFragment = null;
     LogFragment logFragment = null;
     ToggleButton tgbStartStop, tgbAutoManual;
@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
         }
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            textBattery = (TextView) findViewById(R.id.textViewBattery);
+            textViewBattery = (TextView) findViewById(R.id.textViewBattery);
             textViewX = (TextView) findViewById(R.id.textViewX);
             textViewY = (TextView) findViewById(R.id.textViewY);
             textViewDirection = (TextView) findViewById(R.id.textViewDirection);
@@ -318,14 +318,17 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
         sendMessage(text);
         Log.d(Config.log_id,"robot post json "+text);
     }
+
     public void btnExplore(View a) {
 
         sendMessage(Protocol.START_EXPLORATION);
     }
+
     public void btnFastest(View a) {
 
         sendMessage(Protocol.START_FASTEST);
     }
+
     public void btnF1(View a) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         String data = sharedPref.getString("pref_f1", Protocol.MOVE_FORWARD);
@@ -340,69 +343,6 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
         Log.d(Config.log_id, data);
 
     }
-
-    /* public void btnUp(View a) {
-        Arena arena = getArena();
-        if(arena!=null && arena.isStarted()==true) {
-
-
-            MazeFragment fragment = (MazeFragment) getSupportFragmentManager().findFragmentByTag("mazeFragment");
-            if (fragment != null) {
-                fragment.btnMove(Robot.Move.UP);
-                sendMessage(Protocol.MOVE_FORWARD);
-            }
-
-        }
-        else  if(arena!=null && arena.isStarted()==false)
-        {
-            DialogFragment basicDialogFragment = new BasicDialogFragment();
-            Bundle args = new Bundle();
-            args.putString("title", "Error");
-            args.putString("message", "You are not allowed to move until the robot starts.");
-            basicDialogFragment.setArguments(args);
-            basicDialogFragment.show(getSupportFragmentManager(), "basicDialogFragment");
-        }
-    }
-
-    public void btnLeft(View a) {
-        Arena arena = getArena();
-        if(arena!=null && arena.isStarted()==true) {
-
-            MazeFragment fragment = (MazeFragment) getSupportFragmentManager().findFragmentByTag("mazeFragment");
-            if (fragment != null) {
-                fragment.btnMove(Robot.Move.LEFT);
-                sendMessage(Protocol.TURN_LEFT);
-
-            }
-        }      else  if(arena!=null && arena.isStarted()==false)
-        {
-            DialogFragment basicDialogFragment = new BasicDialogFragment();
-            Bundle args = new Bundle();
-            args.putString("title", "Error");
-            args.putString("message", "You are not allowed to move until the robot starts.");
-            basicDialogFragment.setArguments(args);
-            basicDialogFragment.show(getSupportFragmentManager(), "basicDialogFragment");
-        }
-    }
-    public void btnRight(View a) {
-        Arena arena = getArena();
-        if(arena!=null && arena.isStarted()==true) {
-            MazeFragment fragment = (MazeFragment) getSupportFragmentManager().findFragmentByTag("mazeFragment");
-            if (fragment != null) {
-                fragment.btnMove(Robot.Move.RIGHT);
-                sendMessage(Protocol.TURN_RIGHT);
-            }
-        } else  if(arena!=null && arena.isStarted()==false)
-        {
-            DialogFragment basicDialogFragment = new BasicDialogFragment();
-            Bundle args = new Bundle();
-            args.putString("title", "Error");
-            args.putString("message", "You are not allowed to move until the robot starts.");
-            basicDialogFragment.setArguments(args);
-            basicDialogFragment.show(getSupportFragmentManager(), "basicDialogFragment");
-        }
-
-    }*/
 
     @Override
     public void onActivityResult(String a) {
@@ -540,12 +480,15 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
     }
 
     private void handleJson(String readMessage) {
-        handleRobotBatteryUpdate(readMessage);
-        handleRobotPositionUpdate(readMessage);
-        handleGridUpdate(readMessage);
-        handleMdf1Update(readMessage);
-        handleMdf2Update(readMessage);
-        handleStatusUpdate(readMessage);
+        if(readMessage.substring(0,2).equals("10")) { //10 for android
+            readMessage = readMessage.substring(2);
+            handleRobotBatteryUpdate(readMessage);
+            handleRobotPositionUpdate(readMessage);
+            handleGridUpdate(readMessage);
+            handleMdf1Update(readMessage);
+            handleMdf2Update(readMessage);
+            handleStatusUpdate(readMessage);
+        }
     }
 
     private void handleRobotBatteryUpdate(String readMessage) {
@@ -553,7 +496,7 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
         try {
             JSONObject obj = new JSONObject(readMessage);
             battery = obj.getString("battery");
-            textBattery.setText(battery);
+            textViewBattery.setText(battery);
         } catch (Exception e) {
             Log.e(Config.log_id, e.getMessage());
         }

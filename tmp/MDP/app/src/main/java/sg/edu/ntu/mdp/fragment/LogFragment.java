@@ -11,20 +11,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
-
 import java.util.ArrayList;
-
 import sg.edu.ntu.mdp.R;
 import sg.edu.ntu.mdp.adapter.LogViewAdapter;
-import sg.edu.ntu.mdp.common.CommonOperation;
 import sg.edu.ntu.mdp.common.Config;
 
-/**
- * A fragment representing a list of Items.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
- * interface.
- */
 public class LogFragment extends android.support.v4.app.ListFragment implements AdapterView.OnItemLongClickListener {
 
     // TODO: Customize parameter argument names

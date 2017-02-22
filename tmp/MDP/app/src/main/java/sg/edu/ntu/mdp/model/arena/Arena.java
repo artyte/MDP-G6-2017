@@ -1,9 +1,7 @@
 package sg.edu.ntu.mdp.model.arena;
 
 import android.util.Log;
-
 import java.io.Serializable;
-
 import sg.edu.ntu.mdp.common.CommonOperation;
 import sg.edu.ntu.mdp.common.Config;
 
@@ -12,10 +10,6 @@ import sg.edu.ntu.mdp.common.Config;
  */
 public class Arena implements Serializable {
 
-    public static int BTN_UP=1;
-    public static int BTN_DOWN=2;
-    public static int BTN_RIGHT=3;
-    public static int BTN_LEFT=4;
     Robot robot;
     Cell[][] cellArray;
     int numRow,numCol;
@@ -67,16 +61,6 @@ public class Arena implements Serializable {
             //might have been resulted from padding 0, therefore need to go from the back
             Log.e(Config.log_id,"mdf1 binary data "+ getMdf1BinaryData());
             int c=0;
-            /*
-            for(int i =cellDataArray.length-1; i>=0;i--)
-            {
-                if(cellDataArray[i]=='1')
-               {
-                cellDataArray[i]=mdf2Binary.charAt(c);
-                c--;
-               }
-            }
-            */
             for(int i=0;i<cellDataArray.length;i++)
             {
                 if (cellDataArray[i] == '1') {
@@ -95,15 +79,6 @@ public class Arena implements Serializable {
                     c++;
                 }
             }
-        /*
-        for (int i = 0; i < cellDataArray.length; i++) {
-            if (cellDataArray[i] == '1') {
-                cellDataArray[i] = mdf2Binary.charAt(c);
-                c++;
-            }
-        }
-        */
-
            return String.valueOf(cellDataArray);
         }
         catch (Exception e)
@@ -175,16 +150,8 @@ public class Arena implements Serializable {
         return cellArray;
     }
 
-    public void setCellArray(Cell[][] cellArray) {
-        this.cellArray = cellArray;
-    }
-
     public GoalProperty getGoalProperty() {
         return goalProperty;
-    }
-
-    public void setGoalProperty(GoalProperty goalProperty) {
-        this.goalProperty = goalProperty;
     }
 
     public StartProperty getStartProperty() {
@@ -199,25 +166,14 @@ public class Arena implements Serializable {
         return numRow;
     }
 
-    public void setNumRow(int numRow) {
-        this.numRow = numRow;
-    }
-
     public int getNumCol() {
         return numCol;
-    }
-
-    public void setNumCol(int numCol) {
-        this.numCol = numCol;
     }
 
     public Robot getRobot() {
         return robot;
     }
 
-    public void setRobot(Robot robot) {
-        this.robot = robot;
-    }
     public void updateExplorationCellProperty(String gridDataInBinary) {
         int count = 0;
         //cell bg

@@ -6,16 +6,9 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.location.Location;
 import android.os.Handler;
 import android.util.Log;
-
-import sg.edu.ntu.mdp.activity.MainActivity;
 import sg.edu.ntu.mdp.model.arena.Robot;
-
-/**
- * Created by ericl on 25/09/2016.
- */
 
 public class AcclerometerSenesorProvider implements SensorEventListener {
 

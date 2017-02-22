@@ -5,15 +5,11 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.Log;
-
 import java.io.Serializable;
-import java.util.ArrayList;
-
 import sg.edu.ntu.mdp.common.Config;
 
 public class MazeGridMap implements Serializable {
     private Canvas tempCanvas;
-    private ArrayList obstacleArray;
     private Arena arena;
 
     public MazeGridMap(Arena arena) {
@@ -25,8 +21,6 @@ public class MazeGridMap implements Serializable {
 
     public void draw(Canvas canvas, int gridSize) {
         this.tempCanvas = canvas;
-        int height = arena.getNumRow();
-        int width = arena.getNumCol();
 
         //cell bg
         for (int i = 0; i < arena.getNumRow(); i++) {
@@ -34,12 +28,14 @@ public class MazeGridMap implements Serializable {
                arena.getCellArray()[i][j].draw(canvas, gridSize);
             }
         }
+
         //draw start
         for (int x = 0; x < 3; x++) {
             for (int y = 0; y < 3; y++) {
                 drawStart(canvas, gridSize, arena.getStartProperty().getX() + x, arena.getStartProperty().getY() + y);
             }
         }
+
         //draw goal
         for (int x = 0; x < 3; x++) {
             for (int y = 0; y < 3; y++) {

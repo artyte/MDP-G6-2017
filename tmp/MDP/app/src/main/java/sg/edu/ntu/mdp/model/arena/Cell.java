@@ -1,16 +1,10 @@
 package sg.edu.ntu.mdp.model.arena;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.RectF;
-import android.util.Log;
-
 import java.io.Serializable;
 import java.util.ArrayList;
-
-import sg.edu.ntu.mdp.common.CommonOperation;
 import sg.edu.ntu.mdp.common.Config;
 
 public class Cell implements Serializable{
@@ -71,31 +65,10 @@ public class Cell implements Serializable{
         paint.setStrokeWidth(1);
         canvas.drawRect(rect, paint);
 
-        //draw text
-        /*
-        String rotatedtext = x + "," + y;
-        canvas.save();
-        canvas.rotate(90, left , top );
-
-        canvas.drawText(rotatedtext, left+gridSize/2-10, top-gridSize/2, paint);
-        canvas.restore();
-          */
-
-
-    }
-
-
-
-    public Boolean getExplored() {
-        return isExplored;
     }
 
     public void setExplored(Boolean explored) {
         isExplored = explored;
-    }
-
-    public Boolean getHaveObstacle() {
-        return haveObstacle;
     }
 
     public void setHaveObstacle(Boolean haveObstacle) {

@@ -4,9 +4,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
-/**
- * Created by ericl on 08/09/2016.
- */
 public class GridViewItem extends ImageView {
 
     public GridViewItem(Context context) {

@@ -7,10 +7,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 
-/**
- * Created by ericl on 25/09/2016.
- */
-
 public class BasicDialogFragment extends DialogFragment {
     AlertDialogListener mListener;
     @Override
@@ -37,8 +33,7 @@ public class BasicDialogFragment extends DialogFragment {
         }
     }
     public interface AlertDialogListener {
-        public void onDialogPositiveClick(DialogFragment dialog);
-        public void onDialogNegativeClick(DialogFragment dialog);
+        void onDialogNegativeClick(DialogFragment dialog);
     }
     @Override
     public void onCancel(DialogInterface dialog) {

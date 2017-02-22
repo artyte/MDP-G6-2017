@@ -1,10 +1,8 @@
 package sg.edu.ntu.mdp.model;
 
-/**
- * Created by Matt on 5/12/2015.
- */
-public class DeviceItem {
 
+public class DeviceItem {
+/*
     private String deviceName;
     private String address;
     private boolean connected;
@@ -35,4 +33,6 @@ public class DeviceItem {
             this.connected = false;
         }
     }
+
+*/
 }

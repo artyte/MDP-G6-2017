@@ -5,19 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-
 import sg.edu.ntu.mdp.R;
 
-/**
- * Created by Eric on 22/10/2015.
- */
 public class LogViewAdapter extends BaseAdapter {
     Context context;
     ArrayList<String> logList;
