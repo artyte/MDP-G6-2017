@@ -869,6 +869,12 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
         new CommonOperation().showToast(getApplicationContext(), "Grid data requested");
     }
 
+    public void btnSend(View a) {
+        TextView textToSend = (TextView) findViewById(R.id.txtString);
+        String data = textToSend.getText().toString();
+        sendMessage(data);
+    }
+
 
     @Override
     public void onAcclerometerChanged(String move) {
