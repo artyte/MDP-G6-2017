@@ -32,8 +32,7 @@
 
         <activity
             android:name=".activity.InputPositionActivity"
-            android:label="@string/title_activity_input_position"
-            android:theme="@style/AppTheme" />
+            android:label="@string/title_activity_input_position" />
         <activity
             android:name=".activity.SettingsActivity"
             android:label="@string/title_activity_settings" />

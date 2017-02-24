@@ -13,6 +13,7 @@ import sg.edu.ntu.mdp.R;
 
 
 public class SetCoordinateDialogFragment extends DialogFragment implements View.OnClickListener{
+    
     // TODO: Rename parameter arguments, choose names that match
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -31,9 +32,10 @@ public class SetCoordinateDialogFragment extends DialogFragment implements View.
     }
 
     public SetCoordinateDialogFragment() {
+        /*
         int style = DialogFragment.STYLE_NORMAL, theme = 0;
         theme = android.R.style.Theme_Holo_Dialog_NoActionBar;
-       // setStyle(style, theme);
+        setStyle(style, theme);*/
     }
 
     @Override
