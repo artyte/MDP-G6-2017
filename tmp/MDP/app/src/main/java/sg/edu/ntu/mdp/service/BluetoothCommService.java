@@ -1,7 +1,6 @@
 package sg.edu.ntu.mdp.service;
 
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -19,30 +18,30 @@ import sg.edu.ntu.mdp.common.Config;
 import sg.edu.ntu.mdp.common.Protocol;
 
 public class BluetoothCommService extends Service {
+    private static BluetoothCommService bcsInstance;
 
-    public static final String ACTION="BlueToothLocalBroadcast";
+    public static final String ACTION = "BlueToothLocalBroadcast";
     private static final String TAG = "BluetoothCommService";
     private static final boolean D = true;
     // Name for the SDP record when creating server socket
     private static final String NAME = "BluetoothChat";
     // Unique UUID for this application
-  //  private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-23123-00805F9B34FB");
+    //  private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-23123-00805F9B34FB");
 
     private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     // Member fields
-      BluetoothAdapter mAdapter;
+    private BluetoothAdapter mAdapter;
     private AcceptThread mAcceptThread;
     private ConnectThread mConnectThread;
     private ConnectedThread mConnectedThread;
     private int mState;
+
     public static final int STATE_NONE = 0;       // we're doing nothing
     public static final int STATE_LISTEN = 1;     // now listening for incoming connections
     public static final int STATE_CONNECTING = 2; // now initiating an outgoing connection
     public static final int STATE_CONNECTED = 3;  // now connected to a remote device
 
-    String device_address=null;
-    public BluetoothCommService() {
-    }
+    String device_address = null;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -53,9 +52,17 @@ public class BluetoothCommService extends Service {
         // TODO: Return the communication channel to the service.
         throw new UnsupportedOperationException("Not yet implemented");
     }
-    public BluetoothCommService(Context context) {
+
+    private BluetoothCommService() {
         mAdapter = BluetoothAdapter.getDefaultAdapter();
         mState = STATE_NONE;
+    }
+
+    public static BluetoothCommService getInstance() {
+        if (bcsInstance == null)
+            bcsInstance = new BluetoothCommService();
+
+        return bcsInstance;
     }
 
     /**
@@ -87,17 +94,20 @@ public class BluetoothCommService extends Service {
      */
     public synchronized void start() {
         Log.d(Config.log_id,"start of service");
+
         // Cancel any thread attempting to make a connection
         if (mConnectThread != null) {
             mConnectThread.cancel();
             mConnectThread = null;
         }
+
         // Cancel any thread currently running a connection
         if (mConnectedThread != null) {
             mConnectedThread.cancel();
             mConnectedThread = null;
         }
-        setState(STATE_LISTEN);
+
+        //setState(STATE_LISTEN);
         // Start the thread to listen on a BluetoothServerSocket
         if (mAcceptThread == null) {
             mAcceptThread = new AcceptThread();
@@ -112,8 +122,9 @@ public class BluetoothCommService extends Service {
      */
     public synchronized void connect(BluetoothDevice device) {
         if (D) Log.d(TAG, "connect to: " + device);
+
         // Cancel any thread attempting to make a connection
-        if (mState == STATE_CONNECTING) {
+        if (getState() == STATE_CONNECTING) {
             if (mConnectThread != null) {
                 mConnectThread.cancel();
                 mConnectThread = null;
@@ -125,6 +136,7 @@ public class BluetoothCommService extends Service {
             mConnectedThread.cancel();
             mConnectedThread = null;
         }
+
         // Start the thread to connect with the given device
         mConnectThread = new ConnectThread(device);
         mConnectThread.start();
@@ -140,17 +152,20 @@ public class BluetoothCommService extends Service {
     public synchronized void connected(BluetoothSocket socket, BluetoothDevice device) {
 
         Log.d(Config.log_id,"Connected ");
-        device_address= device.getAddress();
+        device_address = device.getAddress();
+
         // Cancel the thread that completed the connection
         if (mConnectThread != null) {
             mConnectThread.cancel();
             mConnectThread = null;
         }
+
         // Cancel any thread currently running a connection
         if (mConnectedThread != null) {
             mConnectedThread.cancel();
             mConnectedThread = null;
         }
+
         // Cancel the accept thread because we only want to connect to one device
         if (mAcceptThread != null) {
             mAcceptThread.cancel();
@@ -160,7 +175,6 @@ public class BluetoothCommService extends Service {
         mConnectedThread = new ConnectedThread(socket);
         mConnectedThread.start();
         // Send the name of the connected device back to the UI Activity
-
 
         Bundle bundle = new Bundle();
         bundle.putInt(Protocol.MESSAGE_TYPE, Protocol.MESSAGE_DEVICE_NAME);
@@ -177,18 +191,22 @@ public class BluetoothCommService extends Service {
      */
     public synchronized void stop() {
         Log.d(Config.log_id,"service Stop");
+
         if (mConnectThread != null) {
             mConnectThread.cancel();
             mConnectThread = null;
         }
+
         if (mConnectedThread != null) {
             mConnectedThread.cancel();
             mConnectedThread = null;
         }
+
         if (mAcceptThread != null) {
             mAcceptThread.cancel();
             mAcceptThread = null;
         }
+
         setState(STATE_NONE);
     }
 
@@ -203,7 +221,7 @@ public class BluetoothCommService extends Service {
         ConnectedThread r;
         // Synchronize a copy of the ConnectedThread
         synchronized (this) {
-            if (mState != STATE_CONNECTED) return;
+            if (getState() != STATE_CONNECTED) return;
             r = mConnectedThread;
         }
         // Perform the write unsynchronized
@@ -214,14 +232,13 @@ public class BluetoothCommService extends Service {
      * Indicate that the connection attempt failed and notify the UI Activity.
      */
     private void connectionFailed() {
-        if(device_address==null)
-        {
-
-        Intent intent = new Intent(ACTION);
-        intent.putExtra(Protocol.MESSAGE_TYPE,Protocol.MESSAGE_TOAST);
-        intent.putExtra(Protocol.TOAST,  "Unable to connect device");
-        sendMessage(intent);
+        if (device_address == null) {
+            Intent intent = new Intent(ACTION);
+            intent.putExtra(Protocol.MESSAGE_TYPE,Protocol.MESSAGE_TOAST);
+            intent.putExtra(Protocol.TOAST,  "Unable to connect device");
+            sendMessage(intent);
         }
+
         // Start the service over to restart listening mode
         setState(STATE_NONE);
         BluetoothCommService.this.start();
@@ -234,11 +251,12 @@ public class BluetoothCommService extends Service {
         // Send a failure message back to the Activity
         Intent intent = new Intent(ACTION);
         intent.putExtra(Protocol.MESSAGE_TYPE,Protocol.MESSAGE_TOAST);
-        intent.putExtra(Protocol.TOAST,  "Device connection was lost");;
+        intent.putExtra(Protocol.TOAST,  "Device connection was lost");
         sendMessage(intent);
-        setState(STATE_NONE);
+        //reconnect();
         // Start the service over to restart listening mode
-    //   BluetoothCommService.this.start();
+        setState(STATE_NONE);
+        BluetoothCommService.this.start();
     }
 
     /**
@@ -258,7 +276,9 @@ public class BluetoothCommService extends Service {
             } catch (IOException e) {
                 Log.e(TAG, "listen() failed", e);
             }
+
             mmServerSocket = tmp;
+            setState(STATE_LISTEN);
         }
 
         public void run() {
@@ -284,6 +304,7 @@ public class BluetoothCommService extends Service {
                                 // Situation normal. Start the connected thread.
                                 connected(socket, socket.getRemoteDevice());
                                 break;
+
                             case STATE_NONE:
                             case STATE_CONNECTED:
                                 // Either not ready or already connected. Terminate new socket.
@@ -329,7 +350,9 @@ public class BluetoothCommService extends Service {
             } catch (IOException e) {
                 Log.e(TAG, "create() failed", e);
             }
+
             mmSocket = tmp;
+            setState(STATE_CONNECTING);
         }
 
         public void run() {
@@ -352,7 +375,7 @@ public class BluetoothCommService extends Service {
                 }
                 // Start the service over to restart listening mode
                 BluetoothCommService.this.start();
-               reconnect();
+                reconnect();
                 return;
             }
             // Reset the ConnectThread because we're done
@@ -393,8 +416,10 @@ public class BluetoothCommService extends Service {
             } catch (IOException e) {
                 Log.e(TAG, "temp sockets not created", e);
             }
+
             mmInStream = tmpIn;
             mmOutStream = tmpOut;
+            setState(STATE_CONNECTED);
         }
 
         public void run() {
@@ -407,7 +432,7 @@ public class BluetoothCommService extends Service {
                     // Read from the InputStream
                     bytes = mmInStream.read(buffer);
                     // Send the obtained bytes to the UI Activity
-                   //String readMessage = new String(buffer, 0, bytes);
+                    //String readMessage = new String(buffer, 0, bytes);
                     Intent intent = new Intent(ACTION);
                     Bundle bundle = new Bundle();
                     bundle.putInt(Protocol.MESSAGE_TYPE, Protocol.MESSAGE_READ);
@@ -421,13 +446,11 @@ public class BluetoothCommService extends Service {
                     Log.e(TAG, "disconnected", e);
 
                     connectionLost();
-                  //BluetoothCommService.this.start();
+                    //BluetoothCommService.this.start();
                     reconnect();
                     break;
                 }
             }
-
-
         }
 
         /**
@@ -458,38 +481,20 @@ public class BluetoothCommService extends Service {
                 Log.e(TAG, "close() of connect socket failed", e);
             }
         }
-
-        public class FallbackException extends Exception {
-
-            /**
-             *
-             */
-            private static final long serialVersionUID = 1L;
-
-            public FallbackException(Exception e) {
-                super(e);
-            }
-
-        }
     }
 
-    synchronized void  reconnect()
-    {
+    synchronized void reconnect() {
         // Start the service over to restart listening mode
         //reconnect here
-        if(device_address!=null)
-        {
+        if(device_address != null) {
             Log.d(Config.log_id,"connecting");
-            BluetoothAdapter btAdapater = BluetoothAdapter.getDefaultAdapter();
-            BluetoothDevice device = btAdapater.getRemoteDevice(device_address);
+            BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
+            BluetoothDevice device = btAdapter.getRemoteDevice(device_address);
             BluetoothCommService.this.connect(device);
         }
     }
-   void sendMessage(Intent intent)
-   {
 
-       LocalBroadcastManager.getInstance(BluetoothCommService.this).sendBroadcast(intent);
-   }
-
-
+    void sendMessage(Intent intent) {
+        LocalBroadcastManager.getInstance(BluetoothCommService.this).sendBroadcast(intent);
+    }
 }
