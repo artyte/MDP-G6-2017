@@ -85,7 +85,7 @@ public class MazeFragment extends Fragment {
             }
         }
         else {
-            arena= new Arena(Config.DEAFULT_NO_OF_ROW,Config.DEAFULT_NO_OF_COL, new GoalProperty(Config.DEAFULT_GOAL_X,Config.DEAFULT_GOAL_Y),new StartProperty(Config.DEAFULT_START_X,Config.DEAFULT_START_Y) ,Config.DEAFULT_START_X,Config.DEAFULT_START_Y,Config.DEAFULT_ROBOT_HEAD );
+            arena= new Arena(Config.DEFAULT_NO_OF_ROW,Config.DEFAULT_NO_OF_COL, new GoalProperty(Config.DEFAULT_GOAL_X,Config.DEFAULT_GOAL_Y),new StartProperty(Config.DEFAULT_START_X,Config.DEFAULT_START_Y) ,Config.DEFAULT_START_X,Config.DEFAULT_START_Y,Config.DEFAULT_ROBOT_HEAD);
             Log.e(Config.log_id,"robot x "+arena.getRobot().getX());
             arenaView.setupArena(arena);
             mListener.onUiUpdate(arena);
@@ -184,10 +184,10 @@ public class MazeFragment extends Fragment {
 
     public void resetArenaView()
     {
-        arena= new Arena(Config.DEAFULT_NO_OF_ROW,Config.DEAFULT_NO_OF_COL, new GoalProperty(Config.DEAFULT_GOAL_X,Config.DEAFULT_GOAL_Y),new StartProperty(Config.DEAFULT_START_X,Config.DEAFULT_START_Y) ,Config.DEAFULT_START_X,Config.DEAFULT_START_Y,Config.DEAFULT_ROBOT_HEAD );
+        arena= new Arena(Config.DEFAULT_NO_OF_ROW,Config.DEFAULT_NO_OF_COL, new GoalProperty(Config.DEFAULT_GOAL_X,Config.DEFAULT_GOAL_Y),new StartProperty(Config.DEFAULT_START_X,Config.DEFAULT_START_Y) ,Config.DEFAULT_START_X,Config.DEFAULT_START_Y,Config.DEFAULT_ROBOT_HEAD);
         Log.e(Config.log_id,"robot x "+arena.getRobot().getX());
         arenaView.setupArena(arena);
-        moveRobot(Config.DEAFULT_START_X,Config.DEAFULT_START_Y,Config.DEAFULT_ROBOT_HEAD);
+        moveRobot(Config.DEFAULT_START_X,Config.DEFAULT_START_Y,Config.DEFAULT_ROBOT_HEAD);
         mListener.onUiUpdate(arena);
         arenaView.invalidate();
     }

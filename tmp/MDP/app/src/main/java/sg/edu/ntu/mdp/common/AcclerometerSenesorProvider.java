@@ -36,26 +36,26 @@ public class AcclerometerSenesorProvider implements SensorEventListener {
         } else if (Math.abs(x) > Math.abs(y)) {
             if (x < 0) {
                 SensorMovementRunnable sensorMovementRunnable = new SensorMovementRunnable(Robot.Move.UP, (Activity) activity);
-                handlerSensorMovement.postDelayed(sensorMovementRunnable, Config.ACCLEROMETER_UPDATE_TIME);
+                handlerSensorMovement.postDelayed(sensorMovementRunnable, Config.ACCELEROMETER_UPDATE_TIME);
                 Log.e(Config.log_id, "UP");
                 mSensorManager.unregisterListener(this);
             }else
             if (x > 0) {
                 SensorMovementRunnable sensorMovementRunnable = new SensorMovementRunnable(null, (Activity) activity);
-                handlerSensorMovement.postDelayed(sensorMovementRunnable, Config.ACCLEROMETER_UPDATE_TIME);
+                handlerSensorMovement.postDelayed(sensorMovementRunnable, Config.ACCELEROMETER_UPDATE_TIME);
                 Log.e(Config.log_id, "Dowm");
                 mSensorManager.unregisterListener(this);
             }
         } else {
             if (y < 0) {
                 SensorMovementRunnable sensorMovementRunnable = new SensorMovementRunnable(Robot.Move.LEFT, (Activity) activity);
-                handlerSensorMovement.postDelayed(sensorMovementRunnable, Config.ACCLEROMETER_UPDATE_TIME);
+                handlerSensorMovement.postDelayed(sensorMovementRunnable, Config.ACCELEROMETER_UPDATE_TIME);
                 Log.e(Config.log_id, "LEFT");
                 mSensorManager.unregisterListener(this);
             }else
             if (y > 0) {
                 SensorMovementRunnable sensorMovementRunnable = new SensorMovementRunnable(Robot.Move.RIGHT, (Activity) activity);
-                handlerSensorMovement.postDelayed(sensorMovementRunnable, Config.ACCLEROMETER_UPDATE_TIME);
+                handlerSensorMovement.postDelayed(sensorMovementRunnable, Config.ACCELEROMETER_UPDATE_TIME);
                 Log.e(Config.log_id, "RIGHT");
                 mSensorManager.unregisterListener(this);
             }
