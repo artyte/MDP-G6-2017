@@ -215,7 +215,7 @@ public class Arena implements Serializable {
 
     public void reset() {
 
-        setStartProperty(new StartProperty(Config.DEAFULT_START_X, Config.DEAFULT_START_Y));
+        setStartProperty(new StartProperty(Config.DEFAULT_START_X, Config.DEFAULT_START_Y));
         setStarted(false);
         setAuto(false);
         for (int x = 0; x < getNumRow(); x++) {
