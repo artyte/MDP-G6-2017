@@ -636,7 +636,7 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
 
     protected void onResume() {
         super.onResume();
-        IntentFilter intentFilter = new IntentFilter(BluetoothCommService.ACTION);
+        IntentFilter intentFilter = new IntentFilter("BlueToothLocalBroadcast");
         LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, intentFilter);
         // Performing this check in onResume() covers the case in which BT was
         // not enabled during onStart(), so we were paused to enable it...
@@ -645,15 +645,15 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
             // Only if the state is STATE_NONE, do we know that we haven't started already
             // Start the Bluetooth chat services
 
-            if (bluetoothCommService.getState() == BluetoothCommService.STATE_NONE) {
+            if (bluetoothCommService.getConnectionState() == BluetoothCommService.STATE_NONE) {
                 // Start the Bluetooth chat services
-                bluetoothCommService.start();
+                bluetoothCommService.initialiseService();
             }
 
-            if (bluetoothCommService.getState() == BluetoothCommService.STATE_LISTEN) {
+            if (bluetoothCommService.getConnectionState() == BluetoothCommService.STATE_LISTEN) {
                 setStatus(R.string.title_not_connected);
 
-            } else if (bluetoothCommService.getState() == BluetoothCommService.STATE_CONNECTED) {
+            } else if (bluetoothCommService.getConnectionState() == BluetoothCommService.STATE_CONNECTED) {
                 setStatus(R.string.title_not_connected);
                 setStatus(getString(R.string.title_connected_to, mConnectedDeviceName));
             }
@@ -726,7 +726,7 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
 
     private void sendMessage(String message) {
         // Check that we're actually connected before trying anything
-        if (bluetoothCommService.getState() != BluetoothCommService.STATE_CONNECTED) {
+        if (bluetoothCommService.getConnectionState() != BluetoothCommService.STATE_CONNECTED) {
             new CommonOperation().showToast(getApplicationContext(), getResources().getString(R.string.not_connected));
             return;
         }
