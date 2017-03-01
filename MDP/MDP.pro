@@ -27,7 +27,8 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     mapgenerator.cpp \
     robot.cpp \
-    sensor.cpp
+    sensor.cpp \
+    pathnode.cpp
 
 HEADERS  += mainwindow.h \
     mapgenerator.h \

@@ -7,11 +7,13 @@
 
 #include "sensor.h"
 
-struct PathNode{
-    PathNode* previousPath;
-    QPoint location;
-    int pastCost;
-    int hueristic;
+struct PosWDistance{
+    QPoint pos;
+    int distance;
+
+    bool operator<(const PosWDistance& rhs) const{
+        return distance > rhs.distance;
+    }
 };
 
 class MyRobot : public QGraphicsItem
@@ -36,6 +38,7 @@ private:
     //step 0 - 49, perform action
     int steps;
     int maxSteps;
+    int actionCounter = 0;
     int ** actualMapArray;
 
     //0 - havent checked, 1 - checked, no obstacle
@@ -49,11 +52,18 @@ private:
     int currentRoute;
     int direction;
 
+    QPoint dirs[4] = {QPoint(1,0), QPoint(-1,0), QPoint(0,1), QPoint(0,-1)};
+
+    int action = -1;
+    int xDir = 0;
+    int yDir = 0;
+
     void updateRobotMap();
     int determineStrategy();
     QPoint NextDestination();
-    int AStarExplorePath();
-    int Hueristics(QPoint currentPos, QPoint targetPos);
+    QPoint moveByRow();
+    bool isAvailablePosition(QPoint pos);
+    QPointF getCanvasPosition(QPointF mapPosition);
 };
 
 

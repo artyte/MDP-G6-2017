@@ -15,6 +15,8 @@ public:
     void update(int parentRotation, int parentX, int parentY);
     sensorFeedback* Sense(int** mapArray);
     int getLength();
+    bool isCovering(int** marArray, QPoint target);
+    QPoint* getPossibleSensingPosition(QPoint target, int **robotMapArray);
 private:
     int attachX;
     int attachY;
@@ -26,6 +28,7 @@ private:
     int absoluteX;
     int absoluteY;
     int length;
+    QPoint* offsetArray;
 };
 
 #endif // SENSOR_H
