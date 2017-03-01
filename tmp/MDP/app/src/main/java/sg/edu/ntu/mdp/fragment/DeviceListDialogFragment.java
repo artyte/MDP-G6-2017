@@ -26,7 +26,7 @@ import sg.edu.ntu.mdp.activity.MainActivity;
 import sg.edu.ntu.mdp.common.Config;
 
 
-public class DeviceListDialogFragment extends android.support.v4.app.DialogFragment implements View.OnClickListener{
+public class DeviceListDialogFragment extends DialogFragment implements View.OnClickListener {
     // TODO: Rename parameter arguments, choose names that match
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -79,13 +79,13 @@ public class DeviceListDialogFragment extends android.support.v4.app.DialogFragm
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
         setHasOptionsMenu(false);
-
-
     }
 
     @Override
@@ -140,11 +140,9 @@ public class DeviceListDialogFragment extends android.support.v4.app.DialogFragm
             String noDevices = getResources().getText(R.string.none_paired).toString();
             pairedDevicesArrayAdapter.add(noDevices);
         }
+
         return mView;
     }
-
-
-
 
     private AdapterView.OnItemClickListener mDeviceClickListener
             = new AdapterView.OnItemClickListener() {
@@ -166,9 +164,9 @@ public class DeviceListDialogFragment extends android.support.v4.app.DialogFragm
                 getFragmentManager().beginTransaction().remove(fm).commit();
 
             }
-
         }
     };
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -188,36 +186,20 @@ public class DeviceListDialogFragment extends android.support.v4.app.DialogFragm
         super.onDetach();
     }
 
-
-
     @Override
     public void onClick(View v) {
 
     }
 
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
-        public void onRefreshCaregiverHome();
-    }
     @Override
     public void onResume() {
         super.onResume();
-        try {
-
-        }
-        catch (Exception e)
-        {
-
-        }
     }
-
-
-
 
     public void onActivityResult(int INT_CODE, int position){
         System.out.println(Integer.toString(position));
     }
+
     private void doDiscovery() {
         Log.d(Config.log_id,"doDiscovery()");
         // Indicate scanning in the title
@@ -235,6 +217,7 @@ public class DeviceListDialogFragment extends android.support.v4.app.DialogFragm
         // Request discover from BluetoothAdapter
         mBtAdapter.startDiscovery();
     }
+
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -250,7 +233,6 @@ public class DeviceListDialogFragment extends android.support.v4.app.DialogFragm
                 }
                 // When discovery is finished, change the Activity title
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
-
 
                 getDialog().setTitle(R.string.select_device);
                 if (mNewDevicesArrayAdapter.getCount() == 0) {
@@ -279,7 +261,6 @@ public class DeviceListDialogFragment extends android.support.v4.app.DialogFragm
         DialogListener activity = (DialogListener) getActivity();
         activity.onActivityResult(MainActivity.REQUEST_CONNECT_DEVICE_SECURE, INT_CODE, i);
     }
-
 
     public interface DialogListener {
         void onActivityResult(int requestCode, int resultCode, Intent data) ;
