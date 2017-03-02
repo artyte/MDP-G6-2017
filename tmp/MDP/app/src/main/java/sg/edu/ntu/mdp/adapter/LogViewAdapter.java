@@ -47,7 +47,7 @@ public class LogViewAdapter extends BaseAdapter {
 
 
         View view = convertView;
-            view = inflater.inflate(R.layout.item_list_log, null);
+        view = inflater.inflate(R.layout.item_list_log, null);
         TextView idTextViewText = (TextView) view.findViewById(R.id.idTextViewText);
         idTextViewText.setText(logList.get(position));
 

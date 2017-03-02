@@ -6,6 +6,8 @@
     android:background="@color/bgColor"
     android:layout_margin="0dp"
     tools:context=".fragment.MazeFragment">
+
+
     <sg.edu.ntu.mdp.model.arena.ArenaView
         android:id="@+id/arenaView"
         android:padding="0dp"
@@ -14,7 +16,5 @@
         android:layout_height="match_parent"
         android:gravity="center"
         />
-
-
 
 </LinearLayout>

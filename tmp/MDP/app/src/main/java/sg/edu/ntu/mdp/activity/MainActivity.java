@@ -329,7 +329,7 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
     private void sendRobotPositon(Robot robotInput) {
         int robotX, robotY;
         robotX=robotInput.getX()+1;
-        robotY=robotInput.getY()+1-17;
+        robotY=robotInput.getY()+1-19;
         String text=robotX+","+Math.abs(robotY);
         sendMessage(text);
         Log.d(Config.log_id,"robot post json "+text);
@@ -453,6 +453,7 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
                 }
 
                 if (isJSONValid(readMessage)) {
+                    readMessage = "b" + readMessage;
                     handleJson(readMessage);
                 }
 
@@ -498,21 +499,16 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
     }
 
     private void handleJson(String readMessage) {
-        /*if(readMessage.substring(0,2).equals("10")) { //10 for android
-            readMessage = readMessage.substring(2);
+        Log.i("Android:", readMessage.substring(0,1));
+        if(readMessage.substring(0,1).equals("b")) { //b for android
+            readMessage = readMessage.substring(1);
             handleRobotBatteryUpdate(readMessage);
             handleRobotPositionUpdate(readMessage);
             handleGridUpdate(readMessage);
             handleMdf1Update(readMessage);
             handleMdf2Update(readMessage);
             handleStatusUpdate(readMessage);
-        }*/
-        handleRobotBatteryUpdate(readMessage);
-        handleRobotPositionUpdate(readMessage);
-        handleGridUpdate(readMessage);
-        handleMdf1Update(readMessage);
-        handleMdf2Update(readMessage);
-        handleStatusUpdate(readMessage);
+        }
     }
 
     private void handleRobotBatteryUpdate(String readMessage) {
@@ -594,8 +590,8 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
     private void handleRobotPositionUpdate(String readMessage) {
         try {
             JSONObject obj = new JSONObject(readMessage);
-            int x = (int) obj.getJSONArray("robotPosition").get(0);
-            int y = (int) obj.getJSONArray("robotPosition").get(1);
+            int x = (int) obj.getJSONArray("robotPosition").get(0) - 1;
+            int y = Math.abs ((int) obj.getJSONArray("robotPosition").get(1) - 18);
             int direction = (int) obj.getJSONArray("robotPosition").get(2);
             MazeFragment fragment = (MazeFragment) getSupportFragmentManager().findFragmentByTag("mazeFragment");
 

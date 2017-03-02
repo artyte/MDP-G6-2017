@@ -6,9 +6,9 @@ Instructions for adding new files:
 
 Instructions for sending strings from any device:
 - Append this number to the start of any string that is to be sent to another device:
-	- 01 (to PC)
-	- 10 (to Android)
-	- 11 (to Arduino)
+	- p (to PC)
+	- b (to Android)
+	- a (to Arduino)
 	- RPI isn't required because RPI is the message broadcaster
 
 Instructions For Algo Group:
@@ -18,7 +18,13 @@ Instructions For Algo Group:
 	- For battery <- "{"battery":0-100}"
 	- For status <- "{"status":status name}"
 - When receiving strings sent from Android, please activate the following functions:
-	- For grabbing grid updates (does not include robot's position) <- detect "sendArena"
-	- To begin exploration mode <- detect "explore"
-	- To start fastest path <- detect "fastest"
-	- There are no strings to request battery, robot position, or status for now since amdTool does not support it. RPI will send information for these when their values change, just like in amdTool.
+	- For grabbing grid updates (does not include robot's position) <- detect "pse"
+	- To begin exploration mode <- detect "pe"
+	- To start fastest path <- detect "pf"
+	- For grid position <- detect int(1-18),int(1-13)
+	- For battery <- detect "pb"
+	- For status <- detect "pst"
+	- For robot's position <- detect "pp"
+	- For go straight <- detect "pF"
+	- For turn left <- detect "pL"
+	- For turn right <- detect "pR"

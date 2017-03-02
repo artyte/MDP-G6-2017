@@ -20,10 +20,13 @@ public interface Protocol {
     String START_EXPLORATION = "explore";
     String START_FASTEST = "fastest";
 
-    String ACTUAL_SEND_ARENA = "11sendArena";
-    String ACTUAL_TURN_LEFT  = "11A";
-    String ACTUAL_TURN_RIGHT   = "11D";
-    String ACTUAL_MOVE_FORWARD   = "11W";
-    String ACTUAL_START_EXPLORATION = "11explore";
-    String ACTUAL_START_FASTEST = "11fastest";
+    String ACTUAL_STATUS = "pst";
+    String ACTUAL_BATTERY = "pb";
+    String ACTUAL_POSITION = "pp";
+    String ACTUAL_SEND_ARENA = "pse";
+    String ACTUAL_TURN_LEFT  = "pL";
+    String ACTUAL_TURN_RIGHT   = "pD";
+    String ACTUAL_MOVE_FORWARD   = "pF";
+    String ACTUAL_START_EXPLORATION = "pe";
+    String ACTUAL_START_FASTEST = "pf";
 }

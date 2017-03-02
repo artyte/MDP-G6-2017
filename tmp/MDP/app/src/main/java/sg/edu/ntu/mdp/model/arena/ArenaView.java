@@ -133,16 +133,18 @@ public class ArenaView extends View {
         if (this.viewMode == SELECT_POS_VIEW) {
 
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                float startX = gridSize / 2 + gridSize * 0;
-                float startY = gridSize / 2 + gridSize * 0;
+                float startX = gridSize / 2;
+                float startY = gridSize / 2;
                 float endX = gridSize / 2 + gridSize * numCol;
                 float endY = gridSize / 2 + gridSize * numRow;
 
                 if (event.getX() > startX && event.getX() < endX && event.getY() > startY && event.getY() < endY) {
                     int y = (int) ((event.getX() - startX) / (gridSize));
                     int x = (int) ((event.getY() - startY) / (gridSize));
+                    y = y + 1;
+                    x = x - 1;
                     y = Math.abs(y - (numCol - 1));
-                    Log.e(Config.log_id, "COL X: " + x + " COL Y: " + y);
+                    Log.e(Config.log_id, "ROW X: " + x + "COL Y: " + y);
                     try {
 
                         if (y <= 17 && x <= 12) {
