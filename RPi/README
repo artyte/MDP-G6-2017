@@ -1,0 +1,8 @@
+This is the folder for RPi source codes
+
+How the RPi routes the transmitted data to the respective mediums (i.e PC, Nexus and Arduino Board) is based on the header or the first character 
+in each string that is sent:
+
+1. 'a' for Arduino board. (e.g aF1, the arduino board will receive the message "F1")
+2. 'b' for Nexus
+3. 'p' for PC
