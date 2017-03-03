@@ -14,7 +14,7 @@ void socket::doConnect()
     connect(sock, SIGNAL(connected()),this, SLOT(connected()));
     connect(sock, SIGNAL(disconnected()),this, SLOT(disconnected()));
     connect(sock, SIGNAL(bytesWritten(qint64)),this, SLOT(bytesWritten(qint64)));
-    connect(sock, SIGNAL(readyRead()),this, SLOT(readyRead()));
+    connect(sock, SIGNAL(readyRead()),this, SLOT(ok()));
 
     qDebug() << "Connecting...";
 
@@ -42,23 +42,23 @@ void socket::bytesWritten(qint64 bytes)
 }
 
 
-void socket::readyRead() //working
+void socket::readyRead() //
 {
     //qDebug() << "Reading...";
     //sock->waitForReadyRead();
     // read the data from the socket
-    qDebug() << sock->readAll();
+   // qDebug() << sock->readAll();
 }
 
-void socket::writeto() //working
+void socket::writeto()
 {
     if(sock->state() == QAbstractSocket::ConnectedState) {
-        sock->write("bF1");
+        sock->write("af1");
         qDebug() << "Written...";}
 
 }
 
-void socket::delay() //working
+void socket::delay()
 {
     QTime dieTime = QTime::currentTime().addSecs(2); //Introduces a delay of 2s
     while (QTime::currentTime() < dieTime) {
@@ -69,11 +69,20 @@ void socket::delay() //working
 //Only start reading/writing after reading "k"
 void socket::ok()
 {
-    QByteArray x = sock->readAll(); //sock->readAll() should return QByteArray
-    qDebug << sock->readAll();
-    qDebug << sock->readAll().value_type;
-    while (x.toStdString() != "k") { //convert QByteArray to string - k\r\n?
-        delay();
-        x = sock->readAll();
+
+while (sock->canReadLine()){
+
+    QString line;
+    line = QString::fromUtf8(sock->readLine()).trimmed();
+    qDebug() << "Received: " << line;
+    if(line == "k"){
+
+        writeto();
     }
 }
+
+
+}
+
+
+
