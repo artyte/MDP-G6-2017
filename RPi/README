@@ -1,5 +1,7 @@
 This is the folder for RPi source codes
 
+
+
 How the RPi routes the transmitted data to the respective mediums (i.e PC, Nexus and Arduino Board) is based on the header or the first character 
 in each string that is sent:
 
@@ -9,12 +11,12 @@ in each string that is sent:
 
 Things to take note before running the script:
 1. Ensure that arduino board is connected to the Rpi
-2. Ensure that the PC being used is connected to the MDPGrp06 SSID
+2. Ensure that the PC being used is connected to the MDPGrp06 SSID and that a SSH connection is established to the Rpi in order to run the script
 3. Turn on the app in the Nexus
 
 How to run the script:
 
-1. Locate the file "mainServer.py" at the folder "multi-thread" (cd multi-thread)
+1. Locate the file "mainServer.py" at the folder "multi-thread" (cd multi-thread) in the Rpi
 2. run the script using the command: ./mainServer.py
 3. the script will prompt for connection from the PC 
 4. the script will then prompt the connection from the Nexus
