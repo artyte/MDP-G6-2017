@@ -6,3 +6,17 @@ in each string that is sent:
 1. 'a' for Arduino board. (e.g aF1, the arduino board will receive the message "F1")
 2. 'b' for Nexus
 3. 'p' for PC
+
+Things to take note before running the script:
+1. Ensure that arduino board is connected to the Rpi
+2. Ensure that the PC being used is connected to the MDPGrp06 SSID
+3. Turn on the app in the Nexus
+
+How to run the script:
+
+1. Locate the file "mainServer.py" at the folder "multi-thread" (cd multi-thread)
+2. run the script using the command: ./mainServer.py
+3. the script will prompt for connection from the PC 
+4. the script will then prompt the connection from the Nexus
+5. if the arduino board is connected to the Rpi, the script will show a a Serial link success message
+6. Once all 3 systems are connected, messages can be sent to the respective platforms.
