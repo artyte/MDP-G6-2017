@@ -1,24 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/menu_connect"
-        android:icon="@mipmap/ic_action_device_access_bluetooth_searching"
-        android:title="@string/secure_connect"/>
-    <item
-        android:id="@+id/menu_visability"
-        android:title="Enable Visablity"/>
-    <item
-        android:id="@+id/menu_hideOrShowLog"
-        android:title="Show Log"/>
+        android:icon="@mipmap/bluetooth"
+        android:title="@string/secure_connect"
+        app:showAsAction="always" />
+
     <item
         android:id="@+id/menu_input_pos"
-        android:title="Input Position"/>
+        android:title="Input Position"
+        app:showAsAction="always"
+        android:icon="@mipmap/input" />
+
+    <item
+        android:id="@+id/menu_hideOrShowLog"
+        android:title="Show Log"
+        android:icon="@mipmap/log"
+        app:showAsAction="always" />
+
     <item
         android:id="@+id/menu_setting"
-        android:title="Settings"/>
+        android:title="Settings"
+        app:showAsAction="always"
+        android:icon = "@mipmap/settings"/>
+
+    <!--
     <item
     android:id="@+id/menu_use_accelerometer"
     android:title="Use Accelerometer"/>
+     <item
+        android:id="@+id/menu_visability"
+        android:title="Enable Visablity"/>-->
 
 </menu>

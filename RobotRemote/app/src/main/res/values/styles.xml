@@ -1,9 +1,0 @@
-<resources>
-
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="android:Theme.Material.Light.DarkActionBar">
-    </style>
-
-    <style name="LightTheme" parent="android:Theme.Material.Light"></style>
-
-</resources>

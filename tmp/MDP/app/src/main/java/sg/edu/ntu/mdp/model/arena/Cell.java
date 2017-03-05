@@ -49,19 +49,19 @@ public class Cell implements Serializable{
         float bottom = top + gridSize; // height (distance from Y1 to Y2)
         RectF rect = new RectF(left, top, right, bottom);
         if (isExplored) {
-            paint.setColor(Config.COLOR_CELL_EXPLORED);
+            paint.setColor(Config.EXPLORED);
         }else
         {
-            paint.setColor(Config.COLOR_CELL_UNEXPLORED);
+            paint.setColor(Config.UNEXPLORED);
         }
         if (haveObstacle) {
-            paint.setColor(Config.COLOR_OBSTACLE);
+            paint.setColor(Config.OBSTACLE);
         }
         paint.setStyle(Paint.Style.FILL);
         canvas.drawRect(rect, paint);
         // border
         paint.setStyle(Paint.Style.STROKE);
-        paint.setColor(Config.COLOR_CELL_BORDER);
+        paint.setColor(Config.BORDER);
         paint.setStrokeWidth(1);
         canvas.drawRect(rect, paint);
 

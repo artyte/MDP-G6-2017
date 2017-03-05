@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.util.Log;
 import sg.edu.ntu.mdp.model.arena.Robot;
 
+/*
 public class AcclerometerSenesorProvider implements SensorEventListener {
 
 
@@ -24,6 +25,7 @@ public class AcclerometerSenesorProvider implements SensorEventListener {
         mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
     }
+
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
@@ -132,3 +134,4 @@ public class AcclerometerSenesorProvider implements SensorEventListener {
 
     }
 }
+*/

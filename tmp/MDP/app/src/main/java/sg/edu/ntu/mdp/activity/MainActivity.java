@@ -10,6 +10,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
@@ -34,7 +36,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
 import sg.edu.ntu.mdp.R;
-import sg.edu.ntu.mdp.common.AcclerometerSenesorProvider;
 import sg.edu.ntu.mdp.common.CommonOperation;
 import sg.edu.ntu.mdp.common.Config;
 import sg.edu.ntu.mdp.common.Protocol;
@@ -46,8 +47,9 @@ import sg.edu.ntu.mdp.fragment.MazeFragment;
 import sg.edu.ntu.mdp.model.arena.Arena;
 import sg.edu.ntu.mdp.model.arena.Robot;
 import sg.edu.ntu.mdp.service.BluetoothCommService;
+//import sg.edu.ntu.mdp.common.AcclerometerSenesorProvider;
 
-public class MainActivity extends AppCompatActivity implements DeviceListDialogFragment.DialogListener, MazeFragment.OnFragmentInteractionListener, LogFragment.OnListFragmentInteractionListener, CompoundButton.OnCheckedChangeListener, AcclerometerSenesorProvider.SensorProvider, CustomAlertDialogFragment.AlertDialogListener, BasicDialogFragment.AlertDialogListener {
+public class MainActivity extends AppCompatActivity implements DeviceListDialogFragment.DialogListener, MazeFragment.OnFragmentInteractionListener, LogFragment.OnListFragmentInteractionListener, CompoundButton.OnCheckedChangeListener, CustomAlertDialogFragment.AlertDialogListener, BasicDialogFragment.AlertDialogListener {
     public static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
     public static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
     public static final int REQUEST_ENABLE_BT = 24;
@@ -72,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
     LogFragment logFragment = null;
     ToggleButton tgbStartStop, tgbAutoManual;
     Handler handlerAutoUpdate = new Handler();
-    AcclerometerSenesorProvider accelerometerSensorProvider;
+    //AcclerometerSenesorProvider accelerometerSensorProvider;
 
     private void setUpBlueToothCommService() {
         // Initialize the BluetoothChatService to perform bluetooth connections
@@ -87,17 +89,26 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
 
+        for(int i = 0; i < menu.size(); i++){
+            Drawable drawable = menu.getItem(i).getIcon();
+            if(drawable != null) {
+                drawable.mutate();
+                drawable.setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
+            }
+        }
+        /*
         if (isShowingLog) {
             menu.findItem(R.id.menu_hideOrShowLog).setTitle("Hide Log");
         } else {
             menu.findItem(R.id.menu_hideOrShowLog).setTitle("Show Log");
         }
 
+
         if (isAccelerometerEnabled) {
             menu.findItem(R.id.menu_use_accelerometer).setTitle("Stop Accelerometer");
         } else {
             menu.findItem(R.id.menu_use_accelerometer).setTitle("Use Accelerometer");
-        }
+        }*/
 
         return true;
     }
@@ -109,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         invalidateOptionsMenu();
-        setTitle("G6 Robot Remote");
+        setTitle("G6 MDP");
         BluetoothCommService btc = (BluetoothCommService) getLastCustomNonConfigurationInstance();
         if (btc != null)
             bluetoothCommService = btc;
@@ -166,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
                     .show();
         }
 
-        accelerometerSensorProvider = new AcclerometerSenesorProvider(MainActivity.this,getApplicationContext());
+        //accelerometerSensorProvider = new AcclerometerSenesorProvider(MainActivity.this,getApplicationContext());
     }
 
     @Override
@@ -194,6 +205,7 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            /*
             case R.id.menu_use_accelerometer:
                 //start sensor
                 if (!isAccelerometerEnabled) {
@@ -210,6 +222,15 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
                 invalidateOptionsMenu();
                 break;
 
+            case R.id.menu_visability:
+                if (btAdapter != null && btAdapter.getScanMode() != BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
+                    Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+                    discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 200);
+                    startActivity(discoverableIntent);
+                }
+
+                break;*/
+
             case R.id.menu_connect:
                 FragmentManager fm = getSupportFragmentManager();
                 DeviceListDialogFragment deviceListDialogFragment = new DeviceListDialogFragment();
@@ -220,14 +241,7 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
 
                 break;
 
-            case R.id.menu_visability:
-                if (btAdapter != null && btAdapter.getScanMode() != BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
-                    Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-                    discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 200);
-                    startActivity(discoverableIntent);
-                }
 
-                break;
 
             case R.id.menu_setting:
                 Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
@@ -661,10 +675,12 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
 
         setupScheduler();
 
+        /*
         if (isAccelerometerEnabled) {
             if (accelerometerSensorProvider != null)
                 accelerometerSensorProvider.startSensorUpdate();
         }
+        */
     }
 
     private void setupScheduler() {
@@ -708,8 +724,9 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
         super.onPause();
         removeSchedulerCallBack();
 
+        /*
         if(accelerometerSensorProvider !=null)
-            accelerometerSensorProvider.stopSensorUpdate();
+            accelerometerSensorProvider.stopSensorUpdate();*/
     }
 
     public void removeSchedulerCallBack() {
@@ -882,6 +899,7 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
     }
 
 
+    /*
     @Override
     public void onAcclerometerChanged(String move) {
         Arena arena= getArena();
@@ -903,6 +921,7 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
                 sendMessage(move);
         }
     }
+    */
 
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
@@ -922,8 +941,9 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
                     arena.reset();
                     removeSchedulerCallBack();
 
+                    /*
                     if(accelerometerSensorProvider != null)
-                        accelerometerSensorProvider.stopSensorUpdate();
+                        accelerometerSensorProvider.stopSensorUpdate();*/
 
                     mazeFragment = (MazeFragment) getSupportFragmentManager().findFragmentByTag("mazeFragment");
 

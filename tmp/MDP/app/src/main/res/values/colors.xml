@@ -6,6 +6,6 @@
     <color name="white">#FFFFFF</color>
     <color name="bgColor">#CCCCCC</color>
     <color name="grey">#696969</color>
-    <color name="nicePurple">#763ba0</color>
-    <color name="niceDarkPurple">#5b2c7c</color>
+    <color name="nicePurple">#d62a2a</color>
+    <color name="niceDarkPurple">#af2424</color>
 </resources>

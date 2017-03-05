@@ -3,19 +3,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="schemas.android.com/tools"
     tools:context="com.example.sample.YourActivity"
-    xmlns:yourapp="http://schemas.android.com/apk/res-auto" >
+    xmlns:app="http://schemas.android.com/apk/res-auto" >
 
     xmlns:tools="schemas.android.com/tools">
 
 
     <item
         android:id="@+id/menu_rotate"
-        yourapp:showAsAction="always"
-        android:title="Rotate" />
+        app:showAsAction="always"
+        android:title="Rotate"
+        android:icon="@mipmap/rotate"/>
 
     <item
         android:id="@+id/menu_done"
-        yourapp:showAsAction="always"
-        android:title="Done" />
+        app:showAsAction="always"
+        android:title="Done"
+        android:icon="@mipmap/done"/>
 
 </menu>

@@ -50,7 +50,7 @@ public class MazeGridMap implements Serializable {
         Paint paint = new Paint();
         paint.setAntiAlias(true);
         paint.setDither(true);
-        paint.setColor(Config.COLOR_GOAL);
+        paint.setColor(Config.GOAL);
         paint.setStyle(Paint.Style.FILL);
         paint.setStrokeWidth(1);
 
@@ -87,7 +87,7 @@ public class MazeGridMap implements Serializable {
         Paint paint = new Paint();
         paint.setAntiAlias(true);
         paint.setDither(true);
-        paint.setColor(Config.COLOR_START);
+        paint.setColor(Config.START);
         paint.setStyle(Paint.Style.FILL);
         paint.setStrokeWidth(1);
         canvas.drawRect(rect, paint);
