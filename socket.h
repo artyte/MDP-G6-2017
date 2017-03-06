@@ -18,9 +18,12 @@ public slots:
      void disconnected();
      void bytesWritten(qint64 bytes);
      void readyRead();
-     void writeto();
+     void writeok();
+     void write(QString message);
+     QString read();
      void delay();
      void ok();
+     void writeto(QString command);
 
  private:
      QTcpSocket *sock;
