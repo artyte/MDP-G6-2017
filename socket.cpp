@@ -1,6 +1,5 @@
 #include "socket.h"
 #include <QApplication>
-#include <string>
 
 socket::socket(QObject *parent) :
     QObject(parent)
@@ -77,7 +76,8 @@ QString socket::read()
     QString line;
     line = QString::fromUtf8(sock->readLine()).trimmed();
     qDebug() << "Received: " << line;
-    line.replace(QString(","), QString("")); //Remove all commas (if present) for sensor reading
+    line = line.replace(QString(","), QString("")); //Remove all commas (if present) for sensor reading
+    qDebug() << "Message: " << line;
     return line;
 }
 
