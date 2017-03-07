@@ -53,8 +53,14 @@ void socket::readyRead() //
 void socket::writeok()
 {
     if(sock->state() == QAbstractSocket::ConnectedState) {
-        sock->write("af1"); //To replace with request for sensor reading from Arduino
+        sock->write("as");
         qDebug() << "Written...";
+        while (sock->canReadLine()) {
+            QString line;
+            line = QString::fromUtf8(sock->readLine()).trimmed();
+            qDebug() << "Received: " << line;
+            write("b" + line);
+        }
     }
 }
 
@@ -71,7 +77,7 @@ void socket::write(QString message)
 }
 
 //Only need to read sensor readings from Arduino
-QString socket::read()
+QString socket::readd()
 {
     QString line;
     line = QString::fromUtf8(sock->readLine()).trimmed();
@@ -99,6 +105,16 @@ while (sock->canReadLine()){
     qDebug() << "Received: " << line;
     if(line == "k"){
         writeok();
+
+    }
+
+    else {
+        qDebug() << line;
+        line = line.replace(QString(","), QString("")); //Remove all commas (if present) for sensor reading
+
+        int nValue = line.toInt();
+        QString result = QString::number(nValue, 16);
+        write("b{\"grid\":" + result + "}");
     }
 }
 

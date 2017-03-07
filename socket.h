@@ -20,7 +20,7 @@ public slots:
      void readyRead();
      void writeok();
      void write(QString message);
-     QString read();
+     QString readd();
      void delay();
      void ok();
 
