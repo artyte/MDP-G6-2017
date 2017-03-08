@@ -1,6 +1,5 @@
 #include "socket.h"
 #include <QApplication>
-#include <string>
 
 socket::socket(QObject *parent) :
     QObject(parent)
@@ -50,12 +49,42 @@ void socket::readyRead() //
    // qDebug() << sock->readAll();
 }
 
-void socket::writeto()
+//First write, to request for first sensor reading from Arduino
+void socket::writeok()
 {
     if(sock->state() == QAbstractSocket::ConnectedState) {
-        sock->write("af1");
-        qDebug() << "Written...";}
+        sock->write("as");
+        qDebug() << "Written...";
+        while (sock->canReadLine()) {
+            QString line;
+            line = QString::fromUtf8(sock->readLine()).trimmed();
+            qDebug() << "Received: " << line;
+            write("b" + line);
+        }
+    }
+}
 
+//Write to Android and Arduino
+void socket::write(QString message)
+{
+    //Convert QString to const char *
+    QByteArray inUtf8 = message.toUtf8();
+    const char *data = inUtf8.constData();
+    if (sock->state() == QAbstractSocket::ConnectedState) {
+        sock->write(data);
+        qDebug() << "Written...";
+    }
+}
+
+//Only need to read sensor readings from Arduino
+QString socket::readd()
+{
+    QString line;
+    line = QString::fromUtf8(sock->readLine()).trimmed();
+    qDebug() << "Received: " << line;
+    line = line.replace(QString(","), QString("")); //Remove all commas (if present) for sensor reading
+    qDebug() << "Message: " << line;
+    return line;
 }
 
 void socket::delay()
@@ -66,21 +95,28 @@ void socket::delay()
     }
 }
 
-//Only start reading/writing after reading "k"
+//Only start algo after reading "k"
 void socket::ok()
 {
-
 while (sock->canReadLine()){
 
     QString line;
     line = QString::fromUtf8(sock->readLine()).trimmed();
     qDebug() << "Received: " << line;
     if(line == "k"){
+        writeok();
 
-        writeto();
+    }
+
+    else {
+        qDebug() << line;
+        line = line.replace(QString(","), QString("")); //Remove all commas (if present) for sensor reading
+
+        int nValue = line.toInt();
+        QString result = QString::number(nValue, 16);
+        write("b{\"grid\":" + result + "}");
     }
 }
-
 
 }
 

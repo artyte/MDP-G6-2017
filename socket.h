@@ -14,11 +14,13 @@ public:
     void doConnect();
 
 public slots:
-    void connected();
+     void connected();
      void disconnected();
      void bytesWritten(qint64 bytes);
      void readyRead();
-     void writeto();
+     void writeok();
+     void write(QString message);
+     QString readd();
      void delay();
      void ok();
 
