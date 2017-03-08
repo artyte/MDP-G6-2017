@@ -5,9 +5,6 @@ import java.io.Serializable;
 import sg.edu.ntu.mdp.common.CommonOperation;
 import sg.edu.ntu.mdp.common.Config;
 
-/**
- * Created by ericl on 08/09/2016.
- */
 public class Arena implements Serializable {
 
     Robot robot;
@@ -193,19 +190,23 @@ public class Arena implements Serializable {
 
         }
     }
-    public void updateObstacleCellProperty(String gridDataInBinary) {
+    public void updateObstacleCellProperty(String gridDataInTernary) {
         int count = 0;
         try {
 
             for (int y = 0; y < getNumCol(); y++)
                 for (int x = 0; x < getNumRow(); x++) {
                     {
-                        if (gridDataInBinary.charAt(count) == '2')
+                        if (gridDataInTernary.charAt(count) == '2') {
                             cellArray[x][y].setHaveObstacle(true);
-                        else if (gridDataInBinary.charAt(count) == '1')
+                        }
+                        else if(gridDataInTernary.charAt(count) == '1') {
                             cellArray[x][y].setExplored(true);
-                        else
+                        }
+                        else {
+                            cellArray[x][y].setHaveObstacle(false);
                             cellArray[x][y].setExplored(false);
+                        }
                         count++;
                     }
                 }

@@ -365,10 +365,14 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
     }
 
     public void btnF2(View a) {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        String data = sharedPref.getString("pref_f2", Protocol.TURN_RIGHT);
-        sendMessage(data);
-        Log.d(Config.log_id, data);
+        //SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        //String data = sharedPref.getString("pref_f2", Protocol.TURN_RIGHT);
+        //sendMessage(data);
+        //Log.d(Config.log_id, data);
+        String s = "{\"grid\":\"00021000000000000000";
+        for(int i=0; i<=13; i++) s += "00000000000000000000";
+        s += "\"}";
+        handleGridUpdate(s);
     }
 
     @Override
@@ -463,7 +467,7 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
                     //sendMessage(Protocol.TURN_RIGHT);
 
                 } else if(readMessage.startsWith("grid")) {
-                    handleMDFString(readMessage);
+                    //handleMDFString(readMessage);
                 }
 
                 if (isJSONValid(readMessage)) {
@@ -482,33 +486,6 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
             case Protocol.MESSAGE_TOAST:
                 new CommonOperation().showToast(getApplicationContext(), msg.getData().getString(Protocol.TOAST));
                 break;
-        }
-    }
-
-
-
-    private void handleMDFString(String readMessage) {
-        String [] text  = readMessage.split(":");
-        String mdf1 = text[1];
-        String mdf2= text[2];
-
-        MazeFragment fragment = (MazeFragment) getSupportFragmentManager().findFragmentByTag("mazeFragment");
-
-        if (fragment != null) {
-            getArena().setMdf1(mdf1);
-            getArena().setMdf2(mdf2);
-            fragment.gridUpdateMDF1(mdf1);
-            fragment.gridUpdateMDF2(mdf1);
-        }
-
-        try{
-            if(getArena().getMdf1() != null && getArena().getMdf2() != null &&
-                    !getArena().getMdf1().equalsIgnoreCase("") && !getArena().getMdf2().equalsIgnoreCase("")) {
-
-                textViewMDFString.setText("MDF1:" +getArena().getMdf1()+"\n"+"MDF2:"+getArena().getMdf2());
-            }
-        } catch(Exception e) {
-            Log.e(Config.log_id, e.getMessage());
         }
     }
 
@@ -536,6 +513,32 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
     }
 
     /*
+
+    private void handleMDFString(String readMessage) {
+        String [] text  = readMessage.split(":");
+        String mdf1 = text[1];
+        String mdf2= text[2];
+
+        MazeFragment fragment = (MazeFragment) getSupportFragmentManager().findFragmentByTag("mazeFragment");
+
+        if (fragment != null) {
+            getArena().setMdf1(mdf1);
+            getArena().setMdf2(mdf2);
+            fragment.gridUpdateMDF1(mdf1);
+            fragment.gridUpdateMDF2(mdf1);
+        }
+
+        try{
+            if(getArena().getMdf1() != null && getArena().getMdf2() != null &&
+                    !getArena().getMdf1().equalsIgnoreCase("") && !getArena().getMdf2().equalsIgnoreCase("")) {
+
+                textViewMDFString.setText("MDF1:" +getArena().getMdf1()+"\n"+"MDF2:"+getArena().getMdf2());
+            }
+        } catch(Exception e) {
+            Log.e(Config.log_id, e.getMessage());
+        }
+    }
+
     private void handleMdf2Update(String readMessage) {
         String gridData = "";
         try {
@@ -569,8 +572,7 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
         } catch (Exception e) {
             Log.e(Config.log_id, "handleMdf1Update "+e.getMessage());
         }
-    }
-    */
+    }*/
 
     private void handleStatusUpdate(String readMessage) {
         String status = "";
@@ -635,7 +637,6 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
             new JSONObject(test);
 
         } catch (JSONException ex) {
-            // edited, to include @Arthur's comment
             // e.g. in case JSONArray is valid as well...
             try {
                 new JSONArray(test);
