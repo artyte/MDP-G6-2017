@@ -513,14 +513,13 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
     }
 
     private void handleJson(String readMessage) {
-        Log.i("Android:", readMessage.substring(0,1));
         if(readMessage.substring(0,1).equals("b")) { //b for android
             readMessage = readMessage.substring(1);
             handleRobotBatteryUpdate(readMessage);
             handleRobotPositionUpdate(readMessage);
             handleGridUpdate(readMessage);
-            handleMdf1Update(readMessage);
-            handleMdf2Update(readMessage);
+            //handleMdf1Update(readMessage);
+            //handleMdf2Update(readMessage);
             handleStatusUpdate(readMessage);
         }
     }
@@ -536,6 +535,7 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
         }
     }
 
+    /*
     private void handleMdf2Update(String readMessage) {
         String gridData = "";
         try {
@@ -553,6 +553,7 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
         }
     }
 
+
     private void handleMdf1Update(String readMessage) {
         String gridData = "";
 
@@ -569,6 +570,7 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
             Log.e(Config.log_id, "handleMdf1Update "+e.getMessage());
         }
     }
+    */
 
     private void handleStatusUpdate(String readMessage) {
         String status = "";

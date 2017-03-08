@@ -7,6 +7,9 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+
+import java.util.Arrays;
+
 import sg.edu.ntu.mdp.activity.MainActivity;
 import sg.edu.ntu.mdp.common.CommonOperation;
 import sg.edu.ntu.mdp.common.Config;
@@ -88,6 +91,7 @@ public class ArenaView extends View {
         return arena;
     }
     //update explored
+
     public void gridUpdateMDF1( ) {
         String data=getArena().getMdf1BinaryData();
         Log.e(Config.log_id,"gridUpdateMDF1: "+data);
@@ -109,17 +113,29 @@ public class ArenaView extends View {
         {
             Log.e(Config.log_id," gridupdate error "+ e.getMessage());
         }
-
     }
+
     public void gridUpdate(String gridDataInHex) {
         Log.e(Config.log_id, "grid hex " + gridDataInHex);
         String gridDataInBinary = "";
         for (int i = 0; i < gridDataInHex.length(); i++) {
             gridDataInBinary += CommonOperation.HexToBinary(gridDataInHex.charAt(i) + "");
         }
+        gridDataInBinary = transpose(gridDataInBinary);
         Log.e(Config.log_id, "gridDataInBinary: " + gridDataInBinary);
         arena.updateObstacleCellProperty(gridDataInBinary);
 
+    }
+
+    public String transpose(String gridDataInTernary) {
+        String[] gridRow = gridDataInTernary.split("(?<=\\G.{18})");
+        String transposed = "";
+        for(int i = 0; i <= 17; i++) {
+            for(int j = 12; j >=0; j--) {
+                transposed += gridRow[j].charAt(i);
+            }
+        }
+        return transposed;
     }
 
     @Override

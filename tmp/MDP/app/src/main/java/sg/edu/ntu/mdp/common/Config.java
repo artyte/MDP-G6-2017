@@ -19,7 +19,7 @@ public class Config {
     public static final long BLUETOOTH_RECONNECTION_TIMEOUT = 10000;
 
 	public static final int BORDER = Color.rgb(56, 56, 56);
-	public static final int UNEXPLORED = Color.WHITE;
+	public static final int UNEXPLORED = Color.GRAY;
 	public static final int EXPLORED = Color.WHITE;
 	public static final int OBSTACLE = Color.BLACK;
     public static final int START = Color.RED;

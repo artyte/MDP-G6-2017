@@ -13,20 +13,14 @@ public interface Protocol {
     String MESSAGE_BYTES = "MESSAGE_BYTES";
     String MESSAGE_BUFFER = "MESSAGE_BUFFER";
     String MESSAGE_ARG1 = "MESSAGE_ARG1";
-    String SEND_ARENA  = "sendArena";
-    String TURN_LEFT  = "A";
-    String TURN_RIGHT   = "D";
-    String MOVE_FORWARD   = "W";
-    String START_EXPLORATION = "explore";
-    String START_FASTEST = "fastest";
 
-    String ACTUAL_STATUS = "pst";
-    String ACTUAL_BATTERY = "pb";
-    String ACTUAL_POSITION = "pp";
-    String ACTUAL_SEND_ARENA = "pse";
-    String ACTUAL_TURN_LEFT  = "pL";
-    String ACTUAL_TURN_RIGHT   = "pD";
-    String ACTUAL_MOVE_FORWARD   = "pF";
-    String ACTUAL_START_EXPLORATION = "pe";
-    String ACTUAL_START_FASTEST = "pf";
+    String STATUS = "pst";
+    String BATTERY = "pb";
+    String POSITION = "pp";
+    String SEND_ARENA = "pse";
+    String TURN_LEFT  = "pL";
+    String TURN_RIGHT   = "pD";
+    String MOVE_FORWARD   = "pF";
+    String START_EXPLORATION = "pe";
+    String START_FASTEST = "pf";
 }

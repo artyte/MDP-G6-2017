@@ -200,10 +200,12 @@ public class Arena implements Serializable {
             for (int y = 0; y < getNumCol(); y++)
                 for (int x = 0; x < getNumRow(); x++) {
                     {
-                        if (gridDataInBinary.charAt(count) == '1')
+                        if (gridDataInBinary.charAt(count) == '2')
                             cellArray[x][y].setHaveObstacle(true);
+                        else if (gridDataInBinary.charAt(count) == '1')
+                            cellArray[x][y].setExplored(true);
                         else
-                            cellArray[x][y].setHaveObstacle(false);
+                            cellArray[x][y].setExplored(false);
                         count++;
                     }
                 }
