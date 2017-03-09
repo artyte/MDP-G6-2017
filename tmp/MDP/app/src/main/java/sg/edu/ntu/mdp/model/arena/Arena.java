@@ -199,9 +199,11 @@ public class Arena implements Serializable {
                     {
                         if (gridDataInTernary.charAt(count) == '2') {
                             cellArray[x][y].setHaveObstacle(true);
+                            cellArray[x][y].setExplored(true);
                         }
                         else if(gridDataInTernary.charAt(count) == '1') {
                             cellArray[x][y].setExplored(true);
+                            cellArray[x][y].setHaveObstacle(false);
                         }
                         else {
                             cellArray[x][y].setHaveObstacle(false);

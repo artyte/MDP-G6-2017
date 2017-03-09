@@ -48,14 +48,14 @@ public class Cell implements Serializable{
         float right = left + gridSize; // width (distance from X1 to X2)
         float bottom = top + gridSize; // height (distance from Y1 to Y2)
         RectF rect = new RectF(left, top, right, bottom);
-        if (isExplored) {
-            paint.setColor(Config.EXPLORED);
-        }else
-        {
-            paint.setColor(Config.UNEXPLORED);
-        }
-        if (haveObstacle) {
+        if (isExplored && haveObstacle) {
             paint.setColor(Config.OBSTACLE);
+        }
+        else if(isExplored && !haveObstacle) {
+            paint.setColor(Config.EXPLORED);
+        }
+        else if(!isExplored && !haveObstacle) {
+            paint.setColor(Config.UNEXPLORED);
         }
         paint.setStyle(Paint.Style.FILL);
         canvas.drawRect(rect, paint);
