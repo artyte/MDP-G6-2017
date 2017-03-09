@@ -91,6 +91,7 @@ public class ArenaView extends View {
     }
     //update explored
 
+
     /*
     public void gridUpdateMDF1( ) {
         String data=getArena().getMdf1BinaryData();
@@ -121,7 +122,6 @@ public class ArenaView extends View {
         /*for (int i = 0; i < gridDataInHex.length(); i++) {
             gridDataInTernary += CommonOperation.HexToBinary(gridDataInHex.charAt(i) + "");
         }*/
-        Log.e("fuck work", "grid data in Ternary: " + gridDataInTernary);
         arena.updateObstacleCellProperty(gridDataInTernary);
 
     }
@@ -132,7 +132,6 @@ public class ArenaView extends View {
         for (int i=0; i<gridRow.length; i++)
             gridRow[i] = gridData.substring(i*20, Math.min(gridlen, (i+1)*20));
 
-        Log.e("String length", Integer.toString(gridRow.length));
         String transposed = "";
         for(int i = 19; i >= 0; i--) {
             for (int j = 0; j <= 14; j++) {

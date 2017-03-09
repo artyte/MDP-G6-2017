@@ -34,6 +34,7 @@ import android.widget.ToggleButton;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import sg.edu.ntu.mdp.R;
 import sg.edu.ntu.mdp.common.CommonOperation;
@@ -60,6 +61,8 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
     BluetoothAdapter btAdapter = null;
     ArrayList<String> logList = new ArrayList<String>();
     private String mConnectedDeviceName = null;
+    private static String mdf1 = "";
+    private static String mdf2 = "";
     boolean isShowingLog = false;
     boolean isAccelerometerEnabled = false;
 
@@ -369,10 +372,10 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
         //String data = sharedPref.getString("pref_f2", Protocol.TURN_RIGHT);
         //sendMessage(data);
         //Log.d(Config.log_id, data);
-        String s = "{\"grid\":\"00021000000000000000";
+        String s = "{\"grid\":\"00000000000000000000";
         for(int i=0; i<=13; i++) s += "00000000000000000000";
-        s += "\"}";
-        handleGridUpdate(s);
+        s += "\",\"status\":\"status name\"}";
+        handleJson(s);
     }
 
     @Override
@@ -471,7 +474,6 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
                 }
 
                 if (isJSONValid(readMessage)) {
-                    readMessage = "b" + readMessage;
                     handleJson(readMessage);
                 }
 
@@ -490,15 +492,13 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
     }
 
     private void handleJson(String readMessage) {
-        if(readMessage.substring(0,1).equals("b")) { //b for android
-            readMessage = readMessage.substring(1);
-            handleRobotBatteryUpdate(readMessage);
-            handleRobotPositionUpdate(readMessage);
-            handleGridUpdate(readMessage);
-            //handleMdf1Update(readMessage);
-            //handleMdf2Update(readMessage);
-            handleStatusUpdate(readMessage);
-        }
+        handleRobotBatteryUpdate(readMessage);
+        handleRobotPositionUpdate(readMessage);
+        handleGridUpdate(readMessage);
+        //handleMdf1Update(readMessage);
+        //handleMdf2Update(readMessage);
+        handleMDFString(readMessage);
+        handleStatusUpdate(readMessage);
     }
 
     private void handleRobotBatteryUpdate(String readMessage) {
@@ -513,7 +513,6 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
     }
 
     /*
-
     private void handleMDFString(String readMessage) {
         String [] text  = readMessage.split(":");
         String mdf1 = text[1];
@@ -537,42 +536,55 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
         } catch(Exception e) {
             Log.e(Config.log_id, e.getMessage());
         }
-    }
-
-    private void handleMdf2Update(String readMessage) {
-        String gridData = "";
-        try {
-            JSONObject obj = new JSONObject(readMessage);
-            gridData = obj.getString("mdf2");
-            getArena().setMdf2(gridData);
-            MazeFragment fragment = (MazeFragment) getSupportFragmentManager().findFragmentByTag("mazeFragment");
-
-            if (fragment != null) {
-                fragment.gridUpdateMDF1(gridData);
-            }
-
-        } catch (Exception e) {
-            Log.e(Config.log_id, "handleMdf2Update "+e.getMessage());
-        }
-    }
-
-
-    private void handleMdf1Update(String readMessage) {
-        String gridData = "";
-
-        try {
-            JSONObject obj = new JSONObject(readMessage);
-            gridData = obj.getString("mdf1");
-            getArena().setMdf1(gridData); //save it
-            MazeFragment fragment = (MazeFragment) getSupportFragmentManager().findFragmentByTag("mazeFragment");
-
-            if (fragment != null) {
-                fragment.gridUpdateMDF2(gridData);
-            }
-        } catch (Exception e) {
-            Log.e(Config.log_id, "handleMdf1Update "+e.getMessage());
-        }
     }*/
+
+    private void handleMDFString(String readMessage) {
+        String grid = "";
+        try {
+            JSONObject obj = new JSONObject(readMessage);
+            grid = transpose(obj.getString("grid"));
+
+            String[] mdf = grid.split("");
+            mdf1 = "11";
+            mdf2 = "";
+            for(int i=0; i<mdf.length; i++) {
+                if (mdf[i].equals("0"))
+                    mdf1 += "0";
+                else if (mdf[i].equals("1")) {
+                    mdf1 += "1";
+                    mdf2 += "0";
+                }
+                else if (mdf[i].equals("2")){
+                    mdf1 += "1";
+                    mdf2 += "1";
+                }
+            }
+            mdf1 += "11";
+
+            mdf1 = new BigInteger(mdf1, 2).toString(16);
+            mdf2 = new BigInteger(mdf2, 2).toString(16);
+            Log.e("MDF1", mdf1);
+            Log.e("MDF2", mdf2);
+
+        } catch (Exception e) {
+            Log.e(Config.log_id, e.getMessage());
+        }
+    }
+
+    public String transpose(String gridData) {
+        int gridlen = gridData.length();
+        String[] gridRow = new String[(int)Math.ceil((double)gridlen/(double)20)];
+        for (int i=0; i<gridRow.length; i++)
+            gridRow[i] = gridData.substring(i*20, Math.min(gridlen, (i+1)*20));
+
+        String transposed = "";
+        for(int i = 19; i >= 0; i--) {
+            for (int j = 0; j <= 14; j++) {
+                transposed += gridRow[j].charAt(i);
+            }
+        }
+        return transposed;
+    }
 
     private void handleStatusUpdate(String readMessage) {
         String status = "";
