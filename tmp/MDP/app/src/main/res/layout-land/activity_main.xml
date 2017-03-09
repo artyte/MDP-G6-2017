@@ -44,7 +44,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-
+<!--
                 <TextView
                     android:textStyle="bold"
                     android:id="@+id/textViewCurrentPos"
@@ -117,7 +117,7 @@
                         android:background="@drawable/border"
                         android:text="180"/>
                 </LinearLayout>
-
+-->
                 <LinearLayout
                     android:layout_marginTop="2dp"
                     android:layout_width="wrap_content"
@@ -139,7 +139,7 @@
                         android:layout_height="wrap_content"
                         android:text="exploring"/>
                 </LinearLayout>
-
+<!--
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -185,7 +185,31 @@
                         android:textOff="Manual"
                         android:textOn="Auto"/>
                 </LinearLayout>
+-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:weightSum="2"
+                    android:layout_height="wrap_content">
 
+                    <Button
+                        android:id="@+id/reset"
+                        android:onClick="reset"
+                        android:padding="0dp"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="Reset"/>
+
+                    <Button
+                        android:id="@+id/calibrate"
+                        android:onClick="calibrate"
+                        android:padding="0dp"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="Calibrate"/>
+
+                </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:weightSum="2"
@@ -195,7 +219,7 @@
                         android:id="@+id/btnF1"
                         android:onClick="btnF1"
                         android:padding="0dp"
-                        android:layout_weight="1"
+                        android:layout_weight="0.5"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="F1"/>
@@ -204,10 +228,28 @@
                         android:padding="0dp"
                         android:id="@+id/btnF2"
                         android:onClick="btnF2"
-                        android:layout_weight="1"
+                        android:layout_weight="0.5"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="F2"/>
+
+                    <Button
+                        android:id="@+id/mdf1"
+                        android:onClick="mdf1"
+                        android:padding="0dp"
+                        android:layout_weight="0.5"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="MDF1"/>
+
+                    <Button
+                        android:padding="0dp"
+                        android:id="@+id/mdf2"
+                        android:onClick="mdf2"
+                        android:layout_weight="0.5"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="MDF2"/>
                 </LinearLayout>
 
                 <LinearLayout

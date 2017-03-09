@@ -17,6 +17,7 @@ public interface Protocol {
     String STATUS = "pst";
     String BATTERY = "pb";
     String POSITION = "pp";
+    String CALIBRATE = "az";
     String SEND_ARENA = "pse";
     String TURN_LEFT  = "pL";
     String TURN_RIGHT   = "pD";

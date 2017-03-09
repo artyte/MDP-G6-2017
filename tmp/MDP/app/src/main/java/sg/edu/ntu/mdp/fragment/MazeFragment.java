@@ -150,19 +150,6 @@ public class MazeFragment extends Fragment {
         mListener.onUiUpdate(arena);
     }
 
-    /*
-    public void gridUpdateMDF1(String gridData) {
-        arenaView.gridUpdateMDF1();
-        arenaView.invalidate();
-        mListener.onUiUpdate(arena);
-    }
-
-    public void gridUpdateMDF2(String gridData) {
-        arenaView.gridUpdateMDF2();
-        arenaView.invalidate();
-        mListener.onUiUpdate(arena);
-    }*/
-
     public void statusUpdate(String status) {
         if(arena!=null && arena.getRobot()!=null)
         {

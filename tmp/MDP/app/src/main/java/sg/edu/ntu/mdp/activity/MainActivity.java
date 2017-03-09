@@ -48,7 +48,6 @@ import sg.edu.ntu.mdp.fragment.MazeFragment;
 import sg.edu.ntu.mdp.model.arena.Arena;
 import sg.edu.ntu.mdp.model.arena.Robot;
 import sg.edu.ntu.mdp.service.BluetoothCommService;
-//import sg.edu.ntu.mdp.common.AcclerometerSenesorProvider;
 
 public class MainActivity extends AppCompatActivity implements DeviceListDialogFragment.DialogListener, MazeFragment.OnFragmentInteractionListener, LogFragment.OnListFragmentInteractionListener, CompoundButton.OnCheckedChangeListener, CustomAlertDialogFragment.AlertDialogListener, BasicDialogFragment.AlertDialogListener {
     public static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
@@ -77,7 +76,6 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
     LogFragment logFragment = null;
     ToggleButton tgbStartStop, tgbAutoManual;
     Handler handlerAutoUpdate = new Handler();
-    //AcclerometerSenesorProvider accelerometerSensorProvider;
 
     private void setUpBlueToothCommService() {
         // Initialize the BluetoothChatService to perform bluetooth connections
@@ -99,20 +97,6 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
                 drawable.setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
             }
         }
-        /*
-        if (isShowingLog) {
-            menu.findItem(R.id.menu_hideOrShowLog).setTitle("Hide Log");
-        } else {
-            menu.findItem(R.id.menu_hideOrShowLog).setTitle("Show Log");
-        }
-
-
-        if (isAccelerometerEnabled) {
-            menu.findItem(R.id.menu_use_accelerometer).setTitle("Stop Accelerometer");
-        } else {
-            menu.findItem(R.id.menu_use_accelerometer).setTitle("Use Accelerometer");
-        }*/
-
         return true;
     }
 
@@ -152,16 +136,17 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
         }
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            textViewBattery = (TextView) findViewById(R.id.textViewBattery);
+            /*textViewBattery = (TextView) findViewById(R.id.textViewBattery);
             textViewX = (TextView) findViewById(R.id.textViewX);
             textViewY = (TextView) findViewById(R.id.textViewY);
             textViewDirection = (TextView) findViewById(R.id.textViewDirection);
-            textViewStatus = (TextView) findViewById(R.id.textViewStatus);
-            textViewMDFString = (TextView) findViewById(R.id.textViewMDFString);
             tgbStartStop = (ToggleButton) findViewById(R.id.tgbStartStop);
             tgbStartStop.setOnCheckedChangeListener(this);
             tgbAutoManual = (ToggleButton) findViewById(R.id.tgbAutoManual);
-            tgbAutoManual.setOnCheckedChangeListener(this);
+            tgbAutoManual.setOnCheckedChangeListener(this);*/
+            textViewStatus = (TextView) findViewById(R.id.textViewStatus);
+            textViewMDFString = (TextView) findViewById(R.id.textViewMDFString);
+
         }
 
         btAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -179,8 +164,6 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .show();
         }
-
-        //accelerometerSensorProvider = new AcclerometerSenesorProvider(MainActivity.this,getApplicationContext());
     }
 
     @Override
@@ -208,31 +191,6 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            /*
-            case R.id.menu_use_accelerometer:
-                //start sensor
-                if (!isAccelerometerEnabled) {
-                    isAccelerometerEnabled = true;
-                    if(accelerometerSensorProvider !=null)
-                        accelerometerSensorProvider.startSensorUpdate();
-
-                } else {
-                    isAccelerometerEnabled = false;
-                    if(accelerometerSensorProvider !=null)
-                        accelerometerSensorProvider.stopSensorUpdate();
-                }
-
-                invalidateOptionsMenu();
-                break;
-
-            case R.id.menu_visability:
-                if (btAdapter != null && btAdapter.getScanMode() != BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
-                    Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-                    discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 200);
-                    startActivity(discoverableIntent);
-                }
-
-                break;*/
 
             case R.id.menu_connect:
                 FragmentManager fm = getSupportFragmentManager();
@@ -356,8 +314,20 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
         sendMessage(Protocol.START_EXPLORATION);
     }
 
-    public void btnFastest(View a) {
-        sendMessage(Protocol.START_FASTEST);
+    public void btnFastest(View a) { sendMessage(Protocol.START_FASTEST); }
+
+    public void mdf1(View a) {
+        logList.add(mdf1);
+        LogFragment fragment = (LogFragment) getSupportFragmentManager().findFragmentByTag("logFragment");
+        fragment.addLog(logList);
+        sendMessage(mdf1);
+    }
+
+    public void mdf2(View a) {
+        logList.add(mdf2);
+        LogFragment fragment = (LogFragment) getSupportFragmentManager().findFragmentByTag("logFragment");
+        fragment.addLog(logList);
+        sendMessage(mdf2);
     }
 
     public void btnF1(View a) {
@@ -368,14 +338,21 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
     }
 
     public void btnF2(View a) {
-        //SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        //String data = sharedPref.getString("pref_f2", Protocol.TURN_RIGHT);
-        //sendMessage(data);
-        //Log.d(Config.log_id, data);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        String data = sharedPref.getString("pref_f2", Protocol.TURN_RIGHT);
+        sendMessage(data);
+        Log.d(Config.log_id, data);
+    }
+
+    public void reset(View a) {
         String s = "{\"grid\":\"00000000000000000000";
         for(int i=0; i<=13; i++) s += "00000000000000000000";
-        s += "\",\"status\":\"status name\"}";
+        s += "\"}";
         handleJson(s);
+    }
+
+    public void calibrate(View a) {
+        sendMessage(Protocol.CALIBRATE);
     }
 
     @Override
@@ -492,11 +469,9 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
     }
 
     private void handleJson(String readMessage) {
-        handleRobotBatteryUpdate(readMessage);
+        //handleRobotBatteryUpdate(readMessage);
         handleRobotPositionUpdate(readMessage);
         handleGridUpdate(readMessage);
-        //handleMdf1Update(readMessage);
-        //handleMdf2Update(readMessage);
         handleMDFString(readMessage);
         handleStatusUpdate(readMessage);
     }
@@ -512,39 +487,13 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
         }
     }
 
-    /*
-    private void handleMDFString(String readMessage) {
-        String [] text  = readMessage.split(":");
-        String mdf1 = text[1];
-        String mdf2= text[2];
-
-        MazeFragment fragment = (MazeFragment) getSupportFragmentManager().findFragmentByTag("mazeFragment");
-
-        if (fragment != null) {
-            getArena().setMdf1(mdf1);
-            getArena().setMdf2(mdf2);
-            fragment.gridUpdateMDF1(mdf1);
-            fragment.gridUpdateMDF2(mdf1);
-        }
-
-        try{
-            if(getArena().getMdf1() != null && getArena().getMdf2() != null &&
-                    !getArena().getMdf1().equalsIgnoreCase("") && !getArena().getMdf2().equalsIgnoreCase("")) {
-
-                textViewMDFString.setText("MDF1:" +getArena().getMdf1()+"\n"+"MDF2:"+getArena().getMdf2());
-            }
-        } catch(Exception e) {
-            Log.e(Config.log_id, e.getMessage());
-        }
-    }*/
-
     private void handleMDFString(String readMessage) {
         String grid = "";
         try {
             JSONObject obj = new JSONObject(readMessage);
             grid = transpose(obj.getString("grid"));
 
-            String[] mdf = grid.split("");
+            String[] mdf = flip(grid).split("");
             mdf1 = "11";
             mdf2 = "";
             for(int i=0; i<mdf.length; i++) {
@@ -562,16 +511,45 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
             mdf1 += "11";
 
             mdf1 = new BigInteger(mdf1, 2).toString(16);
-            mdf2 = new BigInteger(mdf2, 2).toString(16);
             Log.e("MDF1", mdf1);
-            Log.e("MDF2", mdf2);
+            mdf2 = countZerosToHex(mdf2);
+            mdf2 += new BigInteger(mdf2, 2).toString(16);
+
 
         } catch (Exception e) {
             Log.e(Config.log_id, e.getMessage());
         }
     }
 
-    public String transpose(String gridData) {
+    private String countZerosToHex(String gridData) {
+        String[] s = gridData.split("");
+        int numOfZero = 0;
+        String zeroStr = "";
+        for(int i=0; i<s.length; i++) {
+            if(numOfZero == 4) {
+                numOfZero = 0;
+                zeroStr += "0";
+                Log.e("MDF2", zeroStr);
+            }
+            if(s[i].equals("0")) numOfZero++;
+            else break;
+        }
+
+        return zeroStr;
+    }
+
+    private String flip(String gridData) {
+        int gridlen = gridData.length();
+        String[] gridRow = new String[(int)Math.ceil((double)gridlen/(double)15)];
+        for (int i=0; i<gridRow.length; i++)
+            gridRow[i] = gridData.substring(i*15, Math.min(gridlen, (i+1)*15));
+        String finalString = "";
+        for(int i=gridRow.length - 1; i>-1; i--)
+            finalString += gridRow[i];
+        return finalString;
+    }
+
+    private String transpose(String gridData) {
         int gridlen = gridData.length();
         String[] gridRow = new String[(int)Math.ceil((double)gridlen/(double)20)];
         for (int i=0; i<gridRow.length; i++)
@@ -689,13 +667,6 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
         }
 
         setupScheduler();
-
-        /*
-        if (isAccelerometerEnabled) {
-            if (accelerometerSensorProvider != null)
-                accelerometerSensorProvider.startSensorUpdate();
-        }
-        */
     }
 
     private void setupScheduler() {
@@ -716,9 +687,7 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
 
     @Override
     public void onBackPressed() {
-        //super.onBackPressed();
         moveTaskToBack(true);
-        //super.onBackPressed();
     }
 
 
@@ -738,10 +707,6 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
         LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
         super.onPause();
         removeSchedulerCallBack();
-
-        /*
-        if(accelerometerSensorProvider !=null)
-            accelerometerSensorProvider.stopSensorUpdate();*/
     }
 
     public void removeSchedulerCallBack() {
@@ -843,7 +808,7 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
 
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-        if (compoundButton.getId() == R.id.tgbStartStop) {
+        /*if (compoundButton.getId() == R.id.tgbStartStop) {
             Arena arena = getArena();
 
             if (arena != null) {
@@ -905,38 +870,13 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
                     }
                 }
             }
-        }
+        }*/
     }
 
     public void btnSendGridUpdate() {
         sendMessage(Protocol.SEND_ARENA);
         new CommonOperation().showToast(getApplicationContext(), "Grid data requested");
     }
-
-
-    /*
-    @Override
-    public void onAcclerometerChanged(String move) {
-        Arena arena= getArena();
-        if(arena!=null)
-        {
-            Robot.Move robotMove=null;
-            if(move.equalsIgnoreCase(Protocol.MOVE_FORWARD)) {
-                robotMove=Robot.Move.UP;
-
-            }else if(move.equalsIgnoreCase(Protocol.TURN_LEFT)) {
-                robotMove=Robot.Move.LEFT;
-
-            } else if(move.equalsIgnoreCase(Protocol.TURN_RIGHT)) {
-                robotMove=Robot.Move.RIGHT;
-            }
-
-            Boolean isSafe = arena.checkObstacles(robotMove);
-            if(isSafe)
-                sendMessage(move);
-        }
-    }
-    */
 
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
@@ -955,10 +895,6 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
                     isAccelerometerEnabled = false;
                     arena.reset();
                     removeSchedulerCallBack();
-
-                    /*
-                    if(accelerometerSensorProvider != null)
-                        accelerometerSensorProvider.stopSensorUpdate();*/
 
                     mazeFragment = (MazeFragment) getSupportFragmentManager().findFragmentByTag("mazeFragment");
 

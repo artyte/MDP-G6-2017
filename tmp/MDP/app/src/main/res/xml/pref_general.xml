@@ -15,5 +15,6 @@
             android:summary="Please enter a value for F2"
             android:defaultValue="A">
         </EditTextPreference>
+
     </PreferenceCategory>
 </PreferenceScreen>

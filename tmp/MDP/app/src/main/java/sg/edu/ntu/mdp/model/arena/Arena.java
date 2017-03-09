@@ -231,7 +231,6 @@ public class Arena implements Serializable {
 
     }
 
-
     public Boolean checkObstacles(Robot.Move move) {
 
         Robot tempRobot = new Robot(getRobot().getX(),getRobot().getY(),getRobot().getDirection(),null);
