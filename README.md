@@ -1,6 +1,6 @@
 # MDP-G6-2017
 
-APK BUILT DOWNLOAD FROM GDRIVE
+APK BUILT DOWNLOAD FROM https://drive.google.com/drive/folders/0ByKpSnr45RgkdFpEaE9NanMyM1E?usp=sharing
 
 Instructions for adding new files:
 - Use folders to represent the work you're doing (e.g. in this case, android team does work on Robot Remote Folder)
