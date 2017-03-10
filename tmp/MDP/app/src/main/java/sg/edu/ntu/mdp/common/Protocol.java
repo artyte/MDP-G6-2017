@@ -14,9 +14,6 @@ public interface Protocol {
     String MESSAGE_BUFFER = "MESSAGE_BUFFER";
     String MESSAGE_ARG1 = "MESSAGE_ARG1";
 
-    String STATUS = "pst";
-    String BATTERY = "pb";
-    String POSITION = "pp";
     String CALIBRATE = "az";
     String SEND_ARENA = "pse";
     String TURN_LEFT  = "pL";

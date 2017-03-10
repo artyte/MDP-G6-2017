@@ -347,7 +347,7 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
     public void reset(View a) {
         String s = "{\"grid\":\"00000000000000000000";
         for(int i=0; i<=13; i++) s += "00000000000000000000";
-        s += "\"}";
+        s += "\",\"robotPosition\":[1,1,0]}";
         handleJson(s);
     }
 
@@ -585,6 +585,7 @@ public class MainActivity extends AppCompatActivity implements DeviceListDialogF
         try {
             JSONObject obj = new JSONObject(readMessage);
             gridData = obj.getString("grid");
+            Log.e("MDF", gridData);
             MazeFragment fragment = (MazeFragment) getSupportFragmentManager().findFragmentByTag("mazeFragment");
 
             if (fragment != null) {

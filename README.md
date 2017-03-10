@@ -1,8 +1,10 @@
 # MDP-G6-2017
 
+APK BUILT DOWNLOAD FROM GDRIVE
+
 Instructions for adding new files:
 - Use folders to represent the work you're doing (e.g. in this case, android team does work on Robot Remote Folder)
-- Branching isn't really necessary if you're trying to code on separate pages
+
 
 Instructions for sending strings from any device:
 - Append this number to the start of any string that is to be sent to another device:
