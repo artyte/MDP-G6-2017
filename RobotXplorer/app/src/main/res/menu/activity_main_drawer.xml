@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:id="@+id/top_menu" android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_connect_device"
+            android:icon="@mipmap/bluetooth"
+            android:title="Connect a Device" />
+        <item
+            android:id="@+id/nav_input_position"
+            android:icon="@mipmap/input"
+            android:title="Input Position" />
+        <!--<item
+            android:id="@+id/nav_enable_visability"
+            android:title="Enable Visability" />-->
+        <item
+            android:id="@+id/nav_message_log"
+            android:icon="@mipmap/log"
+            android:title="Message Log" />
+        <!--<item
+            android:id="@+id/nav_mdf_strings"
+            android:icon="@mipmap/log"
+            android:title="MDF Strings" />-->
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@mipmap/settings"
+            android:title="Settings" />
+    </group>
+
+    <!--<group android:id="@+id/middle_menu" android:checkableBehavior="single">
+        <item
+            android:id="@+id/sw_arena_start_stop"
+            android:title="Arena Start"
+            android:actionViewClass="android.widget.Switch"
+            app:actionViewClass="android.widget.Switch" />
+        <item
+            android:id="@+id/sw_auto_grid_update"
+            android:title="Auto Grid Update"
+            android:actionViewClass="android.widget.Switch"
+            app:actionViewClass="android.widget.Switch" />
+        <item
+            android:id="@+id/sw_use_accelerometer"
+            android:title="Use Accelerometer"
+            android:actionViewClass="android.widget.Switch"
+            app:actionViewClass="android.widget.Switch" />
+    </group>-->
+
+    <group android:id="@+id/bottom_menu" android:checkableBehavior="single">
+        <!--<item
+            android:id="@+id/nav_set_f1"
+            android:title="Set F1" />
+        <item
+            android:id="@+id/nav_set_f2"
+            android:title="Set F2" />-->
+        <item
+            android:id="@+id/nav_view_mdf1"
+            android:title="View MDF1 String" />
+        <item
+            android:id="@+id/nav_view_mdf2"
+            android:title="View MDF2 String" />
+    </group>
+</menu>
