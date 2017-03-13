@@ -94,7 +94,9 @@ public:
 
     //return a int as movement commend
     //0 - turn left, 1 - turn right, 2 - forward
-    static int findPath(const int& xStart, const int& yStart, const int& dirStart, const int& xFinish, const int& yFinish);
+    static int findPath(const int& xStart, const int& yStart, const int& dirStart, const int& xFinish, const int& yFinish, bool hasLimit);
+
+    static int pathLength(const int& xStart, const int& yStart, const int& dirStart, const int& xFinish, const int& yFinish);
 
     static void setRobotMap(int** robotMap_p) {robotMap = robotMap_p;}
 

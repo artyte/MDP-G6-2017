@@ -58,21 +58,11 @@ void Sensor::update(int parentRotation, int parentX, int parentY)
 
 sensorFeedback* Sensor::Sense(int** mapArray)
 {
-    sensorFeedback* feedbackPtr = new sensorFeedback[4];
-
-    /*for(int i = 0; i < 15; ++i){
-        for(int j = 0; j < 20; ++j){
-            qDebug() << mapArray[i][j];
-        }
-    }*/
+    sensorFeedback* feedbackPtr = new sensorFeedback[6];
 
     bool obstacleFlag = false;
     bool outBoundFlag = false;
     for(int i = 1; i <= length; ++i){
-        //check absolute + i*facing
-       // qDebug() << i;
-        //qDebug() << absoluteY-i*facingY << absoluteX+i*facingX;
-
         if(outBoundFlag || absoluteX+i*facingX < 0 || absoluteX+i*facingX > 19 || absoluteY-i*facingY < 0 || absoluteY-i*facingY > 14){
             outBoundFlag = true;
             feedbackPtr[i] = {QPoint(-1, -1), -2};
@@ -84,7 +74,6 @@ sensorFeedback* Sensor::Sense(int** mapArray)
         }
 
         if(mapArray[absoluteY-i*facingY][absoluteX+i*facingX] == 1){
-            //qDebug() << "find obstacle";
             obstacleFlag = true;
             feedbackPtr[i] = {QPoint(absoluteX+i*facingX, absoluteY-i*facingY), 1};
             continue;
@@ -94,6 +83,31 @@ sensorFeedback* Sensor::Sense(int** mapArray)
     }
 
     return feedbackPtr;
+}
+
+sensorFeedback *Sensor::processSignal(int msg)
+{
+    sensorFeedback* feedbackPtr = new sensorFeedback[6];
+
+    bool outBoundFlag = false;
+
+    for(int i = 1; i <= length; ++i){
+        //qDebug() << "sense grid" << absoluteX+i*facingX << absoluteY-i*facingY;
+        if(outBoundFlag || absoluteX+i*facingX < 0 || absoluteX+i*facingX > 19 || absoluteY-i*facingY < 0 || absoluteY-i*facingY > 14){
+            outBoundFlag = true;
+            feedbackPtr[i] = {QPoint(-1, -1), -2};
+            continue;
+        }
+        if(i < msg){
+            feedbackPtr[i] = {QPoint(absoluteX+i*facingX, absoluteY-i*facingY), 0};
+        }else if(i == msg){
+            feedbackPtr[i] = {QPoint(absoluteX+i*facingX, absoluteY-i*facingY), 1};
+        }else{
+            feedbackPtr[i] = {QPoint(absoluteX+i*facingX, absoluteY-i*facingY), -2};
+        }
+    }
+    return feedbackPtr;
+
 }
 
 int Sensor::getLength()
@@ -123,10 +137,15 @@ QPoint *Sensor::getPossibleSensingPosition(QPoint target, int **robotMapArray)
     bool dirFlag[4] = {false, false, false, false};
     int xDirs[4] = {-1, 0, 1, 0};
     int yDirs[4] = {0, -1, 0, 1};
+    //qDebug() << "Debugging";
     for(int i = 0; i < length*4; ++i){
         //0
-        if(!dirFlag[i%4] && target.y() + (i/4)*yDirs[i%4] > -1 && target.y() + (i/4)*yDirs[i%4] < 15 && target.x() + (i/4)*xDirs[i%4] > -1 && target.x() + (i/4)*xDirs[i%4] < 20 && robotMapArray[target.y() + (i/4)*yDirs[i%4]][target.x() + (i/4)*xDirs[i%4]] != 2){
+        int possibleX = target.x() + (i/4)*xDirs[i%4];
+        int possibleY = target.y() + (i/4)*yDirs[i%4];
+        //qDebug() << QPoint(possibleX, possibleY);
+        if(!dirFlag[i%4] && possibleY > -1 && possibleY < 15 && possibleX > -1 && possibleX < 20 && robotMapArray[possibleY][possibleX] != 2){
             pointArray[i] = QPoint(target.x() + offsetArray[i].x(), target.y() + offsetArray[i].y());
+
         }else{
             dirFlag[i%4] = true;
             pointArray[i] = QPoint(-1, -1);

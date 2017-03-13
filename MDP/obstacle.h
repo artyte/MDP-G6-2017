@@ -8,38 +8,31 @@
 class Obstacle : public QGraphicsItem
 {
 public:
-    Obstacle(int x, int y);
+    Obstacle(int x, int y, int gridState);
 
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    void setGridState(int gridState) {this->gridState = gridState;}
+    void setColor(int gridState);
+
+    int gridState;
+    bool flag = true;
 
 protected:
     void advance(int phase);
+
+private:
+    //white - not explored grid
+    //black - not explored obstacle
+    //light blue - explored grid
+    //dark blue - explored obstacle
+    //red - not detectable
+    QColor color;
+    int x, y;
+    bool moving = false;
 };
 
 
 #endif // OBSTACLE_H
 
-Obstacle::Obstacle(int x, int y)
-{
-    setPos(-400+40*x, -300+40*y);
-}
 
-QRectF Obstacle::boundingRect() const
-{
-    return QRectF(0, 0, 40, 40);
-}
-
-void Obstacle::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
-{
-    QRectF rect = boundingRect();
-    QBrush brush = Qt::black;
-
-    painter->drawRect(rect);
-    painter->fillRect(rect, brush);
-}
-
-void Obstacle::advance(int phase)
-{
-    if(!phase) return;
-}

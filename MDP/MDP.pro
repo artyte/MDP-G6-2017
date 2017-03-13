@@ -8,6 +8,8 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
+QT += network
+
 TARGET = MDP
 TEMPLATE = app
 
@@ -28,13 +30,16 @@ SOURCES += main.cpp\
     mapgenerator.cpp \
     robot.cpp \
     sensor.cpp \
-    pathnode.cpp
+    pathnode.cpp \
+    obstacle.cpp \
+    socket.cpp
 
 HEADERS  += mainwindow.h \
     mapgenerator.h \
     robot.h \
     obstacle.h \
     sensor.h \
-    pathnode.h
+    pathnode.h \
+    socket.h
 
 FORMS    += mainwindow.ui

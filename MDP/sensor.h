@@ -14,6 +14,7 @@ public:
     Sensor(int attachX, int attachY, int length, int relativeRotation);
     void update(int parentRotation, int parentX, int parentY);
     sensorFeedback* Sense(int** mapArray);
+    sensorFeedback* processSignal(int msg);
     int getLength();
     bool isCovering(int** marArray, QPoint target);
     QPoint* getPossibleSensingPosition(QPoint target, int **robotMapArray);
