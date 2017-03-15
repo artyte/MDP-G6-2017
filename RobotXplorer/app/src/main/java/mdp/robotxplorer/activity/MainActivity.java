@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity
     boolean isShowingLog = false;
     //boolean isAccelerometerEnabled = false;
 
-    TextView textViewX, textViewY, textViewDirection, textViewStatus, textViewBattery;
+    TextView textViewX, textViewY, textViewDirection, textViewStatus;
     //Switch swArenaStart, swAutoGridUpdate, swUseAccelerometer;
     Spinner spModeSelect;
 
@@ -106,6 +106,14 @@ public class MainActivity extends AppCompatActivity
         }
     };
 
+    protected void addMDF(View a) {
+        logList.add(mdf1);
+        logList.add(mdf2);
+        LogFragment fragment = (LogFragment) getSupportFragmentManager().findFragmentByTag("logFragment");
+        fragment.addLog(logList);
+        Operation.showToast(this, "MDF Strings added to log!");
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,14 +121,14 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
-        });
+        });*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -141,7 +149,7 @@ public class MainActivity extends AppCompatActivity
 
         textViewDirection = (TextView) findViewById(R.id.textViewDirection);
         textViewStatus = (TextView) findViewById(R.id.textViewStatus);
-        textViewBattery = (TextView) findViewById(R.id.textViewBattery);
+        //textViewBattery = (TextView) findViewById(R.id.textViewBattery);
 
         /*MenuItem miArenaStart = navigationView.getMenu().findItem(R.id.sw_arena_start);
         swArenaStart = (Switch) findViewById(R.id.sw_arena_start);
@@ -278,13 +286,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onUiUpdate(Arena arena) {
-        if (arena != null && arena.getRobot() != null) {
-            if (textViewX != null)
-                textViewX.setText(arena.getRobot().getX() + "");
-
-            if (textViewY != null)
-                textViewY.setText(arena.getRobot().getY() + "");
-
+        /*if (arena != null && arena.getRobot() != null) {
             if (textViewDirection != null) {
                 if(arena.getRobot().getDirection() == 0)
                     textViewDirection.setText("270");
@@ -301,7 +303,7 @@ public class MainActivity extends AppCompatActivity
 
             if (textViewStatus != null)
                 textViewStatus.setText(arena.getRobot().getStatus());
-        }
+        }*/
     }
 
     @Override
@@ -408,16 +410,10 @@ public class MainActivity extends AppCompatActivity
                 break;
 
             case R.id.nav_view_mdf1:
-                logList.add(mdf1);
-                LogFragment fragment = (LogFragment) getSupportFragmentManager().findFragmentByTag("logFragment");
-                fragment.addLog(logList);
                 sendMessage(mdf1);
                 break;
 
             case R.id.nav_view_mdf2:
-                logList.add(mdf2);
-                fragment = (LogFragment) getSupportFragmentManager().findFragmentByTag("logFragment");
-                fragment.addLog(logList);
                 sendMessage(mdf2);
                 break;
 
@@ -708,10 +704,9 @@ public class MainActivity extends AppCompatActivity
     private void sendRobotPosition(Robot robotInput) {
         int robotX, robotY;
         robotX=robotInput.getX()+1;
-        robotY=robotInput.getY()+1-19;
+        robotY=robotInput.getY()-18;
         String text=robotX+","+Math.abs(robotY);
         sendMessage(text);
-        Log.d(Config.log_id,"robot post json "+text);
     }
 
     private void moveRobot(Robot.Move move, int noOfMove) {
@@ -739,12 +734,14 @@ public class MainActivity extends AppCompatActivity
 
     public void btnStartMode(View a) {
         if (spModeSelect.getSelectedItem().equals("Exploration")) {
-            Operation.showToast(this, "Exploration Mode Started");
+            //Operation.showToast(this, "Exploration Mode Started");
             sendMessage(Protocol.START_EXPLORATION);
+            textViewStatus.setText("Exploring");
 
         } else if (spModeSelect.getSelectedItem().equals("Fastest")) {
-            Operation.showToast(this, "Fastest Mode Started");
+            //Operation.showToast(this, "Fastest Mode Started");
             sendMessage(Protocol.START_FASTEST);
+            textViewStatus.setText("Fastest");
         }
     }
 
@@ -753,10 +750,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void btnResetGrid(View a) {
-        String s = "{\"grid\":\"22222000000000000021";
-        for(int i=0; i<=13; i++) s += "00000000000000000021";
-        s += "\",\"robotPosition\":[1,1,0]}";
-        Log.e("reset",s);
+        String s = "{\"grid\":\"00000000000000000000";
+        for(int i=0; i<=13; i++) s += "00000000000000000000";
+        s += "\",\"robotPosition\":[1,1,0],\"status\":\"na\"}";
         handleJson(s);
     }
 
@@ -1073,12 +1069,22 @@ public class MainActivity extends AppCompatActivity
     private void handleRobotPositionUpdate(String readMessage) {
         try {
             JSONObject obj = new JSONObject(readMessage);
-            int x = (int) obj.getJSONArray("robotPosition").get(0) - 1;
-            int y = Math.abs ((int) obj.getJSONArray("robotPosition").get(1) - 18);
+            int x = (int) obj.getJSONArray("robotPosition").get(0);
+            int y = (int) obj.getJSONArray("robotPosition").get(1);
             int direction = (int) obj.getJSONArray("robotPosition").get(2);
+
+            textViewX.setText(Integer.toString(x));
+            textViewY.setText(Integer.toString(y));
+            textViewDirection.setText(Integer.toString(direction));
+
+
             MazeFragment fragment = (MazeFragment) getSupportFragmentManager().findFragmentByTag("mazeFragment");
 
+
             if (fragment != null) {
+                x -= 1;
+                y = Math.abs(y - 18);
+
                 if (direction == 0)
                     fragment.moveRobot(x, y, 1);
 
@@ -1091,6 +1097,7 @@ public class MainActivity extends AppCompatActivity
                 else if (direction == 270)
                     fragment.moveRobot(x, y, 0);
             }
+
         } catch (Exception e) {
             Log.e(Config.log_id, e.getMessage());
         }

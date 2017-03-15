@@ -74,32 +74,7 @@ public class ArenaView extends View {
         return arena;
     }
 
-    //update explored
-    /*public void gridUpdateMDF1( ) {
-        String data=getArena().getMdf1BinaryData();
-        Log.e(Config.log_id,"gridUpdateMDF1: "+data);
-
-        if (data != null) {
-            arena.updateExplorationCellProperty(Operation.convertGridFormat(data));
-        }
-    }
-
-    public void gridUpdateMDF2( ) {
-        try {
-            String convertedData = Operation.convertGridFormat(getArena().getMdf2BinaryData());
-            arena.updateObstacleCellProperty(convertedData);
-            Log.e(Config.log_id,"convertedData "+convertedData);
-
-        } catch (Exception e) {
-            Log.e(Config.log_id," gridupdate error "+ e.getMessage());
-        }
-    }*/
-
-    public void gridUpdate(String gridData) {
-        Log.e(Config.log_id, gridData);
-        String gridDataInTernary = gridData;
-        arena.updateObstacleCellProperty(gridDataInTernary);
-    }
+    public void gridUpdate(String gridData) { arena.updateObstacleCellProperty(gridData); }
 
     /*
     public String transpose(String gridData) {
@@ -135,23 +110,18 @@ public class ArenaView extends View {
                     int y = (int) ((event.getX() - startX) / (gridSize));
                     int x = (int) ((event.getY() - startY) / (gridSize));
 
-                    //y = y + 1;
-                    //x = x - 1;
-
                     y = Math.abs(y - (numCol - 1));
-                    Log.e(Config.log_id, "ROW X: " + x + "COL Y: " + y);
 
                     try {
-                        if (y >= 1 && y <= 18 && x >= 1 && x <= 13) {
-                            Operation.showToast(getContext(), "Coordinates: " + x + ", " + y);
+                        Operation.showToast(getContext(), "Coordinates: " + x + ", " + (0-y+19));
 
-                            arena.getRobot().setX(x - 1);
-                            arena.getRobot().setY(y + 1);
-                            arena.getStartProperty().setX(x - 1);
-                            arena.getStartProperty().setY(y + 1);
-                        } else {
-                            Operation.showToast(getContext(), "Wrong Position");
-                        }
+                        x += -1;
+                        y += -1;
+
+                        arena.getRobot().setX(x);
+                        arena.getRobot().setY(y);
+                        arena.getStartProperty().setX(x);
+                        arena.getStartProperty().setY(y);
                     } catch (Exception e) {
                         Operation.showToast(getContext(), "Wrong Location");
                     }

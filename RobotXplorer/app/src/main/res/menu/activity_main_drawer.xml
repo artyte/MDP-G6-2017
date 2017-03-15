@@ -54,9 +54,9 @@
             android:title="Set F2" />-->
         <item
             android:id="@+id/nav_view_mdf1"
-            android:title="View MDF1 String" />
+            android:title="Send MDF1 String" />
         <item
             android:id="@+id/nav_view_mdf2"
-            android:title="View MDF2 String" />
+            android:title="Send MDF2 String" />
     </group>
 </menu>

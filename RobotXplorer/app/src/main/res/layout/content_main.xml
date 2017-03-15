@@ -59,7 +59,7 @@
                         android:paddingRight="5dp"
                         android:minEms="1"
                         android:textSize="16sp"
-                        android:text="20" />
+                        android:text="1" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -87,7 +87,7 @@
                         android:background="@drawable/border"
                         android:minEms="1"
                         android:textSize="16sp"
-                        android:text="20"/>
+                        android:text="1"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -115,7 +115,7 @@
                         android:background="@drawable/border"
                         android:minEms="2"
                         android:textSize="16sp"
-                        android:text="180"/>
+                        android:text="0"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -143,35 +143,7 @@
                         android:background="@drawable/border"
                         android:minEms="5"
                         android:textSize="16sp"
-                        android:text="Exploring"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp">
-
-                    <TextView
-                        android:id="@+id/textView5"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:minEms="1"
-                        android:textStyle="bold"
-                        android:textSize="16sp"
-                        android:text="Battery: "/>
-
-                    <TextView
-                        android:id="@+id/textViewBattery"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="5dp"
-                        android:background="@drawable/border"
-                        android:minEms="2"
-                        android:textSize="16sp"
-                        android:text="100"/>
+                        android:text="na"/>
                 </LinearLayout>
             </LinearLayout>
 
