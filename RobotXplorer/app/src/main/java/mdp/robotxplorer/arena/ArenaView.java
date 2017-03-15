@@ -97,32 +97,25 @@ public class ArenaView extends View {
 
     public void gridUpdate(String gridData) {
         Log.e(Config.log_id, gridData);
-        String gridDataInTernary = transpose(gridData);
-
-        /*for (int i = 0; i < gridDataInHex.length(); i++) {
-            gridDataInTernary += CommonOperation.HexToBinary(gridDataInHex.charAt(i) + "");
-        }*/
-
+        String gridDataInTernary = gridData;
         arena.updateObstacleCellProperty(gridDataInTernary);
     }
 
+    /*
     public String transpose(String gridData) {
         int gridlen = gridData.length();
-        String[] gridRow = new String[(int) Math.ceil((double) gridlen / (double) 20)];
-
-        for (int i = 0; i < gridRow.length; i++)
-            gridRow[i] = gridData.substring(i * 20, Math.min(gridlen, (i + 1) * 20));
+        String[] gridRow = new String[(int)Math.ceil((double)gridlen/(double)20)];
+        for (int i=0; i<gridRow.length; i++)
+            gridRow[i] = gridData.substring(i*20, Math.min(gridlen, (i+1)*20));
 
         String transposed = "";
-
         for(int i = 19; i >= 0; i--) {
             for (int j = 0; j <= 14; j++) {
                 transposed += gridRow[j].charAt(i);
             }
         }
-
         return transposed;
-    }
+    }*/
 
     @Override
     public void setOnTouchListener(OnTouchListener l) {

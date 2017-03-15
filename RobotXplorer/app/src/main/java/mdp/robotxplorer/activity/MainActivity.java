@@ -753,9 +753,10 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void btnResetGrid(View a) {
-        String s = "{\"grid\":\"00000000000000000000";
-        for (int i = 0; i <= 13; i ++) s += "00000000000000000000";
-        s += "\",\"status\":\"status name\"}";
+        String s = "{\"grid\":\"22222000000000000021";
+        for(int i=0; i<=13; i++) s += "00000000000000000021";
+        s += "\",\"robotPosition\":[1,1,0]}";
+        Log.e("reset",s);
         handleJson(s);
     }
 
@@ -897,16 +898,13 @@ public class MainActivity extends AppCompatActivity
     }*/
 
     private void handleJson(String readMessage) {
-        readMessage = readMessage.substring(1);
-        handleRobotBatteryUpdate(readMessage);
         handleRobotPositionUpdate(readMessage);
         handleGridUpdate(readMessage);
-        //handleMdf1Update(readMessage);
-        //handleMdf2Update(readMessage);
+        handleMDFString(readMessage);
         handleStatusUpdate(readMessage);
     }
 
-    private void handleRobotBatteryUpdate(String readMessage) {
+    /*private void handleRobotBatteryUpdate(String readMessage) {
         String battery = "";
 
         try {
@@ -917,7 +915,7 @@ public class MainActivity extends AppCompatActivity
         } catch (Exception e) {
             Log.e(Config.log_id, e.getMessage());
         }
-    }
+    }*/
 
     private void handleMDFString(String readMessage) {
         String grid = "";
@@ -940,16 +938,15 @@ public class MainActivity extends AppCompatActivity
                 } else if (mdf[i].equals("2")){
                     mdf1 += "1";
                     mdf2 += "1";
+
                 }
             }
 
             mdf1 += "11";
             mdf1 = new BigInteger(mdf1, 2).toString(16);
+            mdf2 += countZerosToHex(mdf2) + new BigInteger(mdf2, 2).toString(16);
+            Log.e("MDF2", mdf2);
 
-            Log.e("MDF1", mdf1);
-
-            mdf2 = countZerosToHex(mdf2);
-            mdf2 += new BigInteger(mdf2, 2).toString(16);
 
         } catch (Exception e) {
             Log.e(Config.log_id, e.getMessage());
