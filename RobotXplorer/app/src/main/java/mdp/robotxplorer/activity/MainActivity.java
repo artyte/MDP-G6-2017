@@ -102,12 +102,11 @@ public class MainActivity extends AppCompatActivity
     };
 
     protected void addMDF(View a) {
-        logList.add(logList.size(),mdf1);
-        logList.add(logList.size(),mdf2);
-
+        logList.add(mdf1);
+        logList.add(mdf2);
         LogFragment fragment = (LogFragment) getSupportFragmentManager().findFragmentByTag("logFragment");
         fragment.addLog(logList);
-        Operation.showToast(this, "MDF Strings added to log!");
+        Operation.showToast(this, "mdf strings added to log!");
     }
 
     @Override
@@ -922,7 +921,7 @@ public class MainActivity extends AppCompatActivity
 
             mdf1 += "11";
             mdf1 = new BigInteger(mdf1, 2).toString(16);
-            mdf2 += countZerosToHex(mdf2) + new BigInteger(mdf2, 2).toString(16);
+            mdf2 = countZerosToHex(mdf2) + new BigInteger(mdf2, 2).toString(16);
             Log.e("MDF2", mdf2);
 
 
