@@ -19,14 +19,10 @@ public interface Protocol {
     String TURN_RIGHT   = "pD";
     String MOVE_FORWARD = "pF";
 
+    String CALIBRATE = "az";
     String SEND_ARENA = "pse";
     String START_EXPLORATION = "pe";
     String START_FASTEST = "pf";
-
-    String STATUS    = "pst";
-    String BATTERY   = "pb";
-    String POSITION  = "pp";
-    String CALIBRATE = "az";
 
     //========== Protocol for communication with AMDTool  ==========
     String AMD_TURN_LEFT    = "A";

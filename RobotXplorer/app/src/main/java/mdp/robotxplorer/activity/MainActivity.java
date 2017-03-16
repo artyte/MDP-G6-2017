@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity
     boolean isShowingLog = false;
     //boolean isAccelerometerEnabled = false;
 
-    TextView textViewX, textViewY, textViewDirection, textViewStatus;
+    TextView textViewX, textViewY, textViewDirection, textViewStatus, textViewMDF1, textViewMDF2;
     //Switch swArenaStart, swAutoGridUpdate, swUseAccelerometer;
 
     MazeFragment mazeFragment = null;
@@ -142,6 +142,8 @@ public class MainActivity extends AppCompatActivity
 
         textViewDirection = (TextView) findViewById(R.id.textViewDirection);
         textViewStatus = (TextView) findViewById(R.id.textViewStatus);
+        textViewMDF1 = (TextView) findViewById(R.id.mdf1_textview);
+        textViewMDF2 = (TextView) findViewById(R.id.mdf2_textview);
         //textViewBattery = (TextView) findViewById(R.id.textViewBattery);
 
         /*MenuItem miArenaStart = navigationView.getMenu().findItem(R.id.sw_arena_start);
@@ -394,11 +396,11 @@ public class MainActivity extends AppCompatActivity
                 break;
 
             case R.id.nav_view_mdf1:
-                sendMessage(mdf1);
+                sendMessage("p" + mdf1);
                 break;
 
             case R.id.nav_view_mdf2:
-                sendMessage(mdf2);
+                sendMessage("p" + mdf2);
                 break;
 
             default:
@@ -922,8 +924,9 @@ public class MainActivity extends AppCompatActivity
             mdf1 += "11";
             mdf1 = new BigInteger(mdf1, 2).toString(16);
             mdf2 = countZerosToHex(mdf2) + new BigInteger(mdf2, 2).toString(16);
-            Log.e("MDF2", mdf2);
 
+            textViewMDF1.setText(mdf1);
+            textViewMDF2.setText(mdf2);
 
         } catch (Exception e) {
             Log.e(Config.log_id, e.getMessage());
@@ -981,40 +984,6 @@ public class MainActivity extends AppCompatActivity
 
         return transposed;
     }
-
-    /*private void handleMdf2Update(String readMessage) {
-        String gridData = "";
-        try {
-            JSONObject obj = new JSONObject(readMessage);
-            gridData = obj.getString("mdf2");
-            getArena().setMdf2(gridData);
-            MazeFragment fragment = (MazeFragment) getSupportFragmentManager().findFragmentByTag("mazeFragment");
-
-            if (fragment != null) {
-                fragment.gridUpdateMDF1(gridData);
-            }
-
-        } catch (Exception e) {
-            Log.e(Config.log_id, "handleMdf2Update "+e.getMessage());
-        }
-    }
-
-    private void handleMdf1Update(String readMessage) {
-        String gridData = "";
-
-        try {
-            JSONObject obj = new JSONObject(readMessage);
-            gridData = obj.getString("mdf1");
-            getArena().setMdf1(gridData); //save it
-            MazeFragment fragment = (MazeFragment) getSupportFragmentManager().findFragmentByTag("mazeFragment");
-
-            if (fragment != null) {
-                fragment.gridUpdateMDF2(gridData);
-            }
-        } catch (Exception e) {
-            Log.e(Config.log_id, "handleMdf1Update "+e.getMessage());
-        }
-    }*/
 
     private void handleStatusUpdate(String readMessage) {
         String status = "";
