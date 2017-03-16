@@ -107,8 +107,9 @@ public class MainActivity extends AppCompatActivity
     };
 
     protected void addMDF(View a) {
-        logList.add(mdf1);
-        logList.add(mdf2);
+        logList.add(logList.size(),mdf1);
+        logList.add(logList.size(),mdf2);
+
         LogFragment fragment = (LogFragment) getSupportFragmentManager().findFragmentByTag("logFragment");
         fragment.addLog(logList);
         Operation.showToast(this, "MDF Strings added to log!");
