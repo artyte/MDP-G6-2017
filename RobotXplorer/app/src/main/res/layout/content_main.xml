@@ -199,37 +199,27 @@
                 android:layout_gravity="center"
                 android:minHeight="50dip" >
 
-                <TextView
-                    android:id="@+id/textViewModeSelect"
+                <Button
+                    android:id="@+id/btnExploration"
+                    android:padding="1dp"
+                    android:onClick="startExploration"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
-                    android:minWidth="100dip"
-                    android:textStyle="bold"
-                    android:textSize="16sp"
-                    android:text="Mode Select: " />
-
-                <Spinner
-                    android:id="@+id/sp_mode_select"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:minWidth="160dip"
-                    android:entries="@array/mode_values"
-                    android:prompt="@string/mode_prompt" />
+                    android:minWidth="200dip"
+                    android:text="Start Exploration"/>
 
                 <Button
-                    android:id="@+id/btnStartMode"
+                    android:id="@+id/btnFastest"
                     android:padding="1dp"
-                    android:onClick="btnStartMode"
+                    android:onClick="startFastest"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
-                    android:minWidth="100dip"
-                    android:text="Start"/>
+                    android:minWidth="200dip"
+                    android:text="Start Fastest"/>
             </LinearLayout>
 
             <LinearLayout

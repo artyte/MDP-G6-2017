@@ -13,8 +13,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -31,8 +29,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.CompoundButton;
-import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -82,7 +78,6 @@ public class MainActivity extends AppCompatActivity
 
     TextView textViewX, textViewY, textViewDirection, textViewStatus;
     //Switch swArenaStart, swAutoGridUpdate, swUseAccelerometer;
-    Spinner spModeSelect;
 
     MazeFragment mazeFragment = null;
     LogFragment logFragment = null;
@@ -139,8 +134,6 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        spModeSelect = (Spinner) findViewById(R.id.sp_mode_select);
 
         //navigationView.getMenu().findItem(R.id.sw_auto_grid_update).setActionView(new Switch(this));
         //navigationView.getMenu().findItem(R.id.sw_use_accelerometer).setActionView(new Switch(this));
@@ -376,15 +369,6 @@ public class MainActivity extends AppCompatActivity
                 startActivityForResult(intent, Config.INPUT_POS_ACTIVITY);// Activity is started with requestCode 2
 
                 break;
-
-            /*case R.id.nav_enable_visability:
-                if (btAdapter != null && btAdapter.getScanMode() != BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
-                    Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-                    discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 200);
-                    startActivity(discoverableIntent);
-                }
-
-                break;*/
 
             case R.id.nav_message_log:
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -727,23 +711,20 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    public void startExploration(View a) {
+        sendMessage(Protocol.START_EXPLORATION);
+        textViewStatus.setText("Exploring");
+    }
+
+    public void startFastest(View a) {
+        sendMessage(Protocol.START_FASTEST);
+        textViewStatus.setText("Fastest");
+    }
+
     public void btnSend(View a) {
         TextView textToSend = (TextView) findViewById(R.id.txtString);
         String data = textToSend.getText().toString();
         sendMessage(data);
-    }
-
-    public void btnStartMode(View a) {
-        if (spModeSelect.getSelectedItem().equals("Exploration")) {
-            //Operation.showToast(this, "Exploration Mode Started");
-            sendMessage(Protocol.START_EXPLORATION);
-            textViewStatus.setText("Exploring");
-
-        } else if (spModeSelect.getSelectedItem().equals("Fastest")) {
-            //Operation.showToast(this, "Fastest Mode Started");
-            sendMessage(Protocol.START_FASTEST);
-            textViewStatus.setText("Fastest");
-        }
     }
 
     public void btnCalibrate(View a) {
