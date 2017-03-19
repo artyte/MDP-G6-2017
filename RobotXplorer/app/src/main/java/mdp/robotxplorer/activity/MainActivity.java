@@ -31,6 +31,7 @@ import android.view.MenuItem;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -76,6 +77,7 @@ public class MainActivity extends AppCompatActivity
     boolean isShowingLog = false;
     //boolean isAccelerometerEnabled = false;
 
+    ToggleButton tgbExploration;
     TextView textViewX, textViewY, textViewDirection, textViewStatus, textViewMDF1, textViewMDF2;
     //Switch swArenaStart, swAutoGridUpdate, swUseAccelerometer;
 
@@ -136,15 +138,17 @@ public class MainActivity extends AppCompatActivity
 
         //navigationView.getMenu().findItem(R.id.sw_auto_grid_update).setActionView(new Switch(this));
         //navigationView.getMenu().findItem(R.id.sw_use_accelerometer).setActionView(new Switch(this));
+        tgbExploration = (ToggleButton) findViewById(R.id.tgbExploration);
+        tgbExploration.setOnCheckedChangeListener(this);
 
         textViewX = (TextView) findViewById(R.id.textViewX);
         textViewY = (TextView) findViewById(R.id.textViewY);
 
         textViewDirection = (TextView) findViewById(R.id.textViewDirection);
         textViewStatus = (TextView) findViewById(R.id.textViewStatus);
+
         textViewMDF1 = (TextView) findViewById(R.id.mdf1_textview);
         textViewMDF2 = (TextView) findViewById(R.id.mdf2_textview);
-        //textViewBattery = (TextView) findViewById(R.id.textViewBattery);
 
         /*MenuItem miArenaStart = navigationView.getMenu().findItem(R.id.sw_arena_start);
         swArenaStart = (Switch) findViewById(R.id.sw_arena_start);
@@ -259,8 +263,6 @@ public class MainActivity extends AppCompatActivity
             if (fragment != null)
                 fragment.addLog(logList);
         }
-
-        setupScheduler();
 
         /*if (isAccelerometerEnabled) {
             if (accelerometerSensorProvider != null)
@@ -414,9 +416,24 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-        /*Arena arena = getArena();
-
+        //Arena arena = getArena();
         switch (compoundButton.getId()) {
+            case R.id.tgbExploration:
+                if (b) {
+                    sendMessage(Protocol.START_EXPLORATION);
+                    textViewStatus.setText("Exploring");
+                    Operation.showToast(this, "Exploration Started");
+
+                } else {
+                    sendMessage(Protocol.STOP_EXPLORATION);
+                    textViewStatus.setText("N/A");
+                    Operation.showToast(this, "Exploration Stopped");
+                }
+
+                break;
+
+        }
+        /*switch (compoundButton.getId()) {
             case R.id.sw_arena_start_stop:
                 if (arena != null) {
                     if (b) {
@@ -712,11 +729,6 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    public void startExploration(View a) {
-        sendMessage(Protocol.START_EXPLORATION);
-        textViewStatus.setText("Exploring");
-    }
-
     public void startFastest(View a) {
         sendMessage(Protocol.START_FASTEST);
         textViewStatus.setText("Fastest");
@@ -751,11 +763,6 @@ public class MainActivity extends AppCompatActivity
         String data = sharedPref.getString("pref_f2", Protocol.TURN_RIGHT);
         sendMessage(data);
         Log.d(Config.log_id, data);
-    }
-
-    public void btnSendGridUpdate() {
-        sendMessage(Protocol.SEND_ARENA);
-        Operation.showToast(getApplicationContext(), "Grid data requested");
     }
 
     public void handleMessage(Message msg) {
@@ -883,19 +890,6 @@ public class MainActivity extends AppCompatActivity
         handleStatusUpdate(readMessage);
     }
 
-    /*private void handleRobotBatteryUpdate(String readMessage) {
-        String battery = "";
-
-        try {
-            JSONObject obj = new JSONObject(readMessage);
-            battery = obj.getString("battery");
-            textViewBattery.setText(battery);
-
-        } catch (Exception e) {
-            Log.e(Config.log_id, e.getMessage());
-        }
-    }*/
-
     private void handleMDFString(String readMessage) {
         String grid = "";
         try {
@@ -942,13 +936,11 @@ public class MainActivity extends AppCompatActivity
             if (numOfZero == 4) {
                 numOfZero = 0;
                 zeroStr += "0";
-                Log.e("MDF2", zeroStr);
             }
 
             if (s[i].equals("0")) numOfZero++;
             else break;
         }
-
         return zeroStr;
     }
 
@@ -976,7 +968,7 @@ public class MainActivity extends AppCompatActivity
 
         String transposed = "";
 
-        for(int i = 19; i >= 0; i--) {
+        for (int i = 19; i >= 0; i--) {
             for (int j = 0; j <= 14; j++) {
                 transposed += gridRow[j].charAt(i);
             }
@@ -1027,9 +1019,7 @@ public class MainActivity extends AppCompatActivity
             textViewY.setText(Integer.toString(y));
             textViewDirection.setText(Integer.toString(direction));
 
-
             MazeFragment fragment = (MazeFragment) getSupportFragmentManager().findFragmentByTag("mazeFragment");
-
 
             if (fragment != null) {
                 x -= 1;
@@ -1095,22 +1085,6 @@ public class MainActivity extends AppCompatActivity
             mOutStringBuffer.setLength(0);
             Log.d(Config.log_id, "send message: " + message);
         }
-    }
-
-    private void setupScheduler() {
-        /*if (swAutoGridUpdate != null && swAutoGridUpdate.isChecked()) {
-            Runnable myRunnable = new Runnable() {
-                public void run() {
-                    Log.d(Config.log_id,"Auto Update grid runnable execution");
-                    sendMessage(Protocol.SEND_ARENA);
-                    //prepare and send the data here..
-                    handlerAutoUpdate.removeCallbacks(null);
-                    handlerAutoUpdate.postDelayed(this, Config.GRID_AUTO_UPDATE_INTERVAL);
-                }
-            };
-
-            handlerAutoUpdate.postDelayed(myRunnable, Config.GRID_AUTO_UPDATE_INTERVAL);
-        }*/
     }
 
     public void removeSchedulerCallBack() {

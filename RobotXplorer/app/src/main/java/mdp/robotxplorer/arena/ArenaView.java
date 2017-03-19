@@ -130,10 +130,10 @@ public class ArenaView extends View {
                 }
             }
         } else {
-            if (getContext() instanceof MainActivity) {
+            /*if (getContext() instanceof MainActivity) {
                 MainActivity mainActivity =  (MainActivity) getContext();
                 mainActivity.btnSendGridUpdate();
-            }
+            }*/
         }
 
         return super.onTouchEvent(event);

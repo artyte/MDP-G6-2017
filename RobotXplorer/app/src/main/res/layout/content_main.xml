@@ -9,9 +9,6 @@
     tools:context="mdp.robotxplorer.activity.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="wrap_content"
@@ -22,9 +19,6 @@
             android:layout_height="480dp"
             android:layout_width="match_parent"/>
 
-        <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
         <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="616dp"
@@ -156,71 +150,6 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:layout_gravity="center" >
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp">
-
-                    <TextView
-                        android:id="@+id/mdf1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:minEms="1"
-                        android:textStyle="bold"
-                        android:textSize="16sp"
-                        android:text="mdf1: " />
-
-                    <TextView
-                        android:id="@+id/mdf1_textview"
-                        android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:background="@drawable/border"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="5dp"
-                        android:minEms="1"
-                        android:textSize="16sp"
-                        android:text="" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp">
-
-                    <TextView
-                        android:id="@+id/mdf2"
-                        android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:minEms="1"
-                        android:textStyle="bold"
-                        android:textSize="16sp"
-                        android:text="mdf2: " />
-
-                    <TextView
-                        android:id="@+id/mdf2_textview"
-                        android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="5dp"
-                        android:background="@drawable/border"
-                        android:minEms="1"
-                        android:textSize="16sp"
-                        android:text=""/>
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
@@ -270,16 +199,16 @@
                 android:layout_gravity="center"
                 android:minHeight="50dip" >
 
-                <Button
-                    android:id="@+id/btnExploration"
+                <ToggleButton
+                    android:id="@+id/tgbExploration"
                     android:padding="1dp"
-                    android:onClick="startExploration"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
                     android:minWidth="200dip"
-                    android:text="Start Exploration"/>
+                    android:textOn="Stop Exploration"
+                    android:textOff="Start Exploration" />
 
                 <Button
                     android:id="@+id/btnFastest"
@@ -345,8 +274,72 @@
                     android:text="Reset Grid"/>
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_gravity="center" >
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp" >
+
+                    <TextView
+                        android:id="@+id/mdf1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minWidth="100dip"
+                        android:textStyle="bold"
+                        android:textSize="16sp"
+                        android:text="MDF1 String: " />
+
+                    <TextView
+                        android:id="@+id/mdf1_textview"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:background="@drawable/border"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:minEms="15"
+                        android:maxEms="15"
+                        android:textSize="16sp"
+                        android:text="" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp" >
+
+                    <TextView
+                        android:id="@+id/mdf2"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:minWidth="100dip"
+                        android:textStyle="bold"
+                        android:textSize="16sp"
+                        android:text="MDF2 String: " />
+
+                    <TextView
+                        android:id="@+id/mdf2_textview"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:background="@drawable/border"
+                        android:minEms="15"
+                        android:maxEms="15"
+                        android:textSize="16sp"
+                        android:text=""/>
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
-        </HorizontalScrollView>
     </LinearLayout>
-    </ScrollView>
 </RelativeLayout>

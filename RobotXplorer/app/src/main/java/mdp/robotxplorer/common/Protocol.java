@@ -20,9 +20,10 @@ public interface Protocol {
     String MOVE_FORWARD = "pF";
 
     String CALIBRATE = "az";
-    String SEND_ARENA = "pse";
     String START_EXPLORATION = "pe";
+    String STOP_EXPLORATION  = "ps";
     String START_FASTEST = "pf";
+    //String SEND_ARENA = "pse";
 
     //========== Protocol for communication with AMDTool  ==========
     String AMD_TURN_LEFT    = "A";
