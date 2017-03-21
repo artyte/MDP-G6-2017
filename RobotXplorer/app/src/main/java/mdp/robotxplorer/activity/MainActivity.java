@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
@@ -32,14 +33,15 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
-
 import mdp.robotxplorer.R;
 import mdp.robotxplorer.arena.Arena;
 import mdp.robotxplorer.arena.Robot;
@@ -104,11 +106,21 @@ public class MainActivity extends AppCompatActivity
     };
 
     protected void addMDF(View a) {
-        logList.add(mdf1);
+        try {
+            File file = new File("storage/emulated/0/Android/data/mdp.robotxplorer/files", "mdf_strings");
+            FileOutputStream outputStream = new FileOutputStream(file);
+
+            String s = "mdf1: " + mdf1 + "\n" + "mdf2: " + mdf2;
+            outputStream.write(s.getBytes());
+            outputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        /*logList.add(mdf1);
         logList.add(mdf2);
         LogFragment fragment = (LogFragment) getSupportFragmentManager().findFragmentByTag("logFragment");
-        fragment.addLog(logList);
-        Operation.showToast(this, "mdf strings added to log!");
+        fragment.addLog(logList);*/
+        Operation.showToast(this, "mdf file created!");
     }
 
     @Override
