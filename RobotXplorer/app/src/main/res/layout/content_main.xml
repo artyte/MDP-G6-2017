@@ -19,12 +19,16 @@
             android:layout_height="480dp"
             android:layout_width="match_parent"/>
 
-        <LinearLayout
-            android:layout_height="wrap_content"
-            android:layout_width="616dp"
-            android:orientation="vertical"
+        <ScrollView
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp" >
+
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -194,10 +198,29 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_gravity="center"
-                android:minHeight="50dip" >
+                android:layout_gravity="center" >
+
+                <TextView
+                    android:id="@+id/labelExploration"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:minWidth="100dip"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:text="Exploration: " />
+
+                <TextView
+                    android:id="@+id/textViewExplorationTimer"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:background="@drawable/border"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:minEms="5"
+                    android:textSize="16sp"
+                    android:text="00:00:00" />
 
                 <ToggleButton
                     android:id="@+id/tgbExploration"
@@ -206,20 +229,71 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
-                    android:minWidth="200dip"
-                    android:textOn="Stop Exploration"
-                    android:textOff="Start Exploration" />
+                    android:minWidth="100dip"
+                    android:textOn="Finish"
+                    android:textOff="Start" />
 
                 <Button
-                    android:id="@+id/btnFastest"
+                    android:id="@+id/btnResetExplorationTimer"
                     android:padding="1dp"
-                    android:onClick="startFastest"
+                    android:onClick="resetExplorationTimer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
-                    android:minWidth="200dip"
-                    android:text="Start Fastest"/>
+                    android:minWidth="150dip"
+                    android:text="Reset Timer" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center" >
+
+                <TextView
+                    android:id="@+id/labelFastest"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:minWidth="100dip"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:text="Fastest: " />
+
+                <TextView
+                    android:id="@+id/textViewFastestTimer"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:background="@drawable/border"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:minEms="5"
+                    android:textSize="16sp"
+                    android:text="00:00:00" />
+
+                <ToggleButton
+                    android:id="@+id/tgbFastest"
+                    android:padding="1dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:minWidth="100dip"
+                    android:textOn="Finish"
+                    android:textOff="Start" />
+
+                <Button
+                    android:id="@+id/btnResetFastestTimer"
+                    android:padding="1dp"
+                    android:onClick="resetFastestTimer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:minWidth="150dip"
+                    android:text="Reset Timer" />
             </LinearLayout>
 
             <LinearLayout
@@ -228,19 +302,67 @@
                 android:orientation="horizontal"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
-                android:layout_gravity="center"
-                android:minHeight="50dip" >
+                android:layout_gravity="center" >
 
-                <Button
-                    android:id="@+id/btnCalibrate"
-                    android:padding="1dp"
-                    android:onClick="btnCalibrate"
+                <TextView
+                    android:id="@+id/mdf1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
                     android:minWidth="100dip"
-                    android:text="Calibrate"/>
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:text="MDF1 String: " />
+
+                <TextView
+                    android:id="@+id/mdf1_textview"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:background="@drawable/border"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:minEms="15"
+                    android:maxEms="15"
+                    android:textSize="16sp"
+                    android:text="" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_gravity="center" >
+
+                <TextView
+                    android:id="@+id/mdf2"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:minWidth="100dip"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:text="MDF2 String: " />
+
+                <TextView
+                    android:id="@+id/mdf2_textview"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:background="@drawable/border"
+                    android:minEms="15"
+                    android:maxEms="15"
+                    android:textSize="16sp"
+                    android:text=""/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_gravity="center" >
 
                 <Button
                     android:id="@+id/btnF1"
@@ -261,85 +383,8 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
                     android:text="F2"/>
-
-                <Button
-                    android:id="@+id/btnResetGrid"
-                    android:padding="1dp"
-                    android:onClick="btnResetGrid"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:minWidth="100dip"
-                    android:text="Reset Grid"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:layout_gravity="center" >
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp" >
-
-                    <TextView
-                        android:id="@+id/mdf1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:minWidth="100dip"
-                        android:textStyle="bold"
-                        android:textSize="16sp"
-                        android:text="MDF1 String: " />
-
-                    <TextView
-                        android:id="@+id/mdf1_textview"
-                        android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:background="@drawable/border"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="5dp"
-                        android:minEms="15"
-                        android:maxEms="15"
-                        android:textSize="16sp"
-                        android:text="" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp" >
-
-                    <TextView
-                        android:id="@+id/mdf2"
-                        android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:minWidth="100dip"
-                        android:textStyle="bold"
-                        android:textSize="16sp"
-                        android:text="MDF2 String: " />
-
-                    <TextView
-                        android:id="@+id/mdf2_textview"
-                        android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="5dp"
-                        android:background="@drawable/border"
-                        android:minEms="15"
-                        android:maxEms="15"
-                        android:textSize="16sp"
-                        android:text=""/>
-                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
+        </ScrollView>
     </LinearLayout>
 </RelativeLayout>

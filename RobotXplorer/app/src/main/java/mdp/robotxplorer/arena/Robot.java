@@ -1,50 +1,42 @@
 package mdp.robotxplorer.arena;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.Paint;
-
 import java.io.Serializable;
 
-import mdp.robotxplorer.R;
-
 public class Robot implements Serializable {
+    private int xPos, yPos;
+    private Direction facingDirection;
+    private String status;
 
-    int x;
-    int y;
-    int direction;
-    Arena arena;
-    String status;
-
-    public int getX() {
-        return x;
+    public enum Direction {
+        NORTH, SOUTH, EAST, WEST
     }
 
-    public void setX(int x) {
-        this.x = x;
+    public Robot(int xPos, int yPos, Direction direction) {
+        this.xPos = xPos;
+        this.yPos = yPos;
+        this.facingDirection = direction;
+        this.status = "N/A";
     }
 
-    public int getY() {
-        return y;
+    public int getXPos() {
+        return xPos;
     }
 
-    public void setY(int y) {
-        this.y = y;
+    public int getYPos() {
+        return yPos;
     }
 
-    public Robot(int x, int y, int direction, Arena arena) {
-        this.status = "na";
-        this.x = x;
-        this.y = y;
-        this.direction = direction;
-        this.arena = arena;
+    public void setPosition(int xPos, int yPos) {
+        this.xPos = xPos;
+        this.yPos = yPos;
     }
 
-    public int getDirection() {
-        return direction;
+    public Direction getFacingDirection() {
+        return facingDirection;
+    }
+
+    public void setFacingDirection(Direction direction) {
+        facingDirection = direction;
     }
 
     public String getStatus() {
@@ -55,121 +47,63 @@ public class Robot implements Serializable {
         this.status = status;
     }
 
-    public void setDirection(int direction) {
-        this.direction = direction;
-    }
+    public void moveForward() {
+        switch (facingDirection) {
+            case NORTH:
+                if (xPos > 1) xPos --;
+                break;
 
-    private void turnRight() {
-        direction = (direction + 1) % 4;
-    }
+            case SOUTH:
+                if (xPos < 13) xPos ++;
+                break;
 
-    private void turnLeft() {
-        direction = (direction - 1) % 4;
-        if (direction < 0)
-            direction = 3;
-    }
+            case EAST:
+                if (yPos < 18) yPos ++;
+                break;
 
-    public void move(Move move) {
-        if (move == Move.UP) {
-            moveForward();
-        } else if (move == Move.RIGHT) {
-            turnRight();
-        } else if (move == Move.LEFT) {
-            turnLeft();
-        }
-
-        if (arena != null)
-            exploreCurrentPosition();
-    }
-
-    public boolean checkNewPosition(int newX, int newY) {
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (arena.getCellArray() != null) {
-                    arena.getCellArray()[newX + j][newY + i].setExplored(true);
-                }
-            }
-        }
-    return true;
-    }
-
-    public void exploreCurrentPosition() {
-    }
-
-    private void moveForward() {
-        if (direction == 0) {
-            x = x - 1;
-        } else if (direction == 1) {
-            y = y - 1;
-        } else if (direction == 2) {
-            x = x + 1;
-        } else if (direction == 3) {
-            y = y + 1;
-        }
-
-    }
-
-
-    public void draw(Canvas canvas, int gridSize, Context context) {
-        Paint paint = new Paint();
-        Bitmap b = BitmapFactory.decodeResource(context.getResources(), R.mipmap.robot);
-        Bitmap scaledBitmap = Bitmap.createScaledBitmap(b, gridSize * 3, gridSize * 3, false);
-        Matrix matrix = new Matrix();
-        if (direction == 0) {
-            matrix.setRotate(0, scaledBitmap.getWidth() / 2, scaledBitmap.getHeight() / 2);
-        } else if (direction == 1) {
-            matrix.setRotate(90, scaledBitmap.getWidth() / 2, scaledBitmap.getHeight() / 2);
-
-        } else if (direction == 2) {
-            matrix.setRotate(180, scaledBitmap.getWidth() / 2, scaledBitmap.getHeight() / 2);
-
-        } else if (direction == 3) {
-            matrix.setRotate(270, scaledBitmap.getWidth() / 2, scaledBitmap.getHeight() / 2);
-
-        }
-
-        matrix.postTranslate(gridSize / 2 + gridSize * (17 - y), gridSize / 2 + gridSize * x);
-        canvas.drawBitmap(scaledBitmap, matrix, paint);
-
-    }
-
-    public void moveRobot(int x, int y, int direction) {
-        setX(x);
-        setY(y);
-        setDirection(direction);
-        if (arena.isStarted == false) {
-            arena.reset();
-            arena.setStartProperty(new StartProperty(x, y));
-        }
-        exploreCurrentPosition();
-    }
-
-
-    public enum Direction implements Serializable {
-        UP(0), RIGHT(1), DOWN(2), LEFT(3);
-
-        private final int number;
-
-        private Direction(int number) {
-            this.number = number;
-        }
-
-        public int getNumber() {
-            return number;
+            case WEST:
+                if (yPos > 1) yPos --;
+                break;
         }
     }
 
-    public enum Move implements Serializable {
-        UP(0), RIGHT(1), LEFT(2);
+    public void turnLeft() {
+        switch (facingDirection) {
+            case NORTH:
+                facingDirection = Direction.WEST;
+                break;
 
-        private final int number;
+            case SOUTH:
+                facingDirection = Direction.EAST;
+                break;
 
-        private Move(int number) {
-            this.number = number;
+            case EAST:
+                facingDirection = Direction.NORTH;
+                break;
+
+            case WEST:
+                facingDirection = Direction.SOUTH;
+                break;
         }
+    }
 
-        public int getNumber() {
-            return number;
+    public void turnRight() {
+        switch (facingDirection) {
+            case NORTH:
+                facingDirection = Direction.EAST;
+                break;
+
+            case SOUTH:
+                facingDirection = Direction.WEST;
+                break;
+
+            case EAST:
+                facingDirection = Direction.SOUTH;
+                break;
+
+            case WEST:
+                facingDirection = Direction.NORTH;
+                break;
         }
     }
 }

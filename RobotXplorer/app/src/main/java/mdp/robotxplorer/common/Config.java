@@ -7,17 +7,13 @@ public interface Config {
 
     int ARENA_LENGTH = 20;
     int ARENA_WIDTH  = 15;
-
-    int DEFAULT_START_X = 0;
-    int DEFAULT_START_Y = 17;
-    int DEFAULT_GOAL_X = 12;
-    int DEFAULT_GOAL_Y = 17;
-    int DEFAULT_ROBOT_HEAD = 1;
+    int ARENA_AREA   = ARENA_LENGTH * ARENA_WIDTH;
 
     int BORDER = Color.rgb(56, 56, 56);
-    int OBSTACLE = Color.BLACK;
     int UNEXPLORED = Color.GRAY;
-    int EXPLORED = Color.WHITE;
+    int FREE_SPACE = Color.WHITE;
+    int OBSTACLE   = Color.BLACK;
+
     int START = Color.RED;
     int GOAL = Color.GREEN;
 
@@ -25,3 +21,4 @@ public interface Config {
     int GRID_AUTO_UPDATE_INTERVAL = 10000;
     int ACCELEROMETER_UPDATE_INTERVAL = 100;
 }
+

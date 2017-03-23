@@ -19,9 +19,9 @@ public interface Protocol {
     String TURN_RIGHT   = "pD";
     String MOVE_FORWARD = "pF";
 
-    String CALIBRATE = "az";
+    //String CALIBRATE = "az";
     String START_EXPLORATION = "pe";
-    String STOP_EXPLORATION  = "ps";
+    //String STOP_EXPLORATION  = "ps";
     String START_FASTEST = "pf";
     //String SEND_ARENA = "pse";
 

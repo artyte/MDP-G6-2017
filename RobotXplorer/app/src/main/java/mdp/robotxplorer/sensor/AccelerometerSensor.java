@@ -37,30 +37,30 @@ public class AccelerometerSensor implements SensorEventListener {
 
         } else if (Math.abs(x) > Math.abs(y)) {
             if (x < 0) {
-                SensorMovementRunnable sensorMovementRunnable = new SensorMovementRunnable(Robot.Move.UP);
-                handlerSensorMovement.postDelayed(sensorMovementRunnable, Config.ACCELEROMETER_UPDATE_INTERVAL);
+                //SensorMovementRunnable sensorMovementRunnable = new SensorMovementRunnable(Robot.Move.UP);
+                //handlerSensorMovement.postDelayed(sensorMovementRunnable, Config.ACCELEROMETER_UPDATE_INTERVAL);
 
                 Log.e(Config.log_id, "UP");
                 mSensorManager.unregisterListener(this);
 
             } else if (x > 0) {
-                SensorMovementRunnable sensorMovementRunnable = new SensorMovementRunnable(null);
-                handlerSensorMovement.postDelayed(sensorMovementRunnable, Config.ACCELEROMETER_UPDATE_INTERVAL);
+                //SensorMovementRunnable sensorMovementRunnable = new SensorMovementRunnable(null);
+                //handlerSensorMovement.postDelayed(sensorMovementRunnable, Config.ACCELEROMETER_UPDATE_INTERVAL);
 
                 Log.e(Config.log_id, "Down");
                 mSensorManager.unregisterListener(this);
             }
         } else {
             if (y < 0) {
-                SensorMovementRunnable sensorMovementRunnable = new SensorMovementRunnable(Robot.Move.LEFT);
-                handlerSensorMovement.postDelayed(sensorMovementRunnable, Config.ACCELEROMETER_UPDATE_INTERVAL);
+                //SensorMovementRunnable sensorMovementRunnable = new SensorMovementRunnable(Robot.Move.LEFT);
+                //handlerSensorMovement.postDelayed(sensorMovementRunnable, Config.ACCELEROMETER_UPDATE_INTERVAL);
 
                 Log.e(Config.log_id, "LEFT");
                 mSensorManager.unregisterListener(this);
 
             } else if (y > 0) {
-                SensorMovementRunnable sensorMovementRunnable = new SensorMovementRunnable(Robot.Move.RIGHT);
-                handlerSensorMovement.postDelayed(sensorMovementRunnable, Config.ACCELEROMETER_UPDATE_INTERVAL);
+                //SensorMovementRunnable sensorMovementRunnable = new SensorMovementRunnable(Robot.Move.RIGHT);
+                //handlerSensorMovement.postDelayed(sensorMovementRunnable, Config.ACCELEROMETER_UPDATE_INTERVAL);
 
                 Log.e(Config.log_id, "RIGHT");
                 mSensorManager.unregisterListener(this);
@@ -95,11 +95,11 @@ public class AccelerometerSensor implements SensorEventListener {
     }
 
     public class SensorMovementRunnable implements Runnable {
-        private Robot.Move move;
+        //private Robot.Move move;
 
-        public SensorMovementRunnable(Robot.Move move) {
+        /*public SensorMovementRunnable(Robot.Move move) {
             this.move = move;
-        }
+        }*/
 
         public void run() {
             removeHandlerCallback();
@@ -110,7 +110,7 @@ public class AccelerometerSensor implements SensorEventListener {
             } catch (Exception e) {
             }
 
-            if (move == Robot.Move.UP) {
+            /*if (move == Robot.Move.UP) {
                 activity.onAccelerometerChanged(Protocol.MOVE_FORWARD);
 
             } else if (move == Robot.Move.LEFT) {
@@ -118,7 +118,7 @@ public class AccelerometerSensor implements SensorEventListener {
 
             } else if (move == Robot.Move.RIGHT) {
                 activity.onAccelerometerChanged(Protocol.TURN_RIGHT);
-            }
+            }*/
         }
     }
 

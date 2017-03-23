@@ -9,8 +9,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
@@ -37,30 +38,26 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import mdp.robotxplorer.R;
-import mdp.robotxplorer.arena.Arena;
 import mdp.robotxplorer.arena.Robot;
 import mdp.robotxplorer.common.Config;
 import mdp.robotxplorer.common.Operation;
 import mdp.robotxplorer.common.Protocol;
+import mdp.robotxplorer.fragment.ArenaFragment;
 import mdp.robotxplorer.fragment.BasicDialogFragment;
 import mdp.robotxplorer.fragment.CustomAlertDialogFragment;
 import mdp.robotxplorer.fragment.DeviceListDialogFragment;
 import mdp.robotxplorer.fragment.LogFragment;
-import mdp.robotxplorer.fragment.MazeFragment;
 //import mdp.robotxplorer.sensor.AccelerometerSensor;
 import mdp.robotxplorer.service.BluetoothCommService;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         CompoundButton.OnCheckedChangeListener,
-        MazeFragment.OnFragmentInteractionListener,
-        LogFragment.OnListFragmentInteractionListener,
         DeviceListDialogFragment.DialogListener,
         CustomAlertDialogFragment.AlertDialogListener,
         BasicDialogFragment.AlertDialogListener {
@@ -69,30 +66,36 @@ public class MainActivity extends AppCompatActivity
     public static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
     public static final int REQUEST_ENABLE_BT = 24;
 
+    Timer explorationTimer, fastestTimer;
+    long explorationStartTime, fastestStartTime;
+
     // String buffer for outgoing messages
     private StringBuffer mOutStringBuffer;
     private BluetoothCommService bluetoothCommService = null;
     BluetoothAdapter btAdapter = null;
     ArrayList<String> logList = new ArrayList<String>();
     private String mConnectedDeviceName = null;
-    private String mdf1 = "", mdf2 = "";
     boolean isShowingLog = false;
     //boolean isAccelerometerEnabled = false;
 
-    ToggleButton tgbExploration;
+    Menu menu;
+    ToggleButton tgbExploration, tgbFastest;
+    TextView textViewExplorationTimer, textViewFastestTimer;
     TextView textViewX, textViewY, textViewDirection, textViewStatus, textViewMDF1, textViewMDF2;
     //Switch swArenaStart, swAutoGridUpdate, swUseAccelerometer;
 
-    MazeFragment mazeFragment = null;
-    LogFragment logFragment = null;
-    Handler handlerAutoUpdate = new Handler();
+    ArenaFragment arenaFragment;
+    LogFragment logFragment;
+    Handler explorationTimerHandler, fastestTimerHandler, handlerAutoUpdate = new Handler();
+
     //AccelerometerSensor accelerometerSensorProvider;
 
     private BroadcastReceiver messageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             // Get extra data included in the Intent
-            Log.d(Config.log_id, "Broadcast Message received, Message type : " + intent.getExtras().getInt(Protocol.MESSAGE_TYPE));
+            Log.d(Config.log_id, "Broadcast Message received");
+            Log.d(Config.log_id, "Message type: " + intent.getExtras().getInt(Protocol.MESSAGE_TYPE));
             Message msg = Message.obtain();
             msg.what = intent.getExtras().getInt(Protocol.MESSAGE_TYPE);
             msg.setData(intent.getExtras());
@@ -106,21 +109,10 @@ public class MainActivity extends AppCompatActivity
     };
 
     protected void addMDF(View a) {
-        try {
-            File file = new File("storage/emulated/0/Android/data/mdp.robotxplorer/files", "mdf_strings");
-            FileOutputStream outputStream = new FileOutputStream(file);
-
-            String s = "mdf1: " + mdf1 + "\n" + "mdf2: " + mdf2;
-            outputStream.write(s.getBytes());
-            outputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        /*logList.add(mdf1);
-        logList.add(mdf2);
-        LogFragment fragment = (LogFragment) getSupportFragmentManager().findFragmentByTag("logFragment");
-        fragment.addLog(logList);*/
-        Operation.showToast(this, "mdf file created!");
+        String fileDir = "storage/emulated/0/Download/mdf_strings.txt";
+        String data = "MDF1: " + arenaFragment.getMDF1() + "\n\r" + "MDF2: " + arenaFragment.getMDF2();
+        Operation.writeToFile(data, fileDir);
+        Operation.showToast(this, "MDF file created!");
     }
 
     @Override
@@ -153,6 +145,9 @@ public class MainActivity extends AppCompatActivity
         tgbExploration = (ToggleButton) findViewById(R.id.tgbExploration);
         tgbExploration.setOnCheckedChangeListener(this);
 
+        tgbFastest = (ToggleButton) findViewById(R.id.tgbFastest);
+        tgbFastest.setOnCheckedChangeListener(this);
+
         textViewX = (TextView) findViewById(R.id.textViewX);
         textViewY = (TextView) findViewById(R.id.textViewY);
 
@@ -162,10 +157,32 @@ public class MainActivity extends AppCompatActivity
         textViewMDF1 = (TextView) findViewById(R.id.mdf1_textview);
         textViewMDF2 = (TextView) findViewById(R.id.mdf2_textview);
 
-        /*MenuItem miArenaStart = navigationView.getMenu().findItem(R.id.sw_arena_start);
-        swArenaStart = (Switch) findViewById(R.id.sw_arena_start);
-        swArenaStart.setOnCheckedChangeListener(this);
-        miArenaStart.setActionView(swArenaStart);*/
+        textViewExplorationTimer = (TextView) findViewById(R.id.textViewExplorationTimer);
+        textViewFastestTimer = (TextView) findViewById(R.id.textViewFastestTimer);
+
+        explorationTimerHandler = new Handler() {
+            public void handleMessage(Message msg) {
+                long elapsedTime = System.currentTimeMillis() - explorationStartTime;
+
+                int millis  = (int) (elapsedTime % 1000) / 10 ;
+                int seconds = (int) (elapsedTime / 1000) % 60 ;
+                int minutes = (int) ((elapsedTime / (1000 * 60)) % 60);
+
+                String explorationTimeDisplay = String.format("%02d:%02d:%02d", minutes, seconds, millis);
+                textViewExplorationTimer.setText(explorationTimeDisplay);
+        }};
+
+        fastestTimerHandler = new Handler() {
+            public void handleMessage(Message msg) {
+                long elapsedTime = System.currentTimeMillis() - fastestStartTime;
+
+                int millis  = (int) (elapsedTime % 1000) / 10 ;
+                int seconds = (int) (elapsedTime / 1000) % 60 ;
+                int minutes = (int) ((elapsedTime / (1000 * 60)) % 60);
+
+                String fastestTimeDisplay = String.format("%02d:%02d:%02d", minutes, seconds, millis);
+                textViewFastestTimer.setText(fastestTimeDisplay);
+            }};
 
         /*MenuItem miAutoGridUpdate = navigationView.getMenu().findItem(R.id.sw_auto_grid_update);
         swAutoGridUpdate = new Switch(this);
@@ -185,24 +202,24 @@ public class MainActivity extends AppCompatActivity
         if (savedInstanceState == null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-            mazeFragment = (MazeFragment) getSupportFragmentManager().findFragmentByTag("mazeFragment");
+            arenaFragment = (ArenaFragment) getSupportFragmentManager().findFragmentByTag("arenaFragment");
             logFragment  = (LogFragment)  getSupportFragmentManager().findFragmentByTag("logFragment");
 
-            if (mazeFragment == null)
-                mazeFragment = new MazeFragment();
+            if (arenaFragment == null)
+                arenaFragment = new ArenaFragment();
 
             if (logFragment == null)
                 logFragment = new LogFragment();
 
-            transaction.add(R.id.main_fragment, mazeFragment, "mazeFragment");
+            transaction.add(R.id.main_fragment, arenaFragment, "arenaFragment");
             transaction.add(R.id.main_fragment, logFragment, "logFragment");
 
-            if (isShowingLog && mazeFragment != null && logFragment != null) {
+            if (isShowingLog && arenaFragment != null && logFragment != null) {
                 transaction.show(logFragment);
-                transaction.hide(mazeFragment);
+                transaction.hide(arenaFragment);
 
-            } else if (!isShowingLog && mazeFragment != null && logFragment != null) {
-                transaction.show(mazeFragment);
+            } else if (!isShowingLog && arenaFragment != null && logFragment != null) {
+                transaction.show(arenaFragment);
                 transaction.hide(logFragment);
             }
 
@@ -294,28 +311,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onUiUpdate(Arena arena) {
-        /*if (arena != null && arena.getRobot() != null) {
-            if (textViewDirection != null) {
-                if(arena.getRobot().getDirection() == 0)
-                    textViewDirection.setText("270");
-
-                else if(arena.getRobot().getDirection() == 1)
-                    textViewDirection.setText("0");
-
-                else if(arena.getRobot().getDirection() == 2)
-                    textViewDirection.setText("90");
-
-                else if(arena.getRobot().getDirection() == 3)
-                    textViewDirection.setText("180");
-            }
-
-            if (textViewStatus != null)
-                textViewStatus.setText(arena.getRobot().getStatus());
-        }*/
-    }
-
-    @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
         savedInstanceState.putStringArrayList("logList", logList);
@@ -324,8 +319,8 @@ public class MainActivity extends AppCompatActivity
         //savedInstanceState.putBoolean("isAccelerometerEnabled", isAccelerometerEnabled);
 
         //Save the fragment's instance
-        if (mazeFragment != null)
-            getSupportFragmentManager().putFragment(savedInstanceState, "mContent", mazeFragment);
+        if (arenaFragment != null)
+            getSupportFragmentManager().putFragment(savedInstanceState, "mContent", arenaFragment);
     }
 
 
@@ -353,8 +348,20 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+        this.menu = menu;
+        getMenuInflater().inflate(R.menu.input_pos, menu);
+
+        for (int i = 0; i < menu.size(); i++){
+            menu.getItem(i).setVisible(false);
+            Drawable drawable = menu.getItem(i).getIcon();
+
+            if (drawable != null) {
+                drawable.mutate();
+                drawable.setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
+            }
+        }
+
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -362,41 +369,48 @@ public class MainActivity extends AppCompatActivity
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
+        switch (item.getItemId()) {
+            case R.id.menu_done:
+                enableInputPosition(false);
+                displayRobotInfo(arenaFragment.getRobot());
+                sendRobotPosition(arenaFragment.getArena().getRobot());
+                break;
+
+            case R.id.menu_rotate:
+                arenaFragment.turnRight();
+                break;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-
         switch (item.getItemId()) {
             case R.id.nav_connect_device:
-                FragmentManager fm = getSupportFragmentManager();
-                DeviceListDialogFragment deviceListDialogFragment = new DeviceListDialogFragment();
-                deviceListDialogFragment.setCancelable(true);
-                //  deviceListDialogFragment.setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Holo_Dialog);
-                deviceListDialogFragment.setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_DeviceDefault_Dialog_Alert);
-                deviceListDialogFragment.show(fm, "deviceListDialogFragment");
+                selectDevice();
                 break;
 
             case R.id.nav_input_position:
-                Intent intent = new Intent(getApplicationContext(), InputPositionActivity.class);
-                startActivityForResult(intent, Config.INPUT_POS_ACTIVITY);// Activity is started with requestCode 2
+                inputPosition();
+                break;
 
+            case R.id.nav_reset_grid:
+                resetGrid();
                 break;
 
             case R.id.nav_message_log:
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 LogFragment logFragment = (LogFragment) getSupportFragmentManager().findFragmentByTag("logFragment");
-                MazeFragment mazeFragment = (MazeFragment) getSupportFragmentManager().findFragmentByTag("mazeFragment");
+                arenaFragment = (ArenaFragment) getSupportFragmentManager().findFragmentByTag("arenaFragment");
 
-                if (isShowingLog && logFragment != null & mazeFragment != null) {
-                    transaction.show(mazeFragment);
+                if (isShowingLog && logFragment != null & arenaFragment != null) {
+                    transaction.show(arenaFragment);
                     transaction.hide(logFragment);
                     isShowingLog = false;
 
-                } else if (!isShowingLog && mazeFragment != null && logFragment != null) {
-                    transaction.hide(mazeFragment);
+                } else if (!isShowingLog && arenaFragment != null && logFragment != null) {
+                    transaction.hide(arenaFragment);
                     transaction.show(logFragment);
                     isShowingLog = true;
                 }
@@ -405,16 +419,8 @@ public class MainActivity extends AppCompatActivity
                 break;
 
             case R.id.nav_settings:
-                intent = new Intent(getApplicationContext(), SettingsActivity.class);
+                Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
                 startActivity(intent);// Activity is started with requestCode 2
-                break;
-
-            case R.id.nav_view_mdf1:
-                sendMessage("p" + mdf1);
-                break;
-
-            case R.id.nav_view_mdf2:
-                sendMessage("p" + mdf2);
                 break;
 
             default:
@@ -431,61 +437,22 @@ public class MainActivity extends AppCompatActivity
         //Arena arena = getArena();
         switch (compoundButton.getId()) {
             case R.id.tgbExploration:
-                if (b) {
-                    sendMessage(Protocol.START_EXPLORATION);
-                    textViewStatus.setText("Exploring");
-                    Operation.showToast(this, "Exploration Started");
-
-                } else {
-                    sendMessage(Protocol.STOP_EXPLORATION);
-                    textViewStatus.setText("N/A");
-                    Operation.showToast(this, "Exploration Stopped");
-                }
-
+                if (b) startExploration();
+                else   finishExploration();
                 break;
 
+            case R.id.tgbFastest:
+                if (b) startFastest();
+                else   finishFastest();
+                break;
         }
         /*switch (compoundButton.getId()) {
-            case R.id.sw_arena_start_stop:
-                if (arena != null) {
-                    if (b) {
-                        if (!arena.isStarted()) {
-                            DialogFragment startRobotDialogFragment = new CustomAlertDialogFragment();
-                            Bundle args = new Bundle();
-                            args.putString("title", "Start");
-                            args.putString("message", "Do you wish to start the robot?");
-                            startRobotDialogFragment.setArguments(args);
-                            startRobotDialogFragment.show(getSupportFragmentManager(), "startRobotDialogFragment");
-                        }
-                    } else {
-                        if (arena.isStarted()) {
-                            DialogFragment startRobotDialogFragment = new CustomAlertDialogFragment();
-                            Bundle args = new Bundle();
-                            args.putString("title", "Stop");
-                            args.putString("message", "Do you wish to stop the robot?");
-                            startRobotDialogFragment.setArguments(args);
-                            startRobotDialogFragment.show(getSupportFragmentManager(), "startRobotDialogFragment");
-                        }
-                    }
-                }
-
-                break;
-
             case R.id.sw_auto_grid_update:
-                System.out.println("Auto Grid Update is " + (b ? "on" : "off"));
                 arena = getArena();
 
                 if (arena != null) {
                     if (b) {
-                        if(!arena.isStarted()) {
-                            DialogFragment basicDialogFragment = new BasicDialogFragment();
-                            Bundle args = new Bundle();
-                            args.putString("title", "Error");
-                            args.putString("message", "You are not allowed to switch to auto mode until you have started the robot");
-                            basicDialogFragment.setArguments(args);
-                            basicDialogFragment.show(getSupportFragmentManager(), "basicDialogFragment");
-
-                        } else if (!arena.isAuto()) {
+                        if (!arena.isAuto()) {
                             DialogFragment autoManualDialogFragment = new CustomAlertDialogFragment();
                             Bundle args = new Bundle();
                             args.putString("title", "Auto");
@@ -509,8 +476,6 @@ public class MainActivity extends AppCompatActivity
                 break;
 
             case R.id.sw_use_accelerometer:
-                System.out.println("Accelerometer is " + (b ? "on" : "off"));
-
                 if (b) {
                     isAccelerometerEnabled = true;
                     if (accelerometerSensorProvider != null)
@@ -536,36 +501,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
-        /*if(dialog.getTag().equalsIgnoreCase("startRobotDialogFragment")) {
-            Arena arena=getArena();
-
-            if (arena != null && swArenaStart != null) {
-                if (!arena.isStarted()) {
-                    arena.setStarted(true);
-                    swArenaStart.setChecked(true);
-
-                } else if (arena.isStarted()&& swArenaStart != null) {
-                    arena.setStarted(false);
-                    swArenaStart.setChecked(false);
-
-                    //reset stuff
-                    //isAccelerometerEnabled = false;
-                    arena.reset();
-                    removeSchedulerCallBack();
-
-                    if(accelerometerSensorProvider != null)
-                        accelerometerSensorProvider.stopSensorUpdate();
-
-                    mazeFragment = (MazeFragment) getSupportFragmentManager().findFragmentByTag("mazeFragment");
-
-                    if (mazeFragment != null) {
-                        mazeFragment.resetArenaView();
-                    }
-
-                    invalidateOptionsMenu();
-                }
-            }
-        } else if(dialog.getTag().equalsIgnoreCase("autoManualDialogFragment")) {
+        /*if(dialog.getTag().equalsIgnoreCase("autoManualDialogFragment")) {
             Arena arena=getArena();
 
             if (arena != null && swAutoGridUpdate != null) {
@@ -587,18 +523,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
-        /*if(dialog.getTag().equalsIgnoreCase("startRobotDialogFragment")) {
-            Arena arena = getArena();
-
-            if (arena != null && swArenaStart != null) {
-                if (!arena.isStarted()) {
-                    swArenaStart.setChecked(false);
-
-                }else  if (arena.isStarted() && swArenaStart != null) {
-                    swArenaStart.setChecked(true);
-                }
-            }
-        } else if (dialog.getTag().equalsIgnoreCase("autoManualDialogFragment")) {
+        /*if (dialog.getTag().equalsIgnoreCase("autoManualDialogFragment")) {
             Arena arena=getArena();
 
             if (arena != null && swAutoGridUpdate != null) {
@@ -638,24 +563,6 @@ public class MainActivity extends AppCompatActivity
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case Config.INPUT_POS_ACTIVITY:
-                try {
-                    Robot robotInput = (Robot) data.getSerializableExtra("robotInput");
-                    if (robotInput != null) {
-                        MazeFragment fragment = (MazeFragment) getSupportFragmentManager().findFragmentByTag("mazeFragment");
-                        if (fragment != null) {
-                            fragment.moveRobot(robotInput.getX(), robotInput.getY(), robotInput.getDirection());
-                        }
-
-                        sendRobotPosition(robotInput);
-                        //     sendMessage("{\"robotPosition\" : [10, 2, 90]}");
-                    }
-                } catch (Exception e) {
-                    Log.e(Config.log_id, e.getMessage());
-                }
-
-                break;
-
             case REQUEST_CONNECT_DEVICE_SECURE:
                 // When DeviceListActivity returns with a device to connect
                 if (resultCode == Activity.RESULT_OK) {
@@ -692,9 +599,14 @@ public class MainActivity extends AppCompatActivity
         bluetoothCommService = BluetoothCommService.getInstance();
         // Initialize the buffer for outgoing messages
         mOutStringBuffer = new StringBuffer("");
+    }
 
-        // Intent serviceIntent = new Intent(getApplicationContext(),BluetoothCommService.class);
-        //startService(serviceIntent);
+    private void selectDevice() {
+        FragmentManager fm = getSupportFragmentManager();
+        DeviceListDialogFragment deviceListDialogFragment = new DeviceListDialogFragment();
+        deviceListDialogFragment.setCancelable(true);
+        deviceListDialogFragment.setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_DeviceDefault_Dialog_Alert);
+        deviceListDialogFragment.show(fm, "deviceListDialogFragment");
     }
 
     private void connectDevice(Intent data, boolean secure) {
@@ -707,60 +619,98 @@ public class MainActivity extends AppCompatActivity
         bluetoothCommService.connect(device);
     }
 
-    public Arena getArena() {
-        MazeFragment fragment = (MazeFragment) getSupportFragmentManager().findFragmentByTag("mazeFragment");
+    public void displayRobotInfo(Robot robot) {
+        textViewX.setText(String.valueOf(robot.getXPos()));
+        textViewY.setText(String.valueOf(robot.getYPos()));
+        textViewStatus.setText(robot.getStatus());
+    }
 
-        if (fragment != null) {
-            return fragment.getArena();
+    public void inputPosition() {
+        if (arenaFragment.getArenaView().getArena().isReset())
+            enableInputPosition(true);
+        else
+            Operation.showToast(this, "Please reset your arena first");
+    }
 
-        } else return null;
+    private void enableInputPosition(boolean b) {
+        arenaFragment.getArenaView().selectingPosition(b);
+
+        findViewById(R.id.btnSend).setEnabled(!b);
+        findViewById(R.id.tgbExploration).setEnabled(!b);
+        findViewById(R.id.tgbFastest).setEnabled(!b);
+        findViewById(R.id.btnResetExplorationTimer).setEnabled(!b);
+        findViewById(R.id.btnResetFastestTimer).setEnabled(!b);
+        findViewById(R.id.btnF1).setEnabled(!b);
+        findViewById(R.id.btnF2).setEnabled(!b);
+
+        for (int i = 0; i < menu.size(); i ++)
+            menu.getItem(i).setVisible(b);
+    }
+
+    private void resetGrid() {
+        arenaFragment.resetGrid();
+        textViewMDF1.setText(arenaFragment.getMDF1());
+        textViewMDF2.setText(arenaFragment.getMDF2());
     }
 
     private void sendRobotPosition(Robot robotInput) {
-        int robotX, robotY;
-        robotX=robotInput.getX()+1;
-        robotY=robotInput.getY()-18;
-        String text=robotX+","+Math.abs(robotY);
-        sendMessage(text);
+        sendMessage(robotInput.getXPos() + ", " + robotInput.getYPos());
     }
 
-    private void moveRobot(Robot.Move move, int noOfMove) {
-        for (int i = 0; i< noOfMove; i++) {
-            moveRobot(move);
-        }
-    }
+    private void startExploration() {
+        sendMessage(Protocol.START_EXPLORATION);
+        textViewStatus.setText("Exploring");
+        explorationStartTime = System.currentTimeMillis();
 
-    public void moveRobot(Robot.Move move) {
-        try {
-            MazeFragment fragment = (MazeFragment) getSupportFragmentManager().findFragmentByTag("mazeFragment");
-            if (fragment != null) {
-                fragment.btnMove(move);
+        explorationTimer = new Timer();
+        explorationTimer.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                explorationTimerHandler.obtainMessage(1).sendToTarget();
             }
-        } catch (Exception e) {
-            Log.e(Config.log_id, e.getMessage());
-        }
+        }, 0, 10);
+
+        Operation.showToast(this, "Exploration Started");
     }
 
-    public void startFastest(View a) {
+    private void finishExploration() {
+        explorationTimer.cancel();
+        textViewStatus.setText("N/A");
+        Operation.showToast(this, "Exploration Finished");
+    }
+
+    public void resetExplorationTimer(View a) {
+        textViewExplorationTimer.setText("00:00:00");
+    }
+
+    private void startFastest() {
         sendMessage(Protocol.START_FASTEST);
         textViewStatus.setText("Fastest");
+        fastestStartTime = System.currentTimeMillis();
+
+        fastestTimer = new Timer();
+        fastestTimer.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                fastestTimerHandler.obtainMessage(1).sendToTarget();
+            }
+        }, 0, 10);
+
+        Operation.showToast(this, "Fastest Started");
+    }
+
+    private void finishFastest() {
+        fastestTimer.cancel();
+        textViewStatus.setText("N/A");
+        Operation.showToast(this, "Fastest Finished");
+    }
+
+    public void resetFastestTimer(View a) {
+        textViewFastestTimer.setText("00:00:00");
     }
 
     public void btnSend(View a) {
         TextView textToSend = (TextView) findViewById(R.id.txtString);
         String data = textToSend.getText().toString();
         sendMessage(data);
-    }
-
-    public void btnCalibrate(View a) {
-        sendMessage(Protocol.CALIBRATE);
-    }
-
-    public void btnResetGrid(View a) {
-        String s = "{\"grid\":\"00000000000000000000";
-        for(int i=0; i<=13; i++) s += "00000000000000000000";
-        s += "\",\"robotPosition\":[1,1,0],\"status\":\"na\"}";
-        handleJson(s);
     }
 
     public void btnF1(View a) {
@@ -812,16 +762,17 @@ public class MainActivity extends AppCompatActivity
 
                 int bytes = msg.getData().getInt(Protocol.MESSAGE_BYTES);
                 byte[] buffer = msg.getData().getByteArray(Protocol.MESSAGE_BUFFER);
-                String readMessage = new String(buffer, 0, bytes);
-                readMessage=readMessage.trim();
+                String readMessage = new String(buffer, 0, bytes).trim();
+
                 Log.e(Config.log_id, "Protocol.MESSAGE_READ: " + readMessage);
                 logList.add(0, mConnectedDeviceName + ":  " + readMessage );
 
-                if (readMessage.startsWith("W") && readMessage.length() == 2 ||
-                        readMessage.startsWith("W") && readMessage.length() == 3) {
+                if (arenaFragment != null && readMessage.startsWith("W")
+                        && (readMessage.length() == 2 || readMessage.length() == 3)) {
 
                     try {
                         int noOfMoveForward = 0;
+
                         if (readMessage.length() == 2) {
                             noOfMoveForward = Integer.parseInt(readMessage.substring(1, 2));
 
@@ -829,26 +780,27 @@ public class MainActivity extends AppCompatActivity
                             noOfMoveForward = Integer.parseInt(readMessage.substring(1, 3));
                         }
 
-                        moveRobot(Robot.Move.UP, noOfMoveForward);
+                        for (int i = 0; i < noOfMoveForward; i ++)
+                            arenaFragment.moveForward();
 
                     } catch (Exception e) {
                         Log.e(Config.log_id,"Move up multiple error");
                     }
 
                 } else if (readMessage.equalsIgnoreCase(Protocol.MOVE_FORWARD)) {
-                    moveRobot(Robot.Move.UP);
+                    arenaFragment.moveForward();
                     //sendMessage(Protocol.MOVE_FORWARD);
 
                 } else if (readMessage.equalsIgnoreCase(Protocol.TURN_LEFT)) {
-                    moveRobot(Robot.Move.LEFT);
+                    arenaFragment.turnLeft();
                     //sendMessage(Protocol.TURN_LEFT);
 
                 } else if (readMessage.equalsIgnoreCase(Protocol.TURN_RIGHT)) {
-                    moveRobot(Robot.Move.RIGHT);
+                    arenaFragment.turnRight();
                     //sendMessage(Protocol.TURN_RIGHT);
 
-                } else if(readMessage.startsWith("grid")) {
-                    handleMDFString(readMessage);
+                } else if (readMessage.startsWith("grid")) {
+                    handleGridUpdate(readMessage);
                 }
 
                 if (isJSONValid(readMessage)) {
@@ -869,152 +821,43 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    /*private void handleMDFString(String readMessage) {
-        String [] text  = readMessage.split(":");
-        String mdf1 = text[1];
-        String mdf2= text[2];
-
-        MazeFragment fragment = (MazeFragment) getSupportFragmentManager().findFragmentByTag("mazeFragment");
-
-        if (fragment != null) {
-            getArena().setMdf1(mdf1);
-            getArena().setMdf2(mdf2);
-            fragment.gridUpdateMDF1(mdf1);
-            fragment.gridUpdateMDF2(mdf1);
-        }
-
-        try {
-            if (getArena().getMdf1() != null && getArena().getMdf2() != null &&
-                    !getArena().getMdf1().equalsIgnoreCase("") && !getArena().getMdf2().equalsIgnoreCase("")) {
-
-                /*textViewMDFString.setText("MDF1: " + getArena().getMdf1() +
-                        "\n" +"MDF2: " + getArena().getMdf2());
-            }
-        } catch(Exception e) {
-            Log.e(Config.log_id, e.getMessage());
-        }
-    }*/
-
     private void handleJson(String readMessage) {
         handleRobotPositionUpdate(readMessage);
         handleGridUpdate(readMessage);
-        handleMDFString(readMessage);
         handleStatusUpdate(readMessage);
-    }
-
-    private void handleMDFString(String readMessage) {
-        String grid = "";
-        try {
-            JSONObject obj = new JSONObject(readMessage);
-            grid = transpose(obj.getString("grid"));
-            String[] mdf = flip(grid).split("");
-
-            mdf1 = "11";
-            mdf2 = "";
-
-            for (int i = 0; i < mdf.length; i++) {
-                if (mdf[i].equals("0"))
-                    mdf1 += "0";
-
-                else if (mdf[i].equals("1")) {
-                    mdf1 += "1";
-                    mdf2 += "0";
-
-                } else if (mdf[i].equals("2")){
-                    mdf1 += "1";
-                    mdf2 += "1";
-
-                }
-            }
-
-            mdf1 += "11";
-            mdf1 = new BigInteger(mdf1, 2).toString(16);
-            mdf2 = countZerosToHex(mdf2) + new BigInteger(mdf2, 2).toString(16);
-
-            textViewMDF1.setText(mdf1);
-            textViewMDF2.setText(mdf2);
-
-        } catch (Exception e) {
-            Log.e(Config.log_id, e.getMessage());
-        }
-    }
-
-    private String countZerosToHex(String gridData) {
-        String[] s = gridData.split("");
-        int numOfZero = 0;
-        String zeroStr = "";
-
-        for (int i = 0; i < s.length; i++) {
-            if (numOfZero == 4) {
-                numOfZero = 0;
-                zeroStr += "0";
-            }
-
-            if (s[i].equals("0")) numOfZero++;
-            else break;
-        }
-        return zeroStr;
-    }
-
-    private String flip(String gridData) {
-        int gridlen = gridData.length();
-        String[] gridRow = new String[(int) Math.ceil((double) gridlen /(double) 15)]
-                ;
-        for (int i = 0; i < gridRow.length; i++)
-            gridRow[i] = gridData.substring(i * 15, Math.min(gridlen, (i + 1) * 15));
-
-        String finalString = "";
-
-        for (int i = gridRow.length - 1; i > -1; i--)
-            finalString += gridRow[i];
-
-        return finalString;
-    }
-
-    private String transpose(String gridData) {
-        int gridlen = gridData.length();
-        String[] gridRow = new String[(int) Math.ceil((double) gridlen /(double) 20)];
-
-        for (int i=0; i<gridRow.length; i++)
-            gridRow[i] = gridData.substring(i * 20, Math.min(gridlen, (i + 1) * 20));
-
-        String transposed = "";
-
-        for (int i = 19; i >= 0; i--) {
-            for (int j = 0; j <= 14; j++) {
-                transposed += gridRow[j].charAt(i);
-            }
-        }
-
-        return transposed;
-    }
-
-    private void handleStatusUpdate(String readMessage) {
-        String status = "";
-        try {
-            JSONObject obj = new JSONObject(readMessage);
-            status = obj.getString("status");
-            textViewStatus.setText(status);
-            MazeFragment fragment = (MazeFragment) getSupportFragmentManager().findFragmentByTag("mazeFragment");
-            if (fragment != null) {
-                fragment.statusUpdate(status);
-            }
-        } catch (Exception e) {
-            Log.e(Config.log_id, e.getMessage());
-        }
     }
 
     private void handleGridUpdate(String readMessage) {
         String gridData = "";
 
         try {
+            arenaFragment = (ArenaFragment) getSupportFragmentManager().findFragmentByTag("arenaFragment");
             JSONObject obj = new JSONObject(readMessage);
             gridData = obj.getString("grid");
-            MazeFragment fragment = (MazeFragment) getSupportFragmentManager().findFragmentByTag("mazeFragment");
 
-            if (fragment != null) {
-                fragment.gridUpdate(gridData);
+            if (arenaFragment != null) {
+                arenaFragment.gridUpdate(gridData);
+                textViewMDF1.setText(arenaFragment.getMDF1());
+                textViewMDF2.setText(arenaFragment.getMDF2());
             }
+        } catch (Exception e) {
+            Log.e(Config.log_id, e.getMessage());
+        }
+    }
+
+    private void handleStatusUpdate(String readMessage) {
+        String status = "";
+
+        try {
+            arenaFragment = (ArenaFragment) getSupportFragmentManager().findFragmentByTag("arenaFragment");
+            JSONObject obj = new JSONObject(readMessage);
+
+            status = obj.getString("status");
+            textViewStatus.setText(status);
+
+            if (arenaFragment != null)
+                arenaFragment.statusUpdate(status);
+
         } catch (Exception e) {
             Log.e(Config.log_id, e.getMessage());
         }
@@ -1022,7 +865,9 @@ public class MainActivity extends AppCompatActivity
 
     private void handleRobotPositionUpdate(String readMessage) {
         try {
+            arenaFragment = (ArenaFragment) getSupportFragmentManager().findFragmentByTag("arenaFragment");
             JSONObject obj = new JSONObject(readMessage);
+
             int x = (int) obj.getJSONArray("robotPosition").get(0);
             int y = (int) obj.getJSONArray("robotPosition").get(1);
             int direction = (int) obj.getJSONArray("robotPosition").get(2);
@@ -1031,24 +876,8 @@ public class MainActivity extends AppCompatActivity
             textViewY.setText(Integer.toString(y));
             textViewDirection.setText(Integer.toString(direction));
 
-            MazeFragment fragment = (MazeFragment) getSupportFragmentManager().findFragmentByTag("mazeFragment");
-
-            if (fragment != null) {
-                x -= 1;
-                y = Math.abs(y - 18);
-
-                if (direction == 0)
-                    fragment.moveRobot(x, y, 1);
-
-                else if (direction == 90)
-                    fragment.moveRobot(x, y, 2);
-
-                else if (direction == 180)
-                    fragment.moveRobot(x, y, 3);
-
-                else if (direction == 270)
-                    fragment.moveRobot(x, y, 0);
-            }
+            if (arenaFragment != null)
+                arenaFragment.moveRobot(x, y, direction);
 
         } catch (Exception e) {
             Log.e(Config.log_id, e.getMessage());

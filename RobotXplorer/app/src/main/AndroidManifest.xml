@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -31,9 +32,6 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity
-            android:name=".activity.InputPositionActivity"
-            android:label="@string/title_activity_input_position" />
         <activity
             android:name=".activity.SettingsActivity"
             android:label="@string/title_activity_settings" />
