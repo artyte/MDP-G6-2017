@@ -33,6 +33,7 @@ private slots:
     void exploreSimulation();
     void timeLimitSimulation();
     void coverageLimitSimulation();
+    void fastestPath();
     void realMaze();
 
 private:
@@ -44,6 +45,7 @@ private:
 
     QLineEdit* lineEdit1;
     QLineEdit* lineEdit2;
+    QLineEdit* lineEdit2b;
     QLineEdit* lineEdit3;
 
     QLabel* label4;

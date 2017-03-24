@@ -17,6 +17,7 @@ public:
 
     int gridState;
     bool flag = true;
+    bool isConfirmed = false;
 
 protected:
     void advance(int phase);

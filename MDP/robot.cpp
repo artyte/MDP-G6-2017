@@ -34,41 +34,43 @@ void MyRobot::advance(int phase)
         robotSocket->ok();
         QString sensorReading = robotSocket->sensorReading;
         if(!sensorReading.isEmpty()){
+            //qDebug() << "receiving" << QString::number(QTime::currentTime().second()) << QString::number(QTime::currentTime().msec());
+
             qDebug() << "received: " << sensorReading;
 
             if(sensorReading == QString("k")){
                 //after robot is ready, do self calibration
+
                 startPointCalibration();
                 robotSocket->sensorReading = "";
 
-                /*QString mapStr;
-                mapStr += "00021000000000000000";
-                for(int i = 0; i <14 ;++ i){
-                    for(int j = 0; j < 20; ++j){
-                        mapStr += "0";
-                    }
-                }
-                robotSocket->delay();
-
-                robotSocket->write("b{\"grid\":\"" + mapStr + "\"}");*/
             }
             //check for android exploration start
-            if(sensorReading == QString("e")){
-                //af the start of explore, ask robot to send the first sensor reading
-                qDebug() << "Entering explore mode";
-                strQue.push(QString("as"));
-                robotState = 2;
-                robotSocket->sensorReading = "";
-            }else if(sensorReading == QString("f")){
-                robotState = 3;
-                //write fastest path command to robot
-                strQue.push(QString("ag") + fastestPathStr);
-                //robotSocket->write(QString("a") + fastestPathStr);
-                robotSocket->sensorReading = "";
-            }else if(robotState == 2){
-                //process qstring
-                processSignal(sensorReading);
+            if(sensorReading != QString("se")){
+                if(sensorReading == QString("e")){
+                    //af the start of explore, ask robot to send the first sensor reading
+                    qDebug() << "Entering explore mode";
+                    strQue.push(QString("as"));
+                    robotState = 2;
+                    robotSocket->sensorReading = "";
+                }else if(sensorReading == QString("f")){
+                    robotState = 3;
+                    //write fastest path command to robot
+                    if(fastestStartRotation == 0){
+                        strQue.push(QString("ag") + fastestPathStr0 + QString("g"));
+                    }else if(fastestStartRotation == 90){
+                        strQue.push(QString("ag") + fastestPathStr90 + QString("g"));
+                    }
+
+                    robotSocket->sensorReading = "";
+                }else if(sensorReading == QString("s")){
+                    notToExploreRest = true;
+                }else if(robotState == 2){
+                    //process qstring
+                    processSignal(sensorReading);
+                }
             }
+
             robotSocket->sensorReading = "";
         }
         //send string each frame
@@ -83,6 +85,8 @@ void MyRobot::advance(int phase)
     emit OnFrameUpdate();
 
     if(exploreMode == 2){
+        qDebug() << time;
+        qDebug() << timeLimit;
         if(time >= timeLimit){
             emit stop();
         }
@@ -93,7 +97,8 @@ void MyRobot::advance(int phase)
         //check if goal or start
         //sense around, update robot map, determine strategy
 
-        updateRobotMap();
+        if(exploreMode!=5)
+            updateRobotMap();
 
         int exploredGridCounter = 0;
         for(int i = 0; i < 15; ++i){
@@ -114,9 +119,11 @@ void MyRobot::advance(int phase)
         }
 
         action = 1;
+        qDebug() << "current loc" << pos;
         action = determineStrategy();
 
         updateRobotInfo();
+        qDebug() << "next loc" << pos;
     }
 
     //draw movement
@@ -141,7 +148,7 @@ void MyRobot::advance(int phase)
         ++actionCounter;
         setPos(getCanvasPosition(pos));
         setRotation(rotation);
-        //qDebug() << "Action: " << actionCounter;
+        qDebug() << "Action: " << actionCounter;
     }
 
 }
@@ -171,9 +178,11 @@ MyRobot::MyRobot(int** mapArray, int mode, int timeLimit, int coverageLimit, int
         robotMapArray[i] = new int[20];
     }
 
+
     for(int i =0; i < 15; ++i){
         for(int j = 0; j < 20; ++j){
             robotMapArray[i][j] = 0;
+            robotMapConfirmArray[i][j] = false;
         }
     }
 
@@ -194,6 +203,7 @@ MyRobot::MyRobot(int** mapArray, int mode, int timeLimit, int coverageLimit, int
     }
 
     exploreState = 1;
+    movingByWallState = 0;
 
     steps = 0;
     if(robotSpeed != 0)
@@ -203,10 +213,24 @@ MyRobot::MyRobot(int** mapArray, int mode, int timeLimit, int coverageLimit, int
         maxSteps = 50; // hardcoded robot speed
         rotation = 270;
 
+        //exploreState = 3;
         robotSocket = new socket();
         robotSocket->doConnect();
         qDebug() << "connection finished";
         robotSocket->ok();
+    }
+
+    if(exploreMode == 5){
+        for(int i =0; i < 15; ++i){
+            for(int j = 0; j < 20; ++j){
+                if(actualMapArray[i][j]==1)
+                    robotMapArray[i][j] = 2;
+                else{
+                    robotMapArray[i][j] = 0;
+                }
+            }
+        }
+        exploreState = 4;
     }
 }
 
@@ -241,19 +265,44 @@ void MyRobot::updateRobotMap(int* msg)
             if(feedbackArray[j].type == -2) break;
             if(feedbackArray[j].type == 0 || feedbackArray[j].type == 1){
                 //qDebug() << feedbackArray[j].pos.x() << feedbackArray[j].pos.y();
-                robotMapArray[feedbackArray[j].pos.y()][feedbackArray[j].pos.x()] = feedbackArray[j].type+1;
+                if(!(robotMapConfirmArray[feedbackArray[j].pos.y()][feedbackArray[j].pos.x()]))
+                    robotMapArray[feedbackArray[j].pos.y()][feedbackArray[j].pos.x()] = feedbackArray[j].type+1;
             }
         }
         delete [] feedbackArray;
     }
 
-    for(int i = -1; i < 2; ++i){
-        for(int j = -1; j <2; ++j){
-            robotMapArray[pos.y()+i][pos.x()+j] = 1;
+    QPoint absoluteConfirmGrid[6];
+
+    for(int i = 0; i < 6; ++i){
+        if(rotation==0){
+            absoluteConfirmGrid[i].setX(pos.x() + confirmGrid[i].x());
+            absoluteConfirmGrid[i].setY(pos.y() + confirmGrid[i].y());
+        }else if(rotation == 90){
+            absoluteConfirmGrid[i].setX(pos.x() -confirmGrid[i].y());
+            absoluteConfirmGrid[i].setY(pos.y() + confirmGrid[i].x());
+        }else if(rotation == 180){
+            absoluteConfirmGrid[i].setX(pos.x() -confirmGrid[i].x());
+            absoluteConfirmGrid[i].setY(pos.y()-confirmGrid[i].y());
+        }else if(rotation == 270){
+            absoluteConfirmGrid[i].setX(pos.x() + confirmGrid[i].y());
+            absoluteConfirmGrid[i].setY(pos.y() -confirmGrid[i].x());
         }
     }
 
+    for(int i = 0; i < 6; ++i){
+        if(isInBound(absoluteConfirmGrid[i])){
+            robotMapConfirmArray[absoluteConfirmGrid[i].y()][absoluteConfirmGrid[i].x()] = true;
+        }
 
+    }
+
+    for(int i = -1; i < 2; ++i){
+        for(int j = -1; j <2; ++j){
+            robotMapArray[pos.y()+i][pos.x()+j] = 1;
+            robotMapConfirmArray[pos.y()+i][pos.x()+j] = true;
+        }
+    }
 }
 
 void MyRobot::updateRobotInfo()
@@ -265,30 +314,38 @@ void MyRobot::updateRobotInfo()
     }else if(action == 2){
         pos.setX(pos.x() + xDir);
         pos.setY(pos.y() + yDir);
+        if(pos.x() == 19){
+            pos.setX(18);
+        }else if(pos.x() == 0){
+            pos.setX(1);
+        }
+        if(pos.y() == 14){
+            pos.setY(13);
+        }else if(pos.y() == 0){
+            pos.setY(1);
+        }
     }
 
-    if(action == 0 || action == 1){
-        switch(rotation){
-        case 0:
-            xDir = 1;
-            yDir = 0;
-            break;
-        case 90:
-            xDir = 0;
-            yDir = 1;
-            break;
-        case 180:
-            xDir = -1;
-            yDir = 0;
-            break;
-        case 270:
-            xDir = 0;
-            yDir = -1;
-            break;
-        default:
-            xDir = 0;
-            yDir = 0;
-        }
+    switch(rotation){
+    case 0:
+        xDir = 1;
+        yDir = 0;
+        break;
+    case 90:
+        xDir = 0;
+        yDir = 1;
+        break;
+    case 180:
+        xDir = -1;
+        yDir = 0;
+        break;
+    case 270:
+        xDir = 0;
+        yDir = -1;
+        break;
+    default:
+        xDir = 0;
+        yDir = 0;
     }
 }
 
@@ -298,48 +355,94 @@ int MyRobot::determineStrategy()
 
     if(exploreState == 1 && actionCounter > 10){
         if(pos.x() == start.x() && pos.y() == start.y()){
-            exploreState = 2;
+            forwardExplore = false;
+            if(notToExploreRest){
+                exploreState = 3;
+            }else{
+                exploreState = 2;
+            }
+            //exploreState = 3; // hardcoded for fastest path
         }
     }
 
     if(exploreState == 2){
-
-        action = ExploreRest();
-
-        if(action == -2)
+        //if run more than 250 steps, go back to goal zone
+        if(actionCounter >= 250)
             exploreState = 3;
+        else{
+            action = ExploreRest();
+
+            if(action == -2)
+                exploreState = 3;
+            else
+                return action;
+        }
     }
 
     if(exploreState == 3 && pos.x() == start.x() && pos.y() == start.y()){
         exploreState = 4;
 
         if(exploreMode == 4){
-            //tell android that explore finished
-            strQue.push(QString("b"));
-
             //self calibration and wait
             robotState = 1;
-            startPointCalibration();
 
-            //get fastest path string
-            while(!(pos.x() == goal.x() && pos.y() == goal.y())){
-
-                this->action = PathNode::findPath(pos.x(), pos.y(), rotation/90, goal.x(), goal.y(), false);
-                updateRobotInfo();
-
-                QString actionStr;
-                if(this->action == 0){
-                    actionStr = "l";
-                }else if(this->action == 1){
-                    actionStr = "r";
-                }else if(this->action == 2){
-                    actionStr = "f1";
+            QString mapStr;
+            for(int i = 0; i < 15; ++i){
+                for(int j = 0; j < 20; ++j){
+                    if(robotMapArray[i][j] == 0 || robotMapArray[i][j] == 3)
+                        mapStr += "0"; // not explored
+                    else mapStr += QString::number(robotMapArray[i][j]); // explored empty/obstacle
                 }
-
-                fastestPathStr +=  actionStr;
             }
 
+            int endRotation = rotation;
+            int pathLength0, pathLength90;
+
+            rotation = 0;
+            this->action = -1;
+            updateRobotInfo();
+            //get fastest path string
+            fastestPathStr0 = pathActionListString(pos, rotation, goal, &pathLength0);
+            pos = start;
+            rotation = 90;
+            this->action = -1;
+            updateRobotInfo();
+            fastestPathStr90 = pathActionListString(pos, rotation, goal, &pathLength90);
+            if(pathLength0 > pathLength90){
+                fastestStartRotation = 90;
+            }
+
+            rotation = endRotation;
+            pos = start;
+            startPointCalibration();
+
+            strQue.push(QString("b{\"robotPosition\":[" + QString::number(pos.y()) + "," + QString::number(pos.x()) + "," + QString::number(rotation) + "]," + "\"grid\":\"" + mapStr + "\"}"));
+            return -1;
         }
+
+        /*int endRotation = rotation;
+        int pathLength0, pathLength90;
+
+        rotation = 0;
+        this->action = -1;
+        updateRobotInfo();
+        //get fastest path string
+        fastestPathStr0 = pathActionListString(pos, rotation, goal, &pathLength0);
+        pos = start;
+        rotation = 90;
+        this->action = -1;
+        updateRobotInfo();
+        fastestPathStr90 = pathActionListString(pos, rotation, goal, &pathLength90);
+        if(pathLength0 > pathLength90){
+            fastestStartRotation = 90;
+        }
+
+        qDebug() << pathLength0 << pathLength90;
+
+        rotation = endRotation;
+        pos = start;
+        startPointCalibration();*/
+
     }
 
     if(exploreState == 4 && pos.x() == goal.x() && pos.y() == goal.y()){
@@ -359,7 +462,6 @@ int MyRobot::determineStrategy()
     }
     return action;
 }
-
 
 int MyRobot::moveByWall()
 {
@@ -438,9 +540,8 @@ void MyRobot::processSignal(QString msg)
     if(msg.isEmpty()) return;
 
     //sending position to android
-    qDebug() << "processing" << QString::number(QTime::currentTime().second()) << QString::number(QTime::currentTime().msec());
-    qDebug() << "processing signal" << msg;
-        QStringList strList = msg.split(",");
+    //qDebug() << "processing signal" << msg;
+    QStringList strList = msg.split(",");
     //qDebug() << "test" << strList.length();
     int signalMsg[6];
     signalMsg[0] = strList.at(4).toInt() +1;
@@ -455,6 +556,7 @@ void MyRobot::processSignal(QString msg)
     }
 
     qDebug() << "robot position" << pos;
+    qDebug() << "robot rotation" << rotation;
     //pass to sensor to update robot map
     updateRobotMap(signalMsg);
 
@@ -470,51 +572,48 @@ void MyRobot::processSignal(QString msg)
     coverage = exploredGridCounter/3;
     emit OnUpdate();
 
-    //calibrate
-    bool cornerL = signalMsg[0] == signalMsg[1] && signalMsg[1] == signalMsg[2] && signalMsg[2] == signalMsg [4] && signalMsg[0] == 1;
-    ++calibrateCounter;
-    if(cornerL && (calibrateCounter > calibrateThreshold)){
-        //do calibrate
-        strQue.push(QString("acr"));
-        /*rotation = (360 + rotation - 90)%360;
-        steps = 0;
-        if(movingFlag){
-            setRotation(rotation);
-        }*/
-        calibrateCounter = 0;
-        return;
-    }
-
     //determine strategy and send back to arduino & android
     action = 2;
 
-    qDebug() << "movingState: " << QString::number(movingByWallState);
-
-
     QString actionStr = "";
+
+    // if in follow the way state, robot send command l, r, e
     if(!forwardExplore){
-        qDebug() << "haha";
         action = determineStrategy();
-
-
         if(action == 0){
             actionStr = "l";
         }else if(action == 1){
             actionStr = "r";
         }else if(action == 2){
-            actionStr = "e";
+            if(exploreState == 1)
+                actionStr = "e";
+            else
+                actionStr = "f1";
         }
-        if(!actionStr.isEmpty())
-             //robotSocket->write("a" + actionStr);
+        if(!actionStr.isEmpty()){
+            qDebug() << actionStr;
             strQue.push(QString("a") + actionStr);
-        else
+            strQue.push(QString(""));
+            strQue.push(QString(""));
+        }
+        else{
+            qDebug() << "No command sending";
             return;
+        }
     }
 
-    qDebug() << "action" << action;
 
-    //send command
+    //qDebug() << "action" << action;
 
+    //update robot on PC
+     steps = 0;
+     updateRobotInfo();
+     //if the last moving is not finished
+     if(movingFlag){
+         setPos(getCanvasPosition(pos));
+         setRotation(rotation);
+     }
+     movingFlag = true;
 
     QString mapStr;
     for(int i = 0; i < 15; ++i){
@@ -524,27 +623,8 @@ void MyRobot::processSignal(QString msg)
             else mapStr += QString::number(robotMapArray[i][j]); // explored empty/obstacle
         }
     }
-    //strQue.push("b{\"grid\":\"" + mapStr + "\"}");
-
-
-    /*if(!(actionStr.isEmpty())){
-        strQue.push(QString("a" + actionStr + "|b{\"robotPosition\":[" + QString::number(pos.y()) + "," + QString::number(pos.x()) + "," + QString::number(rotation) + "]," + "\"grid\":\"" + mapStr + "\"}"));
-    }*/
     strQue.push(QString("b{\"robotPosition\":[" + QString::number(pos.y()) + "," + QString::number(pos.x()) + "," + QString::number(rotation) + "]," + "\"grid\":\"" + mapStr + "\"}"));
 
-        //strQue.push(QString(QString("b{") + "\"grid\":\"" + mapStr + "\"}"));
-
-
-   //update robot on PC
-
-    steps = 0;
-    updateRobotInfo();
-    //if the last moving is not finished
-    if(movingFlag){
-        setPos(getCanvasPosition(pos));
-        setRotation(rotation);
-    }
-    movingFlag = true;
 }
 
 int MyRobot::ExploreRest(){
@@ -666,18 +746,39 @@ int MyRobot::ExploreRest(){
 
 void MyRobot::startPointCalibration()
 {
-    if(pos.x() == start.x() && pos.y() == start.y()){
-        if(rotation == 270){
-            //calibrate and facing front
-            strQue.push("acrr");
-            //robotSocket->write("acrr");
-        }else if(rotation == 180){
-            //turn right and calibrate and facing front;
-            //robotSocket->write("arcrr");
-            strQue.push("arcrr");
+    qDebug() << "Calibration rotation" << rotation;
+    qDebug() << "Calibration pos" << pos;
+    qDebug() << "fasest rotation" << fastestStartRotation;
+    if(rotation == 270){
+        //calibrate and facing front
+        if(fastestStartRotation == 0){
+            strQue.push(QString("acrr"));
+            strQue.push(QString(""));
+            strQue.push(QString(""));
+            strQue.push(QString(""));
+        }else if(fastestStartRotation == 90){
+            strQue.push(QString("acrrr"));
+            strQue.push(QString(""));
+            strQue.push(QString(""));
+            strQue.push(QString(""));
         }
-        rotation = 0;
+    }else if(rotation == 180){
+        //turn right and calibrate and facing front;
+        if(fastestStartRotation == 0){
+            strQue.push(QString("acr"));
+            strQue.push(QString(""));
+            strQue.push(QString(""));
+            strQue.push(QString(""));
+        }else if(fastestStartRotation == 90){
+            strQue.push(QString("acrr"));
+            strQue.push(QString(""));
+            strQue.push(QString(""));
+            strQue.push(QString(""));
+        }
     }
+    this->action = -1;
+    rotation = fastestStartRotation;
+    updateRobotInfo();
     robotState = 0;
 }
 
@@ -690,9 +791,72 @@ void MyRobot::sendString()
     if(strQue.empty()) return;
     robotSocket->write(strQue.front());
     //qDebug() << strQue.front();
-    qDebug() << "sending" << QString::number(QTime::currentTime().second()) << QString::number(QTime::currentTime().msec());
+    //qDebug() << "sending" << QString::number(QTime::currentTime().second()) << QString::number(QTime::currentTime().msec());
     strQue.pop();
     delay = 0;
+}
+
+QString MyRobot::pathActionListString(QPoint _start, int _rotation, QPoint _target, int* pathLength)
+{
+    int i_action;
+    QString str_pathActionList = "";
+    int i_moveForward = 0;
+    bool b_isPreviousForward = false;
+    int pathCounter = 0;
+    while(!(pos.x() == _target.x() && pos.y() == _target.y())){
+
+
+        i_action = PathNode::findPath(pos.x(), pos.y(), rotation/90, _target.x(), _target.y(), false);
+        this->action = i_action;
+        updateRobotInfo();
+
+        pathCounter++;
+
+        QString actionStr = "";
+        if(i_action == 0){
+            actionStr = "l";
+            b_isPreviousForward = false;
+        }else if(i_action == 1){
+            actionStr = "r";
+            b_isPreviousForward = false;
+        }else if(i_action == 2){
+            ++i_moveForward;
+            b_isPreviousForward = true;
+        }
+
+        if(!b_isPreviousForward && i_moveForward != 0){
+            if(i_moveForward >  9){
+                str_pathActionList += "f9" + QString("f") + QString::number(i_moveForward - 9);
+            }else{
+                str_pathActionList += "f" + QString::number(i_moveForward);
+            }
+            /*
+            while(i_moveForward > 9){
+                str_pathActionList += "f9";
+                i_moveForward -= 9;
+            }
+            str_pathActionList += "f" + QString::number(i_moveForward);*/
+            i_moveForward = 0;
+        }
+
+        str_pathActionList +=  actionStr;
+        *pathLength = pathCounter;
+    }
+
+    /*
+    while(i_moveForward > 9){
+        str_pathActionList += "f9";
+        i_moveForward -= 9;
+    }
+    str_pathActionList += "f" + QString::number(i_moveForward);*/
+
+    if(i_moveForward >  9){
+        str_pathActionList += "f9" + QString("f") + QString::number(i_moveForward - 9);
+    }else{
+        str_pathActionList += "f" + QString::number(i_moveForward);
+    }
+
+    return str_pathActionList;
 }
 
 bool MyRobot::isInBound(QPoint pos){

@@ -61,8 +61,25 @@ MainWindow::MainWindow(QWidget *parent) :
 
     lineEdit2 = new QLineEdit();
     lineEdit2->setText("0");
-    lineEdit2->setGeometry(QRect(450, 100, 220, 40));
+    lineEdit2->setGeometry(QRect(450, 100, 60, 40));
     scene->addWidget(lineEdit2);
+
+    QLabel* label2a = new QLabel();
+    label2a->setText("m");
+    label2a->setAlignment(Qt::AlignCenter);
+    label2a->setGeometry(QRect(510, 100, 20, 40));
+    scene->addWidget(label2a);
+
+    lineEdit2b = new QLineEdit();
+    lineEdit2b->setText("0");
+    lineEdit2b->setGeometry(QRect(550, 100, 60, 40));
+    scene->addWidget(lineEdit2b);
+
+    QLabel* label2b = new QLabel();
+    label2b->setText("s");
+    label2b->setAlignment(Qt::AlignCenter);
+    label2b->setGeometry(QRect(610, 100, 20, 40));
+    scene->addWidget(label2b);
 
     QLabel* label3 = new QLabel();
     label3->setText("Coverage limitation: ");
@@ -80,6 +97,12 @@ MainWindow::MainWindow(QWidget *parent) :
     btn4->setGeometry(QRect(450, 300, 220, 40));
     scene->addWidget(btn4);
     connect(btn4, SIGNAL(clicked()), this, SLOT(realMaze()));
+
+    QPushButton* btn5 = new QPushButton();
+    btn5->setText("Fastest path");
+    btn5->setGeometry(QRect(450, 375, 220, 40));
+    scene->addWidget(btn5);
+    connect(btn5, SIGNAL(clicked()), this, SLOT(fastestPath()));
 
     label4 = new QLabel();
     label4->setText("Coverage:  00%");
@@ -220,8 +243,7 @@ void MainWindow::timeLimitSimulation()
     }
 
     //add robot
-
-    robot = new MyRobot(mapArray, 2, lineEdit2->text().toInt() * 1000, 0, lineEdit1->text().toInt());
+    robot = new MyRobot(mapArray, 2, (lineEdit2b->text().toInt() + lineEdit2->text().toInt()*60) * 1000, 0, lineEdit1->text().toInt());
     connect(robot, SIGNAL(OnUpdate()), this, SLOT(update()));
     connect(robot, SIGNAL(OnFrameUpdate()), this, SLOT(frameUpdate()));
     connect(robot, SIGNAL(stop()), this, SLOT(stop()));
@@ -257,6 +279,36 @@ void MainWindow::coverageLimitSimulation()
     connect(robot, SIGNAL(OnFrameUpdate()), this, SLOT(frameUpdate()));
     connect(robot, SIGNAL(stop()), this, SLOT(stop()));
     //MyRobot *myRobot = new MyRobot();
+    scene->addItem(robot);
+    //set timer
+
+    timer->stop();
+    timer->start(10);
+}
+
+void MainWindow::fastestPath(){
+    reset();
+
+    MapGenerator mapGenerator;
+    mapArray = mapGenerator.readMapFile("mazeMap.txt");
+
+    //draw obstacle
+    for(int i = 0; i < 15; ++i){
+        for (int j = 0; j <20; ++j){
+            gridMap[i][j] = new Obstacle(j, i, 0);
+            if(mapArray[i][j] == 1){
+                gridMap[i][j]->setColor(4);
+            }
+            scene->addItem(gridMap[i][j]);
+        }
+    }
+
+    //add robot
+
+    robot = new MyRobot(mapArray, 5, 0, 0, lineEdit1->text().toInt());
+    connect(robot, SIGNAL(OnUpdate()), this, SLOT(update()));
+    connect(robot, SIGNAL(OnFrameUpdate()), this, SLOT(frameUpdate()));
+    connect(robot, SIGNAL(stop()), this, SLOT(stop()));
     scene->addItem(robot);
     //set timer
 
@@ -326,7 +378,7 @@ void MainWindow::frameUpdate()
     }else if(robot->robotState == 3){
         label6->setText("Fastest Path");
     }
-    label5->setText(QString("Time: ").append(QString::number(robot->time/1000.0)).append("s"));
+    label5->setText(QString("Time: ").append(QString::number(robot->time/60000)).append("m").append(QString::number(robot->time%60000/1000).append("s")));
 }
 
 void MainWindow::stop()
