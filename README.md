@@ -1,10 +1,6 @@
 # MDP-G6-2017
 
-APK BUILT DOWNLOAD FROM https://drive.google.com/drive/folders/0ByKpSnr45RgkdFpEaE9NanMyM1E?usp=sharing
-
-Instructions for adding new files:
-- Use folders to represent the work you're doing (e.g. in this case, android team does work on Robot Remote Folder)
-
+Built APK ready to DOWNLOAD FROM https://drive.google.com/drive/folders/0ByKpSnr45RgkdFpEaE9NanMyM1E?usp=sharing
 
 Instructions for sending strings from any device:
 - Append this number to the start of any string that is to be sent to another device:
@@ -24,9 +20,5 @@ Instructions For Algo Group:
 	- To begin exploration mode <- detect "pe"
 	- To start fastest path <- detect "pf"
 	- For grid position <- detect int(1-18),int(1-13)
-	- For battery <- detect "pb"
-	- For status <- detect "pst"
-	- For robot's position <- detect "pp"
-	- For go straight <- detect "pF"
-	- For turn left <- detect "pL"
-	- For turn right <- detect "pR"
+	- For stopping robot <- detect "ps"
+
