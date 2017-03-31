@@ -62,6 +62,7 @@ private:
     // 2 - explore with coverage limitation simulation
     // 3 - explore with time limitation simulation
     // 4 - explore with real robot
+    // 5 - fastest path with known map
     int exploreMode;
     int timeLimit;
     int coverageLimit;
@@ -71,6 +72,7 @@ private:
     QPoint pos;
     int rotation;
     int ** robotMapArray;
+    bool robotMapConfirmArray [15][20];
     //0 - havent checked, 1 - checked, no obstacle
     //2 - checked, obstacle, 3 - not accessable
     int ** actualMapArray;
@@ -100,14 +102,19 @@ private:
     QPoint leftSide[3] = {QPoint(-1, -2), QPoint(0, -2), QPoint(1, -2)};
 
     QPoint frontSide[3] = {QPoint(2, -1), QPoint(2, 0), QPoint(2, 1)};
+
+    QPoint confirmGrid[6] = {QPoint(-1, -2), QPoint(1, -2), QPoint(2, -1), QPoint(2, 0), QPoint(2, 1), QPoint(0, 2)};
     //0 - normal, 1 - next step e and reset to 0, 2 - explore
     int movingByWallState;
     //1 - moving back to start zone, 2 - explore rest area, 3 - moving to start zone, 4 - fastest path to goal zone
     bool forwardExplore =false;
     int exploreState;
+    bool notToExploreRest = false;
     int calibrateCounter = 0;
     int calibrateThreshold = 5;
-    QString fastestPathStr= "";
+    int fastestStartRotation = 0;
+    QString fastestPathStr0= "";
+    QString fastestPathStr90= "";
 
     int action = -1;
     int xDir = 0;
@@ -123,6 +130,7 @@ private:
     int ExploreRest();
     void startPointCalibration();
     void sendString();
+    QString pathActionListString(QPoint _start, int _rotation, QPoint _target, int* pathLength);
 };
 
 

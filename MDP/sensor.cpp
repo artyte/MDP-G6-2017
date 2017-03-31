@@ -98,8 +98,16 @@ sensorFeedback *Sensor::processSignal(int msg)
             feedbackPtr[i] = {QPoint(-1, -1), -2};
             continue;
         }
+
         if(i < msg){
             feedbackPtr[i] = {QPoint(absoluteX+i*facingX, absoluteY-i*facingY), 0};
+            /*if(robotMapArray[absoluteY-i*facingY][absoluteX+i*facingX] == 1){
+                msg = i;
+                feedbackPtr[i] = {QPoint(absoluteX+i*facingX, absoluteY-i*facingY), 1};
+            }else{
+                feedbackPtr[i] = {QPoint(absoluteX+i*facingX, absoluteY-i*facingY), 0};
+            }*/
+
         }else if(i == msg){
             feedbackPtr[i] = {QPoint(absoluteX+i*facingX, absoluteY-i*facingY), 1};
         }else{
