@@ -22,13 +22,15 @@
         <ScrollView
             android:layout_height="match_parent"
             android:layout_width="match_parent"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp" >
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp">
 
         <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical" >
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -43,16 +45,15 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp">
+                    android:layout_marginRight="5dp" >
 
                     <TextView
-                        android:id="@+id/textView1"
+                        android:id="@+id/labelX"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:minEms="1"
                         android:textStyle="bold"
                         android:textSize="16sp"
-                        android:text="X:" />
+                        android:text="X: " />
 
                     <TextView
                         android:id="@+id/textViewX"
@@ -61,7 +62,7 @@
                         android:background="@drawable/border"
                         android:paddingLeft="5dp"
                         android:paddingRight="5dp"
-                        android:minEms="1"
+                        android:minEms="2"
                         android:textSize="16sp"
                         android:text="1" />
                 </LinearLayout>
@@ -71,13 +72,12 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp">
+                    android:layout_marginRight="5dp" >
 
                     <TextView
-                        android:id="@+id/textView2"
+                        android:id="@+id/labelY"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:minEms="1"
                         android:textStyle="bold"
                         android:textSize="16sp"
                         android:text="Y: " />
@@ -89,7 +89,7 @@
                         android:paddingLeft="5dp"
                         android:paddingRight="5dp"
                         android:background="@drawable/border"
-                        android:minEms="1"
+                        android:minEms="2"
                         android:textSize="16sp"
                         android:text="1"/>
                 </LinearLayout>
@@ -99,16 +99,15 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp">
+                    android:layout_marginRight="5dp" >
 
                     <TextView
-                        android:id="@+id/textView3"
+                        android:id="@+id/labelDirection"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:minEms="1"
                         android:textStyle="bold"
                         android:textSize="16sp"
-                        android:text="Facing Direction: " />
+                        android:text="Direction: " />
 
                     <TextView
                         android:id="@+id/textViewDirection"
@@ -117,7 +116,7 @@
                         android:paddingLeft="5dp"
                         android:paddingRight="5dp"
                         android:background="@drawable/border"
-                        android:minEms="2"
+                        android:minEms="3"
                         android:textSize="16sp"
                         android:text="0"/>
                 </LinearLayout>
@@ -127,13 +126,12 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp">
+                    android:layout_marginRight="5dp" >
 
                     <TextView
-                        android:id="@+id/textView4"
+                        android:id="@+id/labelStatus"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:minEms="1"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:text="Status: "/>
@@ -147,7 +145,7 @@
                         android:background="@drawable/border"
                         android:minEms="5"
                         android:textSize="16sp"
-                        android:text="na"/>
+                        android:text="N/A"/>
                 </LinearLayout>
             </LinearLayout>
 
@@ -155,42 +153,33 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
                 android:layout_gravity="center"
-                android:minHeight="50dip" >
+                android:minWidth="500dp" >
 
                 <TextView
-                    android:id="@+id/textViewEnterString"
+                    android:id="@+id/labelEnterString"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:minWidth="100dip"
+                    android:minWidth="100dp"
                     android:textStyle="bold"
                     android:textSize="16sp"
                     android:text="Enter String: " />
 
                 <EditText
                     android:id="@+id/txtString"
-                    android:padding="1dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:minWidth="160dip"
+                    android:padding="5dp"
+                    android:minWidth="200dp"
                     android:background="@drawable/border"
                     android:maxLines="1" />
 
                 <Button
                     android:id="@+id/btnSend"
-                    android:padding="1dp"
                     android:onClick="btnSend"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:minWidth="100dip"
+                    android:minWidth="150dip"
                     android:text="Send"/>
             </LinearLayout>
 
@@ -198,15 +187,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_gravity="center" >
+                android:layout_gravity="center"
+                android:minWidth="500dp" >
 
                 <TextView
                     android:id="@+id/labelExploration"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
-                    android:paddingLeft="5dp"
-                    android:paddingRight="5dp"
-                    android:minWidth="100dip"
+                    android:minWidth="100dp"
                     android:textStyle="bold"
                     android:textSize="16sp"
                     android:text="Exploration: " />
@@ -218,29 +206,23 @@
                     android:background="@drawable/border"
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp"
-                    android:minEms="5"
+                    android:minWidth="100dp"
                     android:textSize="16sp"
                     android:text="00:00:00" />
 
                 <ToggleButton
                     android:id="@+id/tgbExploration"
-                    android:padding="1dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:minWidth="100dip"
+                    android:minWidth="100dp"
                     android:textOn="Finish"
                     android:textOff="Start" />
 
                 <Button
                     android:id="@+id/btnResetExplorationTimer"
-                    android:padding="1dp"
                     android:onClick="resetExplorationTimer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
                     android:minWidth="150dip"
                     android:text="Reset Timer" />
             </LinearLayout>
@@ -249,14 +231,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_gravity="center" >
+                android:layout_gravity="center"
+                android:minWidth="500dp" >
 
                 <TextView
                     android:id="@+id/labelFastest"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
-                    android:paddingLeft="5dp"
-                    android:paddingRight="5dp"
                     android:minWidth="100dip"
                     android:textStyle="bold"
                     android:textSize="16sp"
@@ -269,29 +250,25 @@
                     android:background="@drawable/border"
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp"
-                    android:minEms="5"
+                    android:minWidth="100dp"
                     android:textSize="16sp"
                     android:text="00:00:00" />
 
                 <ToggleButton
                     android:id="@+id/tgbFastest"
-                    android:padding="1dp"
+                    android:padding="5dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
                     android:minWidth="100dip"
                     android:textOn="Finish"
                     android:textOff="Start" />
 
                 <Button
                     android:id="@+id/btnResetFastestTimer"
-                    android:padding="1dp"
+                    android:padding="5dp"
                     android:onClick="resetFastestTimer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
                     android:minWidth="150dip"
                     android:text="Reset Timer" />
             </LinearLayout>
@@ -300,12 +277,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_gravity="center" >
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_gravity="center"
+                android:minWidth="500dp" >
 
                 <TextView
-                    android:id="@+id/mdf1"
+                    android:id="@+id/labelMDF1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:minWidth="100dip"
@@ -320,8 +298,8 @@
                     android:background="@drawable/border"
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp"
-                    android:minEms="15"
-                    android:maxEms="15"
+                    android:minEms="20"
+                    android:maxEms="20"
                     android:textSize="16sp"
                     android:text="" />
             </LinearLayout>
@@ -330,12 +308,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_gravity="center" >
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_gravity="center"
+                android:minWidth="500dp" >
 
                 <TextView
-                    android:id="@+id/mdf2"
+                    android:id="@+id/labelMDF2"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:minWidth="100dip"
@@ -350,8 +329,8 @@
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp"
                     android:background="@drawable/border"
-                    android:minEms="15"
-                    android:maxEms="15"
+                    android:minEms="20"
+                    android:maxEms="20"
                     android:textSize="16sp"
                     android:text=""/>
             </LinearLayout>
@@ -360,8 +339,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
                 android:layout_gravity="center" >
 
                 <Button
@@ -370,8 +347,6 @@
                     android:onClick="btnF1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
                     android:text="F1"/>
 
                 <Button
@@ -380,8 +355,6 @@
                     android:onClick="btnF2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
                     android:text="F2"/>
             </LinearLayout>
         </LinearLayout>

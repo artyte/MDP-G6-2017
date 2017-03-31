@@ -13,7 +13,15 @@ import mdp.robotxplorer.R;
 import mdp.robotxplorer.common.Config;
 
 public class ArenaRenderer {
+    private static int leftMostXPos, rightMostXPos, topMostYPos, bottomMostYPos;
+
     protected static void renderArena(Canvas canvas, Arena arena, int gridSize, Context context) {
+        leftMostXPos  = gridSize / 2;
+        rightMostXPos = leftMostXPos + gridSize * Config.ARENA_LENGTH;
+
+        topMostYPos    = gridSize / 2;
+        bottomMostYPos = topMostYPos + gridSize * Config.ARENA_WIDTH;
+
         canvas.drawColor(Color.WHITE);
 
         Paint paint = new Paint();
@@ -23,6 +31,7 @@ public class ArenaRenderer {
         renderGridMap(canvas, paint, arena.getGridMap(), gridSize);
         renderStartZone(canvas, paint, gridSize);
         renderGoalZone(canvas, paint, gridSize);
+        renderBorders(canvas, paint, gridSize);
         renderRobot(canvas, arena.getRobot(), gridSize, context);
     }
 
@@ -32,16 +41,16 @@ public class ArenaRenderer {
         Bitmap scaledBitmap = Bitmap.createScaledBitmap(b, gridSize * 3, gridSize * 3, false);
         Matrix matrix = new Matrix();
 
-        if (robot.getFacingDirection() == Robot.Direction.NORTH) {
+        if (robot.getDirection() == Robot.Direction.NORTH) {
             matrix.setRotate(0, scaledBitmap.getWidth() / 2, scaledBitmap.getHeight() / 2);
 
-        } else if (robot.getFacingDirection() == Robot.Direction.EAST) {
+        } else if (robot.getDirection() == Robot.Direction.EAST) {
             matrix.setRotate(90, scaledBitmap.getWidth() / 2, scaledBitmap.getHeight() / 2);
 
-        } else if (robot.getFacingDirection() == Robot.Direction.SOUTH) {
+        } else if (robot.getDirection() == Robot.Direction.SOUTH) {
             matrix.setRotate(180, scaledBitmap.getWidth() / 2, scaledBitmap.getHeight() / 2);
 
-        } else if (robot.getFacingDirection() == Robot.Direction.WEST) {
+        } else if (robot.getDirection() == Robot.Direction.WEST) {
             matrix.setRotate(270, scaledBitmap.getWidth() / 2, scaledBitmap.getHeight() / 2);
         }
 
@@ -78,7 +87,6 @@ public class ArenaRenderer {
                 }
 
                 canvas.drawRect(rect, paint);
-                rectDrawBorder(canvas, paint, rect);
             }
         }
     }
@@ -94,7 +102,8 @@ public class ArenaRenderer {
 
                 RectF rect = new RectF(left, top, right, bottom);
                 rectFillColor(canvas, paint, rect, Config.START);
-                rectDrawBorder(canvas, paint, rect);
+
+                paint.setColor(Color.BLACK);
                 canvas.drawText("S", left + gridSize / 2, top + gridSize / 2, paint);
             }
         }
@@ -111,22 +120,45 @@ public class ArenaRenderer {
 
                 RectF rect = new RectF(left, top, right, bottom);
                 rectFillColor(canvas, paint, rect, Config.GOAL);
-                rectDrawBorder(canvas, paint, rect);
+
+                paint.setColor(Color.BLACK);
                 canvas.drawText("G", left + gridSize / 2, top + gridSize / 2, paint);
             }
+        }
+    }
+
+    private static void renderBorders(Canvas canvas, Paint paint, int gridSize) {
+        paint.setColor(Config.BORDER);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(1);
+
+        int numOfVerticalLines   = Config.ARENA_LENGTH + 1;
+        int numOfHorizontalLines = Config.ARENA_WIDTH  + 1;
+
+        for (int i = 0; i < numOfVerticalLines; i ++) {
+            float startX = leftMostXPos + i * gridSize;
+            float stopX  = leftMostXPos + i * gridSize;
+
+            float startY = topMostYPos;
+            float stopY  = bottomMostYPos;
+
+            canvas.drawLine(startX, startY, stopX, stopY, paint);
+        }
+
+        for (int i = 0; i < numOfHorizontalLines; i ++) {
+            float startX = leftMostXPos;
+            float stopX  = rightMostXPos;
+
+            float startY = topMostYPos + i * gridSize;
+            float stopY  = topMostYPos + i * gridSize;
+
+            canvas.drawLine(startX, startY, stopX, stopY, paint);
         }
     }
 
     private static void rectFillColor(Canvas canvas, Paint paint, RectF rect, int color) {
         paint.setColor(color);
         paint.setStyle(Paint.Style.FILL);
-        canvas.drawRect(rect, paint);
-    }
-
-    private static void rectDrawBorder(Canvas canvas, Paint paint, RectF rect) {
-        paint.setColor(Config.BORDER);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(1);
         canvas.drawRect(rect, paint);
     }
 }

@@ -1,4 +1,4 @@
-package mdp.robotxplorer.fragment;
+ package mdp.robotxplorer.fragment;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -26,19 +26,11 @@ import mdp.robotxplorer.R;
 import mdp.robotxplorer.activity.MainActivity;
 import mdp.robotxplorer.common.Config;
 
-public class DeviceListDialogFragment extends DialogFragment implements View.OnClickListener {
+public class DeviceListDialogFragment extends DialogFragment {
     // TODO: Rename parameter arguments, choose names that match
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private String mParam1;
-    private String mParam2;
     private View mView;
-    boolean mCancelable = true;
-    boolean mShowsDialog = true;
-    /**
-     * Tag for Log
-     */
-    private static final String TAG = Config.log_id;
 
     /**
      * Return Intent extra
@@ -79,12 +71,6 @@ public class DeviceListDialogFragment extends DialogFragment implements View.OnC
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-
         setHasOptionsMenu(false);
     }
 
@@ -92,7 +78,7 @@ public class DeviceListDialogFragment extends DialogFragment implements View.OnC
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.dialog_fragment_device_list, container, false);
 
-        getDialog().setTitle("Please select a device to connect");
+        getDialog().setTitle("Select a Device to Connect");
         getActivity().setResult(Activity.RESULT_CANCELED);
         Button scanButton = (Button) mView.findViewById(R.id.button_scan);
         scanButton.setOnClickListener(new View.OnClickListener() {
@@ -103,8 +89,8 @@ public class DeviceListDialogFragment extends DialogFragment implements View.OnC
         });
 
         ArrayAdapter<String> pairedDevicesArrayAdapter =
-                new ArrayAdapter<String>(getActivity(), R.layout.item_list_device_name);
-        mNewDevicesArrayAdapter = new ArrayAdapter<String>(getActivity(), R.layout.item_list_device_name);
+                new ArrayAdapter<>(getActivity(), R.layout.item_list_device_name);
+        mNewDevicesArrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.item_list_device_name);
 
         // Find and set up the ListView for paired devices
         ListView pairedListView = (ListView) mView.findViewById(R.id.paired_devices);
@@ -112,7 +98,7 @@ public class DeviceListDialogFragment extends DialogFragment implements View.OnC
         pairedListView.setOnItemClickListener(mDeviceClickListener);
 
         // Find and set up the ListView for newly discovered devices
-        ListView newDevicesListView = (ListView) mView.findViewById(R.id.new_devices);
+        ListView newDevicesListView = (ListView) mView.findViewById(R.id.available_devices);
         newDevicesListView.setAdapter(mNewDevicesArrayAdapter);
         newDevicesListView.setOnItemClickListener(mDeviceClickListener);
 
@@ -133,12 +119,13 @@ public class DeviceListDialogFragment extends DialogFragment implements View.OnC
         // If there are paired devices, add each one to the ArrayAdapter
         if (pairedDevices.size() > 0) {
             mView.findViewById(R.id.title_paired_devices).setVisibility(View.VISIBLE);
+
             for (BluetoothDevice device : pairedDevices) {
-                pairedDevicesArrayAdapter.add(device.getName() + "\n" + device.getAddress());
+                pairedDevicesArrayAdapter.add(device.getName() + "\n" +device.getAddress());
             }
+
         } else {
-            String noDevices = getResources().getText(R.string.none_paired).toString();
-            pairedDevicesArrayAdapter.add(noDevices);
+            mView.findViewById(R.id.title_no_paired_devices).setVisibility(View.VISIBLE);
         }
 
         return mView;
@@ -147,11 +134,14 @@ public class DeviceListDialogFragment extends DialogFragment implements View.OnC
     private AdapterView.OnItemClickListener mDeviceClickListener
             = new AdapterView.OnItemClickListener() {
         public void onItemClick(AdapterView<?> av, View v, int arg2, long arg3) {
+
             // Cancel discovery because it's costly and we're about to connect
             mBtAdapter.cancelDiscovery();
+
             // Get the device MAC address, which is the last 17 chars in the View
             String info = ((TextView) v).getText().toString();
             String address = info.substring(info.length() - 17);
+
             // Create the result Intent and include the MAC address
             Intent intent = new Intent();
             intent.putExtra(EXTRA_DEVICE_ADDRESS, address);
@@ -160,9 +150,7 @@ public class DeviceListDialogFragment extends DialogFragment implements View.OnC
             Fragment fm = getFragmentManager().findFragmentByTag("deviceListDialogFragment");
 
             if (fm != null) {
-                DialogFragment df = (DialogFragment) fm;
                 getFragmentManager().beginTransaction().remove(fm).commit();
-
             }
         }
     };
@@ -173,22 +161,8 @@ public class DeviceListDialogFragment extends DialogFragment implements View.OnC
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-    @Override
     public void onDetach() {
         super.onDetach();
-    }
-
-    @Override
-    public void onClick(View v) {
-
     }
 
     @Override
@@ -196,18 +170,13 @@ public class DeviceListDialogFragment extends DialogFragment implements View.OnC
         super.onResume();
     }
 
-    public void onActivityResult(int INT_CODE, int position){
-        System.out.println(Integer.toString(position));
-    }
-
     private void doDiscovery() {
         Log.d(Config.log_id,"doDiscovery()");
         // Indicate scanning in the title
-    //    getDialog().setProgressBarIndeterminateVisibility(true);
         getDialog().setTitle(R.string.scanning);
 
         // Turn on sub-title for new devices
-        mView.findViewById(R.id.title_new_devices).setVisibility(View.VISIBLE);
+        mView.findViewById(R.id.title_available_devices).setVisibility(View.VISIBLE);
 
         // If we're already discovering, stop it
         if (mBtAdapter.isDiscovering()) {
@@ -227,22 +196,22 @@ public class DeviceListDialogFragment extends DialogFragment implements View.OnC
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 // Get the BluetoothDevice object from the Intent
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
                 // If it's already paired, skip it, because it's been listed already
                 if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
                     mNewDevicesArrayAdapter.add(device.getName() + "\n" + device.getAddress());
                 }
+
                 // When discovery is finished, change the Activity title
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
-
                 getDialog().setTitle(R.string.select_device);
+
                 if (mNewDevicesArrayAdapter.getCount() == 0) {
-                    String noDevices = getResources().getText(R.string.none_found).toString();
-                    mNewDevicesArrayAdapter.add(noDevices);
+                    mView.findViewById(R.id.title_no_available_devices).setVisibility(View.VISIBLE);
                 }
             }
         }
     };
-
 
     @Override
     public void onDestroyView() {
@@ -264,6 +233,5 @@ public class DeviceListDialogFragment extends DialogFragment implements View.OnC
 
     public interface DialogListener {
         void onActivityResult(int requestCode, int resultCode, Intent data) ;
-        void onActivityResult(String a) ;
     }
 }

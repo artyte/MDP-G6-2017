@@ -87,7 +87,7 @@ public class Arena implements Serializable {
 
     public void resetArena() {
         robot.setPosition(1, 1);
-        robot.setFacingDirection(Robot.Direction.EAST);
+        robot.setDirection(Robot.Direction.EAST);
         robot.setStatus("N/A");
 
         for (int x = 0; x < Config.ARENA_WIDTH; x ++) {

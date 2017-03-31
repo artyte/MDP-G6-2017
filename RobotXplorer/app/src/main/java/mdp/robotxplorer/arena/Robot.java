@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class Robot implements Serializable {
     private int xPos, yPos;
-    private Direction facingDirection;
+    private Direction direction;
     private String status;
 
     public enum Direction {
@@ -14,7 +14,7 @@ public class Robot implements Serializable {
     public Robot(int xPos, int yPos, Direction direction) {
         this.xPos = xPos;
         this.yPos = yPos;
-        this.facingDirection = direction;
+        this.direction = direction;
         this.status = "N/A";
     }
 
@@ -31,12 +31,12 @@ public class Robot implements Serializable {
         this.yPos = yPos;
     }
 
-    public Direction getFacingDirection() {
-        return facingDirection;
+    public Direction getDirection() {
+        return direction;
     }
 
-    public void setFacingDirection(Direction direction) {
-        facingDirection = direction;
+    public void setDirection(Direction direction) {
+        this.direction = direction;
     }
 
     public String getStatus() {
@@ -48,7 +48,7 @@ public class Robot implements Serializable {
     }
 
     public void moveForward() {
-        switch (facingDirection) {
+        switch (direction) {
             case NORTH:
                 if (xPos > 1) xPos --;
                 break;
@@ -68,42 +68,58 @@ public class Robot implements Serializable {
     }
 
     public void turnLeft() {
-        switch (facingDirection) {
+        switch (direction) {
             case NORTH:
-                facingDirection = Direction.WEST;
+                direction = Direction.WEST;
                 break;
 
             case SOUTH:
-                facingDirection = Direction.EAST;
+                direction = Direction.EAST;
                 break;
 
             case EAST:
-                facingDirection = Direction.NORTH;
+                direction = Direction.NORTH;
                 break;
 
             case WEST:
-                facingDirection = Direction.SOUTH;
+                direction = Direction.SOUTH;
                 break;
         }
     }
 
     public void turnRight() {
-        switch (facingDirection) {
+        switch (direction) {
             case NORTH:
-                facingDirection = Direction.EAST;
+                direction = Direction.EAST;
                 break;
 
             case SOUTH:
-                facingDirection = Direction.WEST;
+                direction = Direction.WEST;
                 break;
 
             case EAST:
-                facingDirection = Direction.SOUTH;
+                direction = Direction.SOUTH;
                 break;
 
             case WEST:
-                facingDirection = Direction.NORTH;
+                direction = Direction.NORTH;
                 break;
         }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Robot) {
+            Robot robotObj = (Robot) obj;
+
+            boolean xPosEqual = (xPos == robotObj.getXPos());
+            boolean yPosEqual = (yPos == robotObj.getYPos());
+            boolean directionEqual = (direction == robotObj.getDirection());
+            boolean statusEqual = status.equals(robotObj.getStatus());
+
+            return xPosEqual && yPosEqual && directionEqual && statusEqual;
+        }
+
+        return false;
     }
 }

@@ -36,18 +36,18 @@
             app:actionViewClass="android.widget.Switch" />
     </group>-->
 
-    <!--<group android:id="@+id/bottom_menu" android:checkableBehavior="single">
+    <group android:id="@+id/bottom_menu" android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_set_f1"
-            android:title="Set F1" />
+            android:id="@+id/nav_configure_f1"
+            android:title="Configure F1" />
         <item
-            android:id="@+id/nav_set_f2"
-            android:title="Set F2" />
-        <item
+            android:id="@+id/nav_configure_f2"
+            android:title="Configure F2" />
+        <!--<item
             android:id="@+id/nav_view_mdf1"
             android:title="Send MDF1 String" />
         <item
             android:id="@+id/nav_view_mdf2"
-            android:title="Send MDF2 String" />
-    </group>-->
+            android:title="Send MDF2 String" />-->
+    </group>
 </menu>

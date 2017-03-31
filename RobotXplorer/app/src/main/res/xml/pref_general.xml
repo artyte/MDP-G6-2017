@@ -7,13 +7,13 @@
         <EditTextPreference android:title="Set Persistence F1 Value"
             android:key="pref_f1"
             android:summary="Please enter a value for F1"
-            android:defaultValue="W">
+            android:defaultValue="az">
         </EditTextPreference>
 
         <EditTextPreference android:title="Set Persistence F2 Value"
             android:key="pref_f2"
             android:summary="Please enter a value for F2"
-            android:defaultValue="A">
+            android:defaultValue="ps">
         </EditTextPreference>
     </PreferenceCategory>
 </PreferenceScreen>

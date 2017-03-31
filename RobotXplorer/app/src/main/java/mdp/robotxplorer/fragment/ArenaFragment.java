@@ -35,12 +35,10 @@ public class ArenaFragment extends Fragment {
         if (savedInstanceState != null) {
             Arena arena = (Arena) savedInstanceState.getSerializable("arena");
 
-            if (arena != null) {
+            if (arena != null)
                 arenaView.setupArena(arena);
-            }
-        } else {
+        } else
             arenaView.setupArena(new Arena());
-        }
 
         return mView;
     }
@@ -63,19 +61,19 @@ public class ArenaFragment extends Fragment {
 
         switch (direction) {
             case 0:
-                arenaView.getArena().getRobot().setFacingDirection(Robot.Direction.EAST);
+                arenaView.getArena().getRobot().setDirection(Robot.Direction.EAST);
                 break;
 
             case 90:
-                arenaView.getArena().getRobot().setFacingDirection(Robot.Direction.SOUTH);
+                arenaView.getArena().getRobot().setDirection(Robot.Direction.SOUTH);
                 break;
 
             case 180:
-                arenaView.getArena().getRobot().setFacingDirection(Robot.Direction.WEST);
+                arenaView.getArena().getRobot().setDirection(Robot.Direction.WEST);
                 break;
 
             case 270:
-                arenaView.getArena().getRobot().setFacingDirection(Robot.Direction.NORTH);
+                arenaView.getArena().getRobot().setDirection(Robot.Direction.NORTH);
                 break;
         }
 

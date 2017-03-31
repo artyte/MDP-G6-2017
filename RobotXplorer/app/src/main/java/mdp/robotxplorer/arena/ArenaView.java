@@ -2,20 +2,17 @@ package mdp.robotxplorer.arena;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-import mdp.robotxplorer.activity.MainActivity;
 import mdp.robotxplorer.common.Config;
 import mdp.robotxplorer.common.Operation;
 
 public class ArenaView extends View {
     private Arena arena;
+    private boolean inputPositionEnabled;
     private int gridSize;
-    private boolean isSelectingPosition;
 
     public ArenaView(Context context) {
         this(context, null);
@@ -23,15 +20,15 @@ public class ArenaView extends View {
 
     public ArenaView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        isSelectingPosition = false;
+        inputPositionEnabled = false;
     }
 
     public void setupArena(Arena arena) {
         this.arena = arena;
     }
 
-    public void selectingPosition(boolean b) {
-        isSelectingPosition = b;
+    public void setInputPositionEnabled(boolean b) {
+        inputPositionEnabled = b;
     }
 
     @Override
@@ -51,7 +48,7 @@ public class ArenaView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (isSelectingPosition) {
+        if (inputPositionEnabled) {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 float startX = gridSize / 2;
                 float startY = gridSize / 2;
@@ -59,7 +56,9 @@ public class ArenaView extends View {
                 float endX = gridSize / 2 + gridSize * Config.ARENA_LENGTH;
                 float endY = gridSize / 2 + gridSize * Config.ARENA_WIDTH;
 
-                if (event.getX() > startX && event.getX() < endX && event.getY() > startY && event.getY() < endY) {
+                if (event.getX() > startX && event.getX() < endX
+                        && event.getY() > startY && event.getY() < endY) {
+
                     int y = (int) ((event.getX() - startX) / gridSize);
                     int x = (int) ((event.getY() - startY) / gridSize);
 

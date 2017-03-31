@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity
             public void handleMessage(Message msg) {
                 long elapsedTime = System.currentTimeMillis() - explorationStartTime;
 
-                int millis  = (int) (elapsedTime % 1000) / 10 ;
+                int millis  = (int) (elapsedTime % 1000) / 10;
                 int seconds = (int) (elapsedTime / 1000) % 60 ;
                 int minutes = (int) ((elapsedTime / (1000 * 60)) % 60);
 
@@ -176,7 +176,7 @@ public class MainActivity extends AppCompatActivity
             public void handleMessage(Message msg) {
                 long elapsedTime = System.currentTimeMillis() - fastestStartTime;
 
-                int millis  = (int) (elapsedTime % 1000) / 10 ;
+                int millis  = (int) (elapsedTime % 1000) / 10;
                 int seconds = (int) (elapsedTime / 1000) % 60 ;
                 int minutes = (int) ((elapsedTime / (1000 * 60)) % 60);
 
@@ -423,6 +423,9 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent);// Activity is started with requestCode 2
                 break;
 
+            case R.id.nav_configure_f1:
+                break;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -557,10 +560,6 @@ public class MainActivity extends AppCompatActivity
         }
     }*/
 
-    @Override
-    public void onActivityResult(String a) {
-    }
-
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case REQUEST_CONNECT_DEVICE_SECURE:
@@ -626,14 +625,23 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void inputPosition() {
-        if (arenaFragment.getArenaView().getArena().isReset())
-            enableInputPosition(true);
-        else
-            Operation.showToast(this, "Please reset your arena first");
+        arenaFragment = (ArenaFragment) getSupportFragmentManager().findFragmentByTag("arenaFragment");
+
+        if (arenaFragment != null && arenaFragment.getArenaView() != null
+                && arenaFragment.getArenaView().getArena() != null) {
+
+            if (arenaFragment.getArenaView().getArena().isReset())
+                enableInputPosition(true);
+            else
+                Operation.showToast(this, "Please reset your arena first");
+        }
     }
 
     private void enableInputPosition(boolean b) {
-        arenaFragment.getArenaView().selectingPosition(b);
+        arenaFragment = (ArenaFragment) getSupportFragmentManager().findFragmentByTag("arenaFragment");
+
+        if (arenaFragment != null && arenaFragment.getArenaView() != null)
+            arenaFragment.getArenaView().setInputPositionEnabled(b);
 
         findViewById(R.id.btnSend).setEnabled(!b);
         findViewById(R.id.tgbExploration).setEnabled(!b);
@@ -667,7 +675,7 @@ public class MainActivity extends AppCompatActivity
             public void run() {
                 explorationTimerHandler.obtainMessage(1).sendToTarget();
             }
-        }, 0, 10);
+        }, 0, 100);
 
         Operation.showToast(this, "Exploration Started");
     }
@@ -683,6 +691,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void startFastest() {
+        finishExploration();
         sendMessage(Protocol.START_FASTEST);
         textViewStatus.setText("Fastest");
         fastestStartTime = System.currentTimeMillis();
@@ -692,7 +701,7 @@ public class MainActivity extends AppCompatActivity
             public void run() {
                 fastestTimerHandler.obtainMessage(1).sendToTarget();
             }
-        }, 0, 10);
+        }, 0, 100);
 
         Operation.showToast(this, "Fastest Started");
     }
